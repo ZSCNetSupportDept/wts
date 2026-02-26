@@ -9,24 +9,19 @@
                         "url":"https://www.zsxyww.com/wiki"
                 },
               {
-                "type": "click",
+                "type": "view",
                 "name": "快速报修",
-                "key": "USER_NEW_TICKET"
+                "url": "https://wwbx.davisye.cn/repair/new"
               },
               {
-                "type": "click",
+                "type": "view",
                 "name": "查看报修",
-                "key": "USER_QUERY_TICKET"
+                "url": "https://wwbx.davisye.cn/repair"
               },
-                {
-                "type": "click",
-                "name": "撤销报修",
-                "key": "USER_CANCEL_TICKET"
-        }, 
         {
-                "type": "click",
+                "type": "view",
                 "name": "进入报修系统",
-                "key": "ADMIN_ENTER_SYSTEM"
+                "url": "https://wwbx.davisye.cn"
             }
 
             ]
@@ -36,24 +31,24 @@
             "sub_button": [
                 {
                         "type":"view",
-                        "name":"查看修理后台",
-                        "url":"https://wts.zsxyww.com/console"
+                        "name":"查看维修后台",
+                        "url":"https://wwbx.davisye.cn/op"
                 },
-                {
+                                {
                         "type":"view",
                         "name":"查看管理层后台",
-                        "url":"https://wts.zsxyww.com/admin"
+                        "url":"https://wwbx.davisye.cn/admin"
                 },
                 {
-                "type":"click",
-                "name":"我的资料",
-                "key":"OP_CHECK_PROFILE"
+                "type":"view",
+                "name":"我的排班",
+                "url":"https://wwbx.davisye.cn/op/scheduler"
                 }
-                
+
             ]
           }
         ],
         "matchrule": {
-                "tag_id": "101"
-              }
+          "tag_id": "100"
+        }
       }
