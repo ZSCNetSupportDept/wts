@@ -24,7 +24,7 @@
 			<p class="font-bold" style="font-size: 19px;">📃No.{t.tid}</p>
 			<WtsPriority p={t.priority} />
 		</div>
-		{#if t.appointed_at}
+		{#if t.appointed_at && t.status === 'scheduled'}
 			<p style="color: #0f62fe; font-size: 12.5px;">
 				<strong>该报修已预约在{FormatDate(t.appointed_at)}</strong>
 			</p>
