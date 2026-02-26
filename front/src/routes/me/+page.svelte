@@ -162,8 +162,7 @@
 			<br />
 			<p>ZSCNetworkSupport 版权所有</p>
 			<br />
-			<!-- //TODO: 源码的地址-->
-			<p>Under AGPLv3,<a href="/">源代码</a></p>
+			<p>Under AGPLv3,<a href="https://github.com/ZSCNetSupportDept/wts">源代码</a></p>
 		</AccordionItem>
 	</Accordion>
 </RetroCard>
