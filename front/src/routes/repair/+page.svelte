@@ -60,10 +60,10 @@
 	<Button href="/repair/new">提交新报修</Button>
 </div>
 
-<OperatorTicket t={sample1} />
-<OperatorTicket t={sample2} />
+<!--<OperatorTicket t={sample1} />
+<OperatorTicket t={sample2} />-->
 
-<hr />
+<!--<hr />-->
 
 {#each tickets as t}
 	<UserTicket {t} />
