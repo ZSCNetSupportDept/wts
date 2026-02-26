@@ -1,0 +1,26 @@
+Brand: "Zhongshan College Network HelpDesk Backend"
+ListenPort: 25005
+JWTKey: ""
+FrontEndDir: "../src/assets/frontEnd"
+LogLevel: "debug"
+JSONLogOutput: True
+DB:
+  Type: "PostgreSQL"
+  Path: "127.0.0.1"
+  Port: "5432"
+  User: "postgres"
+  Password: "123456789"
+  Name: "postgres"
+  SSL: False
+WX:
+  AppID: ""
+  AppSecret: ""
+  Token: ""
+  EncodingAESKey: ""
+  CallBackURL: "wwbx.zsc.edu.cn"
+FrontEnd:
+  OnAuthSuccess: "/auth_success.html"
+Debug:
+  APIVerbose: True # API will return original error messages
+  ProgramVerbose: True # print additional info to console/log,may contain sensitive data
+  SkipJWTAuth: False # Skip JWT authentication for API requests,Never enable this in production!several URL parameter may be required

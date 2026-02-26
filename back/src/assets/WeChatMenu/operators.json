@@ -1,0 +1,54 @@
+{
+        "button": [
+          {
+            "name": "报修",
+            "sub_button": [
+                {
+                        "type":"view",
+                        "name":"(先自己修修看！)",
+                        "url":"https://www.zsxyww.com/wiki"
+                },
+              {
+                "type": "click",
+                "name": "快速报修",
+                "key": "USER_NEW_TICKET"
+              },
+              {
+                "type": "click",
+                "name": "查看报修",
+                "key": "USER_QUERY_TICKET"
+              },
+                {
+                "type": "click",
+                "name": "撤销报修",
+                "key": "USER_CANCEL_TICKET"
+        }, 
+        {
+                "type": "click",
+                "name": "进入报修系统",
+                "key": "OP_ENTER_SYSTEM"
+            }
+
+            ]
+          },
+          {
+            "name": "后台",
+            "sub_button": [
+                {
+                        "type":"click",
+                        "name":"查看后台",
+                        "key":"OP_ENTER_CONSOLE"
+                },
+                {
+                "type":"click",
+                "name":"我的资料",
+                "key":"OP_CHECK_PROFILE"
+                }
+                
+            ]
+          }
+        ],
+        "matchrule": {
+          "tag_id": "100"
+        }
+      }

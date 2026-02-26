@@ -1,0 +1,11 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "db/wts3_v0.3.30-script.sql"
+    queries: "db/query.sql"
+    gen:
+      go:
+        package: "sqlc"
+        out: "model/sqlc"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
