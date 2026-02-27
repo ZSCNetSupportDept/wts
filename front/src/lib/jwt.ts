@@ -4,7 +4,6 @@ import { docCookies } from '$lib/vendor/docCookie';
 import { TheLastPage } from './states/theLastPage.svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
-import { get } from 'svelte/store';
 import { browser } from '$app/environment';
 
 export interface WtsJWT {
