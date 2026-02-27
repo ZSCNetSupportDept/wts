@@ -32,7 +32,7 @@
 {:else if src === 'operator'}
 	<!-- 后台工单记录视图下的下方按钮 -->
 	<ModalFooter>
-		<Button kind="secondary" on:click={() => ((open = false), (view = 'trace'))}>返回   </Button>
+		<Button kind="secondary" on:click={() => ((open = false), (view = 'trace'))}>返回</Button>
 		<Button kind="primary" on:click={() => (view = 'update')}>更新状态</Button>
 	</ModalFooter>
 {/if}

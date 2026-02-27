@@ -16,9 +16,9 @@
 		Button,
 		NotificationQueue,
 		Loading,
-                TextInput,
-                Select,
-                SelectItem
+		TextInput,
+		Select,
+		SelectItem
 	} from 'carbon-components-svelte';
 	import { IsRFC3339 } from '$lib/types/RFC3339';
 	import { invalidState } from '$lib/types/invalidState.svelte';
@@ -30,8 +30,8 @@
 	let q: NotificationQueue;
 
 	let r = $state({
-                priority: 'normal',
-        } as NewTicketReq);
+		priority: 'normal'
+	} as NewTicketReq);
 
 	function onOccurDateChange(event: CustomEvent) {
 		const { dateStr } = event.detail;
@@ -145,9 +145,9 @@
 <p>为他人增添报修，注意，首先需要知道他人的学号。单独的工单增添正在开发中...</p>
 <br />
 
-<TextInput labelText="用户的学号" placeholder="请输入用户学号" bind:value={r.issuer_sid}/>
-<br/>
-<br/>
+<TextInput labelText="用户的学号" placeholder="请输入用户学号" bind:value={r.issuer_sid} />
+<br />
+<br />
 
 <DatePicker datePickerType="single" on:change={onOccurDateChange}>
 	<DatePickerInput
@@ -205,22 +205,21 @@
 <br />
 <br />
 <Select
-labelText="工单优先级"
-bind:selected={r.priority}
-helperText="选择工单的优先级类型，更高优先级会在系统中优先显示"
+	labelText="工单优先级"
+	bind:selected={r.priority}
+	helperText="选择工单的优先级类型，更高优先级会在系统中优先显示"
 >
-<SelectItem value="highest" text="十万火急" style="color: var(--color-red-600);" />
-<SelectItem value="assigned" text="运营商工单" style="color: #2563eb;" />
-<SelectItem value="mainline" text="主线任务" />
-<SelectItem value="normal" text="一般报修" />
-<SelectItem value="in-passing" text="顺路看看" />
-<SelectItem value="least" text="不紧急" />
+	<SelectItem value="highest" text="十万火急" style="color: var(--color-red-600);" />
+	<SelectItem value="assigned" text="运营商工单" style="color: #2563eb;" />
+	<SelectItem value="mainline" text="主线任务" />
+	<SelectItem value="normal" text="一般报修" />
+	<SelectItem value="in-passing" text="顺路看看" />
+	<SelectItem value="least" text="不紧急" />
 </Select>
-<br/>
-<br/>
+<br />
+<br />
 <Button on:click={handleSubmit}>提交</Button>
 
 <NotificationQueue bind:this={q} />
 
 <Loading active={!notLoading} />
-

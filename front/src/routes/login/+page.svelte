@@ -11,7 +11,7 @@
 
 	function gotoAuthAPI() {
 		if (!env.PUBLIC_JWT) {
-			console.log("未找到PUBLIC_JWT")
+			console.log('未找到PUBLIC_JWT');
 		}
 		if (dev && env.PUBLIC_JWT) {
 			docCookies.setItem('jwt', env.PUBLIC_JWT, Infinity, '/');

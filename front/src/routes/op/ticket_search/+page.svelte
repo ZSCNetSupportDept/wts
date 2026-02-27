@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type {PageProps} from './$types';
+	import type { PageProps } from './$types';
 
-	let {data}: PageProps = $props();
+	let { data }: PageProps = $props();
 
-	import {CheckAndGetJWT, Guard} from '$lib/jwt';
-	import {IsAdmin, IsOperator, PriorityMap, CategoryMap, ISPMap} from '$lib/types/enum';
-	import {onMount} from 'svelte';
+	import { CheckAndGetJWT, Guard } from '$lib/jwt';
+	import { IsAdmin, IsOperator, PriorityMap, CategoryMap, ISPMap } from '$lib/types/enum';
+	import { onMount } from 'svelte';
 	import {
 		RadioButtonGroup,
 		RadioButton,
@@ -22,20 +22,22 @@
 		NotificationQueue,
 		Toggle
 	} from 'carbon-components-svelte';
-	import type {FilterTicketsReq} from '$lib/types/apiRequest';
-	import {ZoneMap, ZoneToBlock, StatusMap, type WtsZone} from '$lib/types/enum';
-	import {RFC3339} from '$lib/types/RFC3339';
-	import {startOfDay, endOfDay} from 'date-fns';
-	import {criteria} from '$lib/states/ticketCriteriaSearch.svelte';
-	import {goto} from '$app/navigation';
-	import type {WtsStatus, WtsPriority, WtsCategory, WtsISP} from '$lib/types/enum';
-	import {WtsJWT} from '$lib/jwt'
+	import type { FilterTicketsReq } from '$lib/types/apiRequest';
+	import { ZoneMap, ZoneToBlock, StatusMap, type WtsZone } from '$lib/types/enum';
+	import { RFC3339 } from '$lib/types/RFC3339';
+	import { startOfDay, endOfDay } from 'date-fns';
+	import { criteria } from '$lib/states/ticketCriteriaSearch.svelte';
+	import { goto } from '$app/navigation';
+	import type { WtsStatus, WtsPriority, WtsCategory, WtsISP } from '$lib/types/enum';
+	import { WtsJWT } from '$lib/jwt';
 
 	onMount(() => Guard(IsOperator));
 
 	let token: WtsJWT = $state({} as WtsJWT);
 
-	onMount(()=>{token =CheckAndGetJWT('parsed');})
+	onMount(() => {
+		token = CheckAndGetJWT('parsed');
+	});
 
 	let req = $state(criteria.r as FilterTicketsReq);
 
@@ -55,7 +57,7 @@
 	// });
 
 	let onDateChange = (which: 'newer' | 'older') => (event: CustomEvent) => {
-		const {dateStr} = event.detail;
+		const { dateStr } = event.detail;
 		if (dateStr) {
 			const date = new Date(dateStr);
 			const adjustedDate = which === 'newer' ? startOfDay(date) : endOfDay(date);
@@ -85,8 +87,8 @@
 	const allStatuses = IsAdmin(token.access)
 		? (Object.keys(StatusMap) as WtsStatus[])
 		: (Object.keys(StatusMap).filter(
-			(status) => status !== 'solved' && status !== 'canceled'
-		) as WtsStatus[]);
+				(status) => status !== 'solved' && status !== 'canceled'
+			) as WtsStatus[]);
 	const allPriorities = Object.keys(PriorityMap) as WtsPriority[];
 	const allCategories = Object.keys(CategoryMap) as WtsCategory[];
 	const allISPs = Object.keys(ISPMap) as WtsISP[];
@@ -116,7 +118,7 @@
 		'delay',
 		'escalated'
 	] as const satisfies readonly WtsStatus[];
-	const statusOptions: readonly WtsStatus[] = statusOptionsAdmin //之前的区分没有意义，在后端会拦截的，在这里高花样，好像反而会破坏正常功能，感觉这个页面还是重写的样子。。
+	const statusOptions: readonly WtsStatus[] = statusOptionsAdmin; //之前的区分没有意义，在后端会拦截的，在这里高花样，好像反而会破坏正常功能，感觉这个页面还是重写的样子。。
 
 	const priorityOptions = [
 		'highest',
@@ -184,7 +186,7 @@
 
 	$effect(() => {
 		isScheduledSelected = req.status?.includes('scheduled') ?? false;
-	})
+	});
 </script>
 
 <h1>报修单检索</h1>
@@ -194,11 +196,11 @@
 <p>选择您需要检索报修工单的条件</p>
 
 {#if IsAdmin(token.access)}
-<br />
-<RadioButtonGroup id="scope" legendText="范围" bind:selected={req.scope} required={true}>
-	<RadioButton labelText="只看活跃的" value="active" />
-	<RadioButton labelText="所有报修单" value="all" />
-</RadioButtonGroup>
+	<br />
+	<RadioButtonGroup id="scope" legendText="范围" bind:selected={req.scope} required={true}>
+		<RadioButton labelText="只看活跃的" value="active" />
+		<RadioButton labelText="所有报修单" value="all" />
+	</RadioButtonGroup>
 {/if}
 
 <br />
@@ -244,11 +246,14 @@
 	</Grid>
 </CheckboxGroup>
 <div class="toggle">
-	<Toggle size="sm" toggled={allSelected(zoneSelected, zoneOptions)} on:toggle={(e)=> {
-		const { toggled } = e.detail as { toggled: boolean };
-		zoneSelected = toggled ? [...zoneOptions] : [];
+	<Toggle
+		size="sm"
+		toggled={allSelected(zoneSelected, zoneOptions)}
+		on:toggle={(e) => {
+			const { toggled } = e.detail as { toggled: boolean };
+			zoneSelected = toggled ? [...zoneOptions] : [];
 		}}
-		>
+	>
 		<span slot="labelA">全不选</span>
 		<span slot="labelB">全选</span>
 	</Toggle>
@@ -272,22 +277,25 @@
 				<Checkbox value="escalated" labelText={StatusMap['escalated']} />
 			</Column>
 			{#if IsAdmin(token.access)}
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="solved" labelText={StatusMap['solved']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="canceled" labelText={StatusMap['canceled']} />
-			</Column>
+				<Column sm={2} md={2} lg={4}>
+					<Checkbox value="solved" labelText={StatusMap['solved']} />
+				</Column>
+				<Column sm={2} md={2} lg={4}>
+					<Checkbox value="canceled" labelText={StatusMap['canceled']} />
+				</Column>
 			{/if}
 		</Row>
 	</Grid>
 </CheckboxGroup>
 <div class="toggle">
-	<Toggle size="sm" toggled={allSelected(req.status, statusOptions)} on:toggle={(e)=> {
-		const { toggled } = e.detail as { toggled: boolean };
-		req.status = toggled ? [...statusOptions] : [];
+	<Toggle
+		size="sm"
+		toggled={allSelected(req.status, statusOptions)}
+		on:toggle={(e) => {
+			const { toggled } = e.detail as { toggled: boolean };
+			req.status = toggled ? [...statusOptions] : [];
 		}}
-		>
+	>
 		<span slot="labelA">全不选</span>
 		<span slot="labelB">全选</span>
 	</Toggle>
@@ -320,11 +328,14 @@
 	</Grid>
 </CheckboxGroup>
 <div class="toggle">
-	<Toggle size="sm" toggled={allSelected(req.priority, priorityOptions)} on:toggle={(e)=> {
-		const { toggled } = e.detail as { toggled: boolean };
-		req.priority = toggled ? [...priorityOptions] : [];
+	<Toggle
+		size="sm"
+		toggled={allSelected(req.priority, priorityOptions)}
+		on:toggle={(e) => {
+			const { toggled } = e.detail as { toggled: boolean };
+			req.priority = toggled ? [...priorityOptions] : [];
 		}}
-		>
+	>
 		<span slot="labelA">全不选</span>
 		<span slot="labelB">全选</span>
 	</Toggle>
@@ -353,11 +364,14 @@
 	</Grid>
 </CheckboxGroup>
 <div class="toggle">
-	<Toggle size="sm" toggled={allSelected(req.category, categoryOptions)} on:toggle={(e)=> {
-		const { toggled } = e.detail as { toggled: boolean };
-		req.category = toggled ? [...categoryOptions] : [];
+	<Toggle
+		size="sm"
+		toggled={allSelected(req.category, categoryOptions)}
+		on:toggle={(e) => {
+			const { toggled } = e.detail as { toggled: boolean };
+			req.category = toggled ? [...categoryOptions] : [];
 		}}
-		>
+	>
 		<span slot="labelA">全不选</span>
 		<span slot="labelB">全选</span>
 	</Toggle>
@@ -388,11 +402,14 @@
 	</Grid>
 </CheckboxGroup>
 <div class="toggle">
-	<Toggle size="sm" toggled={allSelected(req.isp, ispOptions)} on:toggle={(e)=> {
-		const { toggled } = e.detail as { toggled: boolean };
-		req.isp = toggled ? [...ispOptions] : [];
+	<Toggle
+		size="sm"
+		toggled={allSelected(req.isp, ispOptions)}
+		on:toggle={(e) => {
+			const { toggled } = e.detail as { toggled: boolean };
+			req.isp = toggled ? [...ispOptions] : [];
 		}}
-		>
+	>
 		<span slot="labelA">全不选</span>
 		<span slot="labelB">全选</span>
 	</Toggle>
@@ -410,12 +427,23 @@
 
 <br />
 <br />
-<NumberInput min={1} max={20} step={1} bind:value={floor} allowEmpty={true} allowDecimal={false}
-	labelText="只看如下楼层(不填代表查看全部楼层)" />
+<NumberInput
+	min={1}
+	max={20}
+	step={1}
+	bind:value={floor}
+	allowEmpty={true}
+	allowDecimal={false}
+	labelText="只看如下楼层(不填代表查看全部楼层)"
+/>
 
 <br />
 <br />
-<Toggle labelText="只显示预约在今天的预约单" bind:toggled={viewTodayScheduled} disabled={!isScheduledSelected} />
+<Toggle
+	labelText="只显示预约在今天的预约单"
+	bind:toggled={viewTodayScheduled}
+	disabled={!isScheduledSelected}
+/>
 <br />
 <br />
 <Button on:click={search}>搜索</Button>

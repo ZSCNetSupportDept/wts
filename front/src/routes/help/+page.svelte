@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Accordion, AccordionItem } from 'carbon-components-svelte';
- 	import RetroCard from '$lib/components/RetroCard.svelte';
+	import RetroCard from '$lib/components/RetroCard.svelte';
 </script>
 
 <h1>校园网使用攻略</h1>
@@ -13,7 +13,7 @@
 <br />
 <RetroCard>
 	<h3 style="font-size: 25px; ">⚙️ 常见问题</h3>
-	<br/>
+	<br />
 	<Accordion size="xl">
 		<AccordionItem title="电脑获取不到IP地址">
 			<p>
@@ -54,7 +54,7 @@
 
 <RetroCard>
 	<h3 style="font-size: 25px; ">🤔 新生相关</h3>
-	<br/>
+	<br />
 	<Accordion size="xl">
 		<AccordionItem title="去哪里办校园网？">
 			<p>
@@ -88,7 +88,7 @@
 <br />
 <RetroCard>
 	<h3 style="font-size: 25px; ">🧐 关于报修</h3>
-	<br/>
+	<br />
 	<Accordion size="xl">
 		<AccordionItem title="如何报修我的网络故障？">
 			<p>

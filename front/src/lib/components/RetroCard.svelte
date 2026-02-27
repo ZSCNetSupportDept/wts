@@ -1,5 +1,5 @@
 <script>
-	let { children,...rest } = $props();
+	let { children, ...rest } = $props();
 </script>
 
 <div class="card" {...rest}>
@@ -54,7 +54,7 @@
 		color: #4a4949;
 	}
 
-        .card :global(h2) {
-                font-size: 25px;
-        }
+	.card :global(h2) {
+		font-size: 25px;
+	}
 </style>

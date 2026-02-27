@@ -12,7 +12,7 @@ class TicketDetailState {
 		this.NowTicket = t;
 		this.Opened = true;
 		this.SRC = s;
-	}	
+	}
 
 	// 关闭详情页
 	close() {

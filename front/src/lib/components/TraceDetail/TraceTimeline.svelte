@@ -17,8 +17,8 @@
 		return ''; // 默认为蓝色
 	}
 
-	function userOPName(op: string):string {
-		if (op === '用户' && src === 'user'){
+	function userOPName(op: string): string {
+		if (op === '用户' && src === 'user') {
 			return '您';
 		}
 		return op;

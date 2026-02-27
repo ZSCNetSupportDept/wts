@@ -4,9 +4,9 @@
 	import Settings from 'carbon-icons-svelte/lib/Settings.svelte';
 	import Home from 'carbon-icons-svelte/lib/Home.svelte';
 	import Return from 'carbon-icons-svelte/lib/Return.svelte';
-	import SearchAdvanced from "carbon-icons-svelte/lib/SearchAdvanced.svelte";
-	import CarbonForIbmDotcom from "carbon-icons-svelte/lib/CarbonForIbmDotcom.svelte";
-	import EventSchedule from "carbon-icons-svelte/lib/EventSchedule.svelte";
+	import SearchAdvanced from 'carbon-icons-svelte/lib/SearchAdvanced.svelte';
+	import CarbonForIbmDotcom from 'carbon-icons-svelte/lib/CarbonForIbmDotcom.svelte';
+	import EventSchedule from 'carbon-icons-svelte/lib/EventSchedule.svelte';
 	import { page } from '$app/state';
 
 	let isAdminView = $derived(page.url.pathname.startsWith('/admin'));
@@ -45,12 +45,15 @@
 			<span>后台中心</span>
 		</a>
 
-		<a href="/op/ticket_search" class="nav-item" class:active={page.url.pathname === '/op/ticket_search'}>
+		<a
+			href="/op/ticket_search"
+			class="nav-item"
+			class:active={page.url.pathname === '/op/ticket_search'}
+		>
 			<SearchAdvanced />
 			<span>检索工单</span>
 		</a>
 		<a href="/op/scheduler" class="nav-item" class:active={page.url.pathname === '/op/scheduler'}>
-			
 			<EventSchedule />
 			<span>我的排班</span>
 		</a>
@@ -69,12 +72,19 @@
 			<span>管理中心</span>
 		</a>
 
-		<a href="/admin/add_ticket" class="nav-item" class:active={page.url.pathname === '/admin/add_ticket'}>
+		<a
+			href="/admin/add_ticket"
+			class="nav-item"
+			class:active={page.url.pathname === '/admin/add_ticket'}
+		>
 			<SearchAdvanced />
 			<span>增添工单</span>
 		</a>
-		<a href="/admin/scheduler" class="nav-item" class:active={page.url.pathname === '/admin/scheduler'}>
-			
+		<a
+			href="/admin/scheduler"
+			class="nav-item"
+			class:active={page.url.pathname === '/admin/scheduler'}
+		>
 			<EventSchedule />
 			<span>成员排班</span>
 		</a>

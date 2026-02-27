@@ -3,44 +3,42 @@
 @plugin '@tailwindcss/typography';
 @plugin 'daisyui';
 
-@plugin "daisyui/theme" {
-  name: "wireframe";
-  default: true;
-  prefersdark: false;
-  color-scheme: "light";
-  --color-base-100: #f4f4f4;
-  --color-base-200: #e6e6e6;
-  --color-base-300: #d5d5d5;
-  --color-base-content: #000000;
-  --color-primary: #0f62fe;
-  --color-primary-content: oklch(100% 0 360);
-  --color-secondary: #393939;
-  --color-secondary-content: oklch(100% 0 360);
-  --color-accent: #0f62fe;
-  --color-accent-content: oklch(100% 0 0);
-  --color-neutral: #0f62fe;
-  --color-neutral-content: oklch(100% 0 0);
-  --color-info: #0f62fe;
-  --color-info-content: oklch(100% 0 360);
-  --color-success: #006d44;
-  --color-success-content: oklch(100% 0 360);
-  --color-warning: oklch(68% 0.162 75.834);
-  --color-warning-content: #ffffff;
-  --color-error: #da1e28;
-  --color-error-content: oklch(100% 0 360);
-  --radius-selector: 2rem;
-  --radius-field: 0rem;
-  --radius-box: 0rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.21875rem;
-  --border: 0.5px;
-  --depth: 1;
-  --noise: 1;
+@plugin 'daisyui/theme' {
+	name: 'wireframe';
+	default: true;
+	prefersdark: false;
+	color-scheme: 'light';
+	--color-base-100: #f4f4f4;
+	--color-base-200: #e6e6e6;
+	--color-base-300: #d5d5d5;
+	--color-base-content: #000000;
+	--color-primary: #0f62fe;
+	--color-primary-content: oklch(100% 0 360);
+	--color-secondary: #393939;
+	--color-secondary-content: oklch(100% 0 360);
+	--color-accent: #0f62fe;
+	--color-accent-content: oklch(100% 0 0);
+	--color-neutral: #0f62fe;
+	--color-neutral-content: oklch(100% 0 0);
+	--color-info: #0f62fe;
+	--color-info-content: oklch(100% 0 360);
+	--color-success: #006d44;
+	--color-success-content: oklch(100% 0 360);
+	--color-warning: oklch(68% 0.162 75.834);
+	--color-warning-content: #ffffff;
+	--color-error: #da1e28;
+	--color-error-content: oklch(100% 0 360);
+	--radius-selector: 2rem;
+	--radius-field: 0rem;
+	--radius-box: 0rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.21875rem;
+	--border: 0.5px;
+	--depth: 1;
+	--noise: 1;
 }
 
-
 @layer base {
-
 	html {
 		/* 移动端优化：防止点击高亮 */
 		-webkit-tap-highlight-color: transparent;
@@ -55,5 +53,4 @@
 		/* 移动端优化：防止水平溢出 */
 		@apply min-h-screen overflow-x-hidden bg-base-100 text-base-content;
 	}
-	
 }

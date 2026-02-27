@@ -93,7 +93,7 @@ export async function GetTraces(r: string): Promise<GetTracesRes> {
 	return res.data;
 }
 
-export async function TicketOverview(): Promise<TicketOverviewRes>{
+export async function TicketOverview(): Promise<TicketOverviewRes> {
 	const res = await api.get('/api/v3/ticket_overview');
 	return res.data;
 }

@@ -40,8 +40,6 @@
 		const roomNum = Number.parseInt(digits, 10);
 		if (!Number.isFinite(roomNum)) return null;
 
-
-
 		const floor = Math.floor(roomNum / 100);
 		//console.log('getFloorFromRoom', { room, digits, roomNum, floor });
 		return Number.isFinite(floor) ? floor : null;
@@ -60,11 +58,15 @@
 		if (criteria._floor !== null && criteria._floor !== undefined && criteria._floor !== 0) {
 			tickets = tickets.filter((t) => getFloorFromRoom(t?.issuer?.room) === criteria._floor);
 		}
-        if (criteria._view_today_scheduled) {
-            const todayStart = new Date().setHours(0, 0, 0, 0);
-            const todayEnd = new Date().setHours(23, 59, 59, 999);
-            tickets = tickets.filter((t) => t.status !== 'scheduled' || (toMs(t.appointed_at) >= todayStart && toMs(t.appointed_at) <= todayEnd));
-        }
+		if (criteria._view_today_scheduled) {
+			const todayStart = new Date().setHours(0, 0, 0, 0);
+			const todayEnd = new Date().setHours(23, 59, 59, 999);
+			tickets = tickets.filter(
+				(t) =>
+					t.status !== 'scheduled' ||
+					(toMs(t.appointed_at) >= todayStart && toMs(t.appointed_at) <= todayEnd)
+			);
+		}
 
 		ok = true;
 		ticketEmpty = tickets.length === 0;
@@ -97,7 +99,7 @@
 		}
 	}
 
-	async function refreshTickets(){
+	async function refreshTickets() {
 		await fetchTickets1();
 	}
 </script>
@@ -123,6 +125,11 @@
 {:else}
 	<span>没有找到符合条件的报修单。</span>
 {/if}
-<TicketDetail t={TicketModal.NowTicket} bind:open={TicketModal.Opened} src={TicketModal.SRC} onTicketChanged={refreshTickets}/>
+<TicketDetail
+	t={TicketModal.NowTicket}
+	bind:open={TicketModal.Opened}
+	src={TicketModal.SRC}
+	onTicketChanged={refreshTickets}
+/>
 
 <NotificationQueue bind:this={q} />

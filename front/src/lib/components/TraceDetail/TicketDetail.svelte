@@ -25,7 +25,12 @@
 		open = $bindable(TicketModal.Opened),
 		src = TicketModal.SRC,
 		onTicketChanged
-	}: { t?: Ticket | null; open?: boolean; src?: 'user' | 'operator'; onTicketChanged?: () => void | Promise<void>;} = $props();
+	}: {
+		t?: Ticket | null;
+		open?: boolean;
+		src?: 'user' | 'operator';
+		onTicketChanged?: () => void | Promise<void>;
+	} = $props();
 
 	let loading = $state(false);
 	let traces: Trace[] = $state([]);
@@ -129,7 +134,15 @@
 			<NotificationQueue bind:this={q1} />
 			<ModalHeader title="  🖋️请更新No.{getTid(t)}的状态" />
 			<ModalBody>
-				<TraceUpdateView {t} bind:view bind:open bind:isUpReady {q} {q1} onUpdated={onTicketChanged}  />
+				<TraceUpdateView
+					{t}
+					bind:view
+					bind:open
+					bind:isUpReady
+					{q}
+					{q1}
+					onUpdated={onTicketChanged}
+				/>
 			</ModalBody>
 			<UpViewButton bind:view bind:isUpReady />
 		</ComposedModal>

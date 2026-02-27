@@ -77,7 +77,7 @@
 				scope: 'active',
 				issuer: undefined,
 				block: ZoneToBlock[zone],
-				status: ['fresh','scheduled','escalated','delay'],
+				status: ['fresh', 'scheduled', 'escalated', 'delay'],
 				priority: Object.keys(PriorityMap) as WtsPriority[],
 				category: Object.keys(CategoryMap) as WtsCategory[],
 				isp: Object.keys(ISPMap) as WtsISP[],
@@ -91,7 +91,7 @@
 		} as Criteria;
 	}
 
-	function jumpSearch(zone: WtsZone){
+	function jumpSearch(zone: WtsZone) {
 		Object.assign(criteria, search(zone));
 		goto('/op/tickets');
 	}
@@ -115,7 +115,10 @@
 <div class="zone-tiles">
 	{#each zoneDisplayOrder as zone}
 		{#if typeof countByZone?.[zone] !== 'undefined'}
-			<Tile class={`zone-tile zone-${zoneTone(countByZone?.[zone])}`} on:click={() => jumpSearch(zone)}>
+			<Tile
+				class={`zone-tile zone-${zoneTone(countByZone?.[zone])}`}
+				on:click={() => jumpSearch(zone)}
+			>
 				<span class="zone-name">{ZoneMap[zone]}</span>
 				<span class="zone-count">{countByZone?.[zone] ?? 0}</span>
 			</Tile>

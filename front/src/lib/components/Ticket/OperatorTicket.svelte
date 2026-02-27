@@ -31,7 +31,7 @@
 		{/if}
 		<div class="flex items-baseline" style="margin-top: 12.5px; font-size: 15.5px;">
 			<strong style="flex-shrink: 0;width: 7em;">状态</strong>
-			<div style="font-size: 15px;"><WtsStatus s={t.status} ap={t.appointed_at}/></div>
+			<div style="font-size: 15px;"><WtsStatus s={t.status} ap={t.appointed_at} /></div>
 		</div>
 		<div class="flex items-baseline" style="margin-top: 12.5px; font-size: 15.5px;">
 			<strong style="flex-shrink: 0;width: 7em;">报修时间</strong>

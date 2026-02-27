@@ -91,7 +91,7 @@ export function Guard(a: (subject: WtsAccess) => boolean) {
 		return;
 	}
 	if (!a(jwt.access)) {
-		if(jwt.access === "unregistered"){
+		if (jwt.access === 'unregistered') {
 			goto('/register');
 			return;
 		}

@@ -38,7 +38,7 @@
 		}
 	}
 
-	async function refreshTickets1(){
+	async function refreshTickets1() {
 		await fetchTickets();
 	}
 </script>
@@ -69,6 +69,11 @@
 	<UserTicket {t} />
 {/each}
 
-<TicketDetail t={TicketModal.NowTicket} bind:open={TicketModal.Opened} src={TicketModal.SRC} onTicketChanged={refreshTickets1}/>
+<TicketDetail
+	t={TicketModal.NowTicket}
+	bind:open={TicketModal.Opened}
+	src={TicketModal.SRC}
+	onTicketChanged={refreshTickets1}
+/>
 
 <NotificationQueue bind:this={q} />

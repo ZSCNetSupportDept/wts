@@ -67,7 +67,12 @@
 		<RetroCard>
 			<span style="display: flex; align-items: center;">
 				<h2 style="margin-right: 0.5rem;">个人信息</h2>
-				<Renew onclick={() => {TheLastPage.Write('/me'),goto('/login')}} style="cursor: pointer;" />
+				<Renew
+					onclick={() => {
+						(TheLastPage.Write('/me'), goto('/login'));
+					}}
+					style="cursor: pointer;"
+				/>
 			</span>
 			<StructuredList style="margin-bottom: 1rem;">
 				<StructuredListBody>
