@@ -30,20 +30,7 @@ export function CheckAndGetJWT(tx: 'raw'): string | null;
 
 export function CheckAndGetJWT(tx: 'raw' | 'parsed'): WtsJWT | string | null {
 	if (!browser) {
-		if (tx === 'parsed') {
-			return {
-				openid: '',
-				access: 'unregistered',
-				sid: '',
-				username: '',
-				avatar: '',
-				name: '',
-
-			} as WtsJWT;
-		}
-		if (tx === 'raw') {
-			return "aaaaa";
-		}
+		return null;
 	}
 	let token: string;
 	token = localStorage.getItem('jwt');
@@ -105,6 +92,10 @@ export function Guard(a: (subject: WtsAccess) => boolean) {
 		return;
 	}
 	if (!a(jwt.access)) {
+		if(jwt.access === "unregistered"){
+			goto('/register');
+			return;
+		}
 		console.log('Guard():权限不足，跳转到首页');
 		goto('/forbidden');
 		return;
