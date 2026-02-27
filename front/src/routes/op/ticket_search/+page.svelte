@@ -116,9 +116,7 @@
 		'delay',
 		'escalated'
 	] as const satisfies readonly WtsStatus[];
-	const statusOptions: readonly WtsStatus[] = IsAdmin(token.access)
-		? statusOptionsAdmin
-		: statusOptionsUser;
+	const statusOptions: readonly WtsStatus[] = statusOptionsAdmin //之前的区分没有意义，在后端会拦截的，在这里高花样，好像反而会破坏正常功能，感觉这个页面还是重写的样子。。
 
 	const priorityOptions = [
 		'highest',
