@@ -29,7 +29,10 @@ export function CheckAndGetJWT(tx: 'raw'): string | null;
 
 export function CheckAndGetJWT(tx: 'raw' | 'parsed'): WtsJWT | string | null {
 	if (!browser) {
-		return null;
+		return {
+			access: 'user',
+			name: '请刷新页面'
+		} as WtsJWT;
 	}
 	let token: string;
 	token = localStorage.getItem('jwt');

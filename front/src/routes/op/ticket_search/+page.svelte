@@ -29,15 +29,9 @@
 	import { criteria } from '$lib/states/ticketCriteriaSearch.svelte';
 	import { goto } from '$app/navigation';
 	import type { WtsStatus, WtsPriority, WtsCategory, WtsISP } from '$lib/types/enum';
-	import { WtsJWT } from '$lib/jwt';
 
 	onMount(() => Guard(IsOperator));
-
-	let token: WtsJWT = $state({} as WtsJWT);
-
-	onMount(() => {
-		token = CheckAndGetJWT('parsed');
-	});
+	onMount(() => setTimeout(() => goto('/op/ticket_search'), 500));//暂时的权宜之计
 
 	let req = $state(criteria.r as FilterTicketsReq);
 
@@ -84,7 +78,7 @@
 	}
 
 	const allZones = Object.keys(ZoneMap) as WtsZone[];
-	const allStatuses = IsAdmin(token.access)
+	const allStatuses = IsAdmin(CheckAndGetJWT('parsed').access)
 		? (Object.keys(StatusMap) as WtsStatus[])
 		: (Object.keys(StatusMap).filter(
 				(status) => status !== 'solved' && status !== 'canceled'
@@ -118,7 +112,9 @@
 		'delay',
 		'escalated'
 	] as const satisfies readonly WtsStatus[];
-	const statusOptions: readonly WtsStatus[] = statusOptionsAdmin; //之前的区分没有意义，在后端会拦截的，在这里高花样，好像反而会破坏正常功能，感觉这个页面还是重写的样子。。
+	const statusOptions: readonly WtsStatus[] = IsAdmin(CheckAndGetJWT('parsed').access)
+		? statusOptionsAdmin
+		: statusOptionsUser;
 
 	const priorityOptions = [
 		'highest',
@@ -195,7 +191,7 @@
 <br />
 <p>选择您需要检索报修工单的条件</p>
 
-{#if IsAdmin(token.access)}
+{#if IsAdmin(CheckAndGetJWT('parsed').access)}
 	<br />
 	<RadioButtonGroup id="scope" legendText="范围" bind:selected={req.scope} required={true}>
 		<RadioButton labelText="只看活跃的" value="active" />
@@ -218,30 +214,14 @@
 <CheckboxGroup legendText="片区" id="block" bind:selected={zoneSelected} required={true}>
 	<Grid narrow>
 		<Row>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="FX" labelText={ZoneMap['FX']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="BM" labelText={ZoneMap['BM']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="DM" labelText={ZoneMap['DM']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="QT" labelText={ZoneMap['QT']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="XHAB" labelText={ZoneMap['XHAB']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="XHCD" labelText={ZoneMap['XHCD']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="ZH" labelText={ZoneMap['ZH']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="other" labelText={ZoneMap['other']} />
-			</Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="FX" labelText={ZoneMap['FX']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="BM" labelText={ZoneMap['BM']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="DM" labelText={ZoneMap['DM']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="QT" labelText={ZoneMap['QT']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="XHAB" labelText={ZoneMap['XHAB']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="XHCD" labelText={ZoneMap['XHCD']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="ZH" labelText={ZoneMap['ZH']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="other" labelText={ZoneMap['other']} /></Column>
 		</Row>
 	</Grid>
 </CheckboxGroup>
@@ -264,25 +244,23 @@
 <CheckboxGroup legendText="状态" id="status" bind:selected={req.status} required={true}>
 	<Grid narrow>
 		<Row>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="fresh" labelText={StatusMap['fresh']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="scheduled" labelText={StatusMap['scheduled']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="delay" labelText={StatusMap['delay']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="escalated" labelText={StatusMap['escalated']} />
-			</Column>
-			{#if IsAdmin(token.access)}
-				<Column sm={2} md={2} lg={4}>
-					<Checkbox value="solved" labelText={StatusMap['solved']} />
-				</Column>
-				<Column sm={2} md={2} lg={4}>
-					<Checkbox value="canceled" labelText={StatusMap['canceled']} />
-				</Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="fresh" labelText={StatusMap['fresh']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="scheduled" labelText={StatusMap['scheduled']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}><Checkbox value="delay" labelText={StatusMap['delay']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="escalated" labelText={StatusMap['escalated']} /></Column
+			>
+			{#if IsAdmin(CheckAndGetJWT('parsed').access)}
+				<Column sm={2} md={2} lg={4}
+					><Checkbox value="solved" labelText={StatusMap['solved']} /></Column
+				>
+				<Column sm={2} md={2} lg={4}
+					><Checkbox value="canceled" labelText={StatusMap['canceled']} /></Column
+				>
 			{/if}
 		</Row>
 	</Grid>
@@ -306,24 +284,22 @@
 <CheckboxGroup legendText="优先级" id="priority" bind:selected={req.priority} required={true}>
 	<Grid narrow>
 		<Row>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="highest" labelText="最高" />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="assigned" labelText={PriorityMap['assigned']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="mainline" labelText={PriorityMap['mainline']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="normal" labelText={PriorityMap['normal']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="in-passing" labelText={PriorityMap['in-passing']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="least" labelText={PriorityMap['least']} />
-			</Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="highest" labelText="最高" /></Column>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="assigned" labelText={PriorityMap['assigned']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="mainline" labelText={PriorityMap['mainline']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="normal" labelText={PriorityMap['normal']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="in-passing" labelText={PriorityMap['in-passing']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="least" labelText={PriorityMap['least']} /></Column
+			>
 		</Row>
 	</Grid>
 </CheckboxGroup>
@@ -345,21 +321,21 @@
 <CheckboxGroup legendText="类型" id="category" bind:selected={req.category} required={true}>
 	<Grid narrow>
 		<Row>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="first-install" labelText={CategoryMap['first-install']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="client-or-account" labelText={CategoryMap['client-or-account']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="ip-or-device" labelText={CategoryMap['ip-or-device']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="low-speed" labelText={CategoryMap['low-speed']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="others" labelText={CategoryMap['others']} />
-			</Column>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="first-install" labelText={CategoryMap['first-install']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="client-or-account" labelText={CategoryMap['client-or-account']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="ip-or-device" labelText={CategoryMap['ip-or-device']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="low-speed" labelText={CategoryMap['low-speed']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="others" labelText={CategoryMap['others']} /></Column
+			>
 		</Row>
 	</Grid>
 </CheckboxGroup>
@@ -382,21 +358,15 @@
 <CheckboxGroup legendText="运营商" id="isp" bind:selected={req.isp} required={true}>
 	<Grid narrow>
 		<Row>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="telecom" labelText={ISPMap['telecom']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="unicom" labelText={ISPMap['unicom']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="mobile" labelText={ISPMap['mobile']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="others" labelText={ISPMap['others']} />
-			</Column>
-			<Column sm={2} md={2} lg={4}>
-				<Checkbox value="broadnet" labelText={ISPMap['broadnet']} hidden />
-			</Column>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="telecom" labelText={ISPMap['telecom']} /></Column
+			>
+			<Column sm={2} md={2} lg={4}><Checkbox value="unicom" labelText={ISPMap['unicom']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="mobile" labelText={ISPMap['mobile']} /></Column>
+			<Column sm={2} md={2} lg={4}><Checkbox value="others" labelText={ISPMap['others']} /></Column>
+			<Column sm={2} md={2} lg={4}
+				><Checkbox value="broadnet" labelText={ISPMap['broadnet']} hidden /></Column
+			>
 			<!--暂时藏起来-->
 		</Row>
 	</Grid>
