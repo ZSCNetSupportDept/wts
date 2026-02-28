@@ -182,7 +182,7 @@
 <DatePicker datePickerType="single" on:change={onAppointDateChange}>
 	<DatePickerInput
 		labelText="预约我们上门维修的日期"
-		placeholder="当天4:30~6:00您本人需要在宿舍"
+		placeholder="当天下午4:30~6:00您需要在宿舍"
 		invalid={appointedAt.notOK}
 		invalidText={appointedAt.txt}
 	/>
