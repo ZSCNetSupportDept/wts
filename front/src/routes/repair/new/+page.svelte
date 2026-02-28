@@ -89,7 +89,7 @@
 	}
 
 	async function submit() {
-		let issuerSID = CheckAndGetJWT('parsed').sid;
+		let issuerSID = CheckAndGetJWT('parsed')?.sid;
 		r.issuer_sid = issuerSID;
 		try {
 			notLoading = false;

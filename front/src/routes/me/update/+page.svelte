@@ -103,6 +103,9 @@
 
 	async function submit() {
 		req.who = CheckAndGetJWT('parsed').openid;
+		if (!who){
+			throw new Error('未找到您的信息，请重新登录');
+		}
 
 		open = false;
 		checked = false;

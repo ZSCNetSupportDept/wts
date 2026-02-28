@@ -20,7 +20,7 @@
 	onMount(() => Guard(IsOperator));
 
 	onMount(() => {
-		name = CheckAndGetJWT('parsed').name;
+		name = CheckAndGetJWT('parsed')?.name || '啊？';
 	});
 	onMount(() => getTicketOverview());
 

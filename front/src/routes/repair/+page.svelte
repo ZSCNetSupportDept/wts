@@ -21,7 +21,7 @@
 
 	async function fetchTickets() {
 		try {
-			let res = await GetTicket(CheckAndGetJWT('parsed').openid);
+			let res = await GetTicket(CheckAndGetJWT('parsed')?.openid);
 			if (!res.success) {
 				throw new Error(res.msg || '获取报修记录失败');
 			}

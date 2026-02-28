@@ -31,7 +31,7 @@
 	import type { WtsStatus, WtsPriority, WtsCategory, WtsISP } from '$lib/types/enum';
 
 	onMount(() => Guard(IsOperator));
-	onMount(() => setTimeout(() => goto('/op/ticket_search'), 500));//暂时的权宜之计
+	//onMount(() => setTimeout(() => goto('/op/ticket_search'), 500));//暂时的权宜之计
 
 	let req = $state(criteria.r as FilterTicketsReq);
 
@@ -78,7 +78,7 @@
 	}
 
 	const allZones = Object.keys(ZoneMap) as WtsZone[];
-	const allStatuses = IsAdmin(CheckAndGetJWT('parsed').access)
+	const allStatuses = IsAdmin(CheckAndGetJWT('parsed')?.access)
 		? (Object.keys(StatusMap) as WtsStatus[])
 		: (Object.keys(StatusMap).filter(
 				(status) => status !== 'solved' && status !== 'canceled'
@@ -112,7 +112,7 @@
 		'delay',
 		'escalated'
 	] as const satisfies readonly WtsStatus[];
-	const statusOptions: readonly WtsStatus[] = IsAdmin(CheckAndGetJWT('parsed').access)
+	const statusOptions: readonly WtsStatus[] = IsAdmin(CheckAndGetJWT('parsed')?.access)
 		? statusOptionsAdmin
 		: statusOptionsUser;
 
@@ -191,7 +191,7 @@
 <br />
 <p>选择您需要检索报修工单的条件</p>
 
-{#if IsAdmin(CheckAndGetJWT('parsed').access)}
+{#if IsAdmin(CheckAndGetJWT('parsed')?.access)}
 	<br />
 	<RadioButtonGroup id="scope" legendText="范围" bind:selected={req.scope} required={true}>
 		<RadioButton labelText="只看活跃的" value="active" />
@@ -254,7 +254,7 @@
 			<Column sm={2} md={2} lg={4}
 				><Checkbox value="escalated" labelText={StatusMap['escalated']} /></Column
 			>
-			{#if IsAdmin(CheckAndGetJWT('parsed').access)}
+			{#if IsAdmin(CheckAndGetJWT('parsed')?.access)}
 				<Column sm={2} md={2} lg={4}
 					><Checkbox value="solved" labelText={StatusMap['solved']} /></Column
 				>
