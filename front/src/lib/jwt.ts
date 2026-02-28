@@ -32,7 +32,7 @@ export function CheckAndGetJWT(tx: 'raw' | 'parsed'): WtsJWT | string | null {
 		return {
 			access: 'user',
 			name: '请重新登录'
-		}as WtsJWT;
+		} as WtsJWT;
 	}
 	let token: string;
 	token = localStorage.getItem('jwt');

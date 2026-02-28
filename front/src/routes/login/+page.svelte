@@ -10,12 +10,11 @@
 	import { goto } from '$app/navigation';
 
 	function gotoAuthAPI() {
-
 		if (dev) {
-			if (env.PUBLIC_JWT){
-			docCookies.setItem('jwt', env.PUBLIC_JWT, Infinity, '/');
+			if (env.PUBLIC_JWT) {
+				docCookies.setItem('jwt', env.PUBLIC_JWT, Infinity, '/');
 				goto('/login/success');
-			}else{
+			} else {
 				console.error('未找到PUBLIC_JWT');
 			}
 		} else {
@@ -27,4 +26,5 @@
 		gotoAuthAPI();
 	});
 </script>
+
 <h1>登录中，稍等...</h1>

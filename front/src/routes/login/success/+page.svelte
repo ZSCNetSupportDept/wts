@@ -12,23 +12,33 @@
 	let q: NotificationQueue;
 
 	onMount(() => {
-		let ok = GetJWTFromCookie();
-		if (!ok) {
+		try {
+			let ok = GetJWTFromCookie();
+			if (!ok) {
+				q.add({
+					kind: 'error',
+					title: '登录失败',
+					subtitle: '请查看控制台',
+					timeout: 5000
+				});
+				setTimeout(() => goto(TheLastPage.Read()), 5500);
+				return;
+			}
+			let isRegistered = CheckAndGetJWT('parsed').access !== 'unregistered';
+			if (!isRegistered) {
+				goto('/register');
+				return;
+			}
+			goto(TheLastPage.Read());
+		} catch (e: any) {
+			console.error(e);
 			q.add({
 				kind: 'error',
 				title: '登录失败',
-				subtitle: '请查看控制台',
+				subtitle: '请查看控制台' + e,
 				timeout: 5000
 			});
-			setTimeout(() => goto(TheLastPage.Read()), 5500);
-			return;
 		}
-		let isRegistered = CheckAndGetJWT('parsed').access !== 'unregistered';
-		if (!isRegistered) {
-			goto('/register');
-			return;
-		}
-		goto(TheLastPage.Read());
 	});
 </script>
 

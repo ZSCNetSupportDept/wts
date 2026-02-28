@@ -1,4 +1,4 @@
-import { BACKEND } from '$lib/env/env'
+import { BACKEND } from '$lib/env/env';
 import { CheckAndGetJWT } from './jwt';
 import axios from 'axios';
 import type {
