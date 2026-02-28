@@ -7,6 +7,6 @@ export const load = (async () => {
 export const prerender = false;
 
 
-//export const trailingSlash = 'never';
+export const trailingSlash = 'never';
 
 export const ssr = false;

@@ -10,7 +10,7 @@ const config = {
 	preprocess: [vitePreprocess(), mdsvex(), optimizeImports(), optimizeCss()],
 
 	kit: { adapter: adapter({
-		fallback: 'entry.html',
+		fallback: 'index.html',
 		strict: false
 	}) },
 	extensions: ['.svelte', '.svx']
