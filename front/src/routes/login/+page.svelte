@@ -15,7 +15,7 @@
 				docCookies.setItem('jwt', env.PUBLIC_JWT, Infinity, '/');
 				goto('/login/success');
 			} else {
-				console.error('未找到PUBLIC_JWT');
+				console.error('未找到PUBLIC_JWT，请在测试环境中添加该环境变量');
 			}
 		} else {
 			window.location.href = AUTH_REDIRECT;
