@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -87,9 +88,11 @@ func doCancelJob(jobID int) error {
 		for _, a := range beforeScheduledTickets {
 			ticketIDSlice = append(ticketIDSlice, a.Tid)
 		}
-		slog.Info("本次操作共涉及如下工单", "t", ticketIDSlice)
+		slog.Info("本次操作共涉及如下工单", "t", ticketIDSlice, "ID", jobID)
+		var noErr = true
+		var result []int32
 		for _, a := range ticketIDSlice {
-			_, err := q.CreateTicketTrace(ctx, sqlc.CreateTicketTraceParams{
+			t, err := q.CreateTicketTrace(ctx, sqlc.CreateTicketTraceParams{
 				Tid: a,
 				UpdatedAt: pgtype.Timestamptz{
 					Time:  time.Now(),
@@ -107,10 +110,17 @@ func doCancelJob(jobID int) error {
 				Remark: "系统检测到预约已过期，似乎是我们爽约了，我们非常抱歉为您造成的不便，您可以再次提交报修预约，我们会努力做得更好。",
 			})
 			if err != nil {
-				return fmt.Errorf("在增加记录时失败了：%w", err)
+				noErr = false
+				slog.Error("自动预约处理程序增添trace时失败", "error", err)
+				continue
 			}
+			result = append(result, t.Tid)
 		}
+		slog.Info("本次操作实际操作的工单", "t", result, "ID", jobID)
 		//3.如果没有问题就提交事务
+		if !noErr {
+			return errors.New("增加trace时出现错误，请查看日志。")
+		}
 		return nil
 	})
 	return err
