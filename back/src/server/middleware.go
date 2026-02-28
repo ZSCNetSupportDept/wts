@@ -76,8 +76,8 @@ var human = middleware.LoggerConfig{
 }
 
 var json = middleware.LoggerConfig{
-	Skipper: middleware.DefaultSkipper,
-	Format: `{"time":"${time_rfc3339_nano}","id":"${id}","remote_ip":"${remote_ip}",` +
+	Skipper: NotLogFrontEndJSFiles,
+	Format: `{"time":"${time_rfc3339_nano}","level":"INFO","msg":"HTTP请求已完成","id":"${id}","remote_ip":"${remote_ip}",` +
 		`"host":"${host}","method":"${method}","uri":"${uri}","user_agent":"${user_agent}",` +
 		`"status":${status},"error":"${error}","latency":${latency},"latency_human":"${latency_human}"` +
 		`,"bytes_in":${bytes_in},"bytes_out":${bytes_out}}` + "\n",
@@ -85,10 +85,14 @@ var json = middleware.LoggerConfig{
 }
 
 var human2 = middleware.LoggerConfig{
-	Skipper: middleware.DefaultSkipper,
+	Skipper: NotLogFrontEndJSFiles,
 	Format: `time=${time_custom} level=INFO msg=HTTP请求已完成 ` +
 		`uri="${method} ${uri}" from=${remote_ip} user_agent="${user_agent}" ` +
 		`id=${id} respond=${status} latency=${latency_human} error(if do exist)=${error} ` +
 		`bytes_in=${bytes_in} bytes_out=${bytes_out} ` + "\n",
 	CustomTimeFormat: "2006-01-02T15:04:05.000+00:00",
+}
+
+func NotLogFrontEndJSFiles(i echo.Context) bool {
+	return strings.HasPrefix(i.Path(), "/_app")
 }
