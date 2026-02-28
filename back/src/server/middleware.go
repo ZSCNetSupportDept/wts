@@ -1,6 +1,8 @@
 package server
 
 import (
+	"strings"
+
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -24,6 +26,13 @@ func middlewareRegister(app *echo.Echo, cfg *config.Config) {
 	app.Use(middleware.Recover())
 	app.Use(middleware.Secure())
 	app.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20.0)))
+
+	app.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+		Level: 5,
+		Skipper: func(c echo.Context) bool {
+			return strings.HasPrefix(c.Path(), "/api")
+		},
+	}))
 }
 
 func customContext(next echo.HandlerFunc) echo.HandlerFunc {
