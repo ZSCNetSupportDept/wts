@@ -1,0 +1,25 @@
+[Unit]
+Description=Wechat Ticket System by ZSC Network Support
+After=network.target network-online.target syslog.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+User=wts
+Group=www-data
+
+WorkingDirectory=/opt/wts/bin
+
+ExecStart=/opt/wts/bin/wts -c /opt/wts/ProductionMain.yaml
+
+EnvironmentFile=-/opt/wts/.env
+
+Restart=on-failure
+RestartSec=25s
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
