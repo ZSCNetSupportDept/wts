@@ -118,3 +118,9 @@ type TicketOverviewResponse struct {
 	commonMember
 	CountByBlock map[sqlc.WtsBlock]int64 `json:"count_by_block,omitempty"`
 }
+
+// Used by various APIs......
+type GenericResponse struct {
+	commonMember
+	Store any `json:"Store"`
+}

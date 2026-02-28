@@ -3,8 +3,10 @@ package handler
 import (
 	"context"
 
+	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	. "zsxyww.com/wts/handler/handlerUtilities"
+	hutil "zsxyww.com/wts/handler/handlerUtilities"
 )
 
 // GET: /br-debug/testdb
@@ -36,5 +38,16 @@ func Hello(i echo.Context) error {
 }
 
 func Panic(i echo.Context) error {
+	c := i.(*WtsCtx)
+	var res hutil.GenericResponse
+	//校验权限
+	if !c.Cfg.Debug.SkipJWTAuth {
+		if !hutil.IsAdmin(i.Get("jwt").(*jwt.Token).Claims.(*hutil.WtsJWT).Access) {
+			res.Success = false
+			res.ErrType = hutil.ErrAuth
+			res.Msg = "only developers can access this API"
+			return i.JSON(403, res)
+		}
+	}
 	panic("this is a test panic")
 }
