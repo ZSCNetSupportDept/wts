@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,6 +22,7 @@ func regExitSigs() {
 
 	go func() {
 		sig := <-sigs
+		slog.Info("收到退出信号", "signal", sig)
 		fmt.Printf("\n===== %s,roger that! =====\n", sig)
 
 		err := runCleanup()

@@ -25,11 +25,12 @@ func main() {
 	//设置微信SDK
 	wx := wechat.Setup(cfg)
 
-	//启动守护进程
-	daemon.Setup()
-
 	//然后，启动服务器
 	app := server.Setup(cfg, dbx, wx)
+
+	//启动守护进程（因为有的服务需要用到上下文，所以现在修改在server.Setup被执行的后面启动）
+	daemon.Setup()
+
 	err := app.Start("127.0.0.1:" + strconv.Itoa(cfg.ListenPort))
 
 	println("Server exited." + err.Error())
