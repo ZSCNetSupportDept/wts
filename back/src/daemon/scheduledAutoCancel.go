@@ -15,7 +15,7 @@ import (
 	"math/rand"
 )
 
-// 在每天值班结束的时候，自动取消（改日修）预约在今天但是状态今天没有更新的工单
+// 在每天值班结束的时候，自动取消预约在今天但是状态今天没有更新的工单
 func scheduledAutoCancel() {
 	go func() {
 		var first = true
