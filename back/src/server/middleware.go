@@ -30,7 +30,7 @@ func middlewareRegister(app *echo.Echo, cfg *config.Config) {
 	app.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Level: 5,
 		Skipper: func(c echo.Context) bool {
-			return strings.HasPrefix(c.Path(), "/api")
+			return strings.HasPrefix(c.Request().URL.Path, "/api")
 		},
 	}))
 }
@@ -94,5 +94,5 @@ var human2 = middleware.LoggerConfig{
 }
 
 func NotLogFrontEndJSFiles(i echo.Context) bool {
-	return strings.HasPrefix(i.Path(), "/_app")
+	return strings.HasPrefix(i.Request().URL.Path, "/_app")
 }
