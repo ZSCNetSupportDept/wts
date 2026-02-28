@@ -10,12 +10,14 @@
 	import { goto } from '$app/navigation';
 
 	function gotoAuthAPI() {
-		if (!env.PUBLIC_JWT) {
-			console.log('未找到PUBLIC_JWT');
-		}
-		if (dev && env.PUBLIC_JWT) {
+
+		if (dev) {
+			if (env.PUBLIC_JWT){
 			docCookies.setItem('jwt', env.PUBLIC_JWT, Infinity, '/');
-			goto('/login/success');
+				goto('/login/success');
+			}else{
+				console.error('未找到PUBLIC_JWT');
+			}
 		} else {
 			window.location.href = AUTH_REDIRECT;
 		}
@@ -25,3 +27,4 @@
 		gotoAuthAPI();
 	});
 </script>
+<h1>登录中，稍等...</h1>
