@@ -4,6 +4,9 @@ export const load = (async () => {
 	return {};
 }) satisfies LayoutLoad;
 
-export const prerender = true;
+export const prerender = false;
 
-export const trailingSlash = 'never';
+
+//export const trailingSlash = 'never';
+
+export const ssr = false;

@@ -9,7 +9,10 @@ const config = {
 	// for more information about preprocessors
 	preprocess: [vitePreprocess(), mdsvex(), optimizeImports(), optimizeCss()],
 
-	kit: { adapter: adapter() },
+	kit: { adapter: adapter({
+		fallback: 'entry.html',
+		strict: false
+	}) },
 	extensions: ['.svelte', '.svx']
 };
 
