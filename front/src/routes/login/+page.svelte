@@ -5,7 +5,7 @@
 	import { dev } from '$app/environment';
 	import { env } from '$env/dynamic/public';
 	import { docCookies } from '$lib/vendor/docCookie';
-	import { PUBLIC_AUTH_REDIRECT } from '$env/static/public';
+	import { AUTH_REDIRECT } from '$lib/env/env';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
@@ -17,7 +17,7 @@
 			docCookies.setItem('jwt', env.PUBLIC_JWT, Infinity, '/');
 			goto('/login/success');
 		} else {
-			window.location.href = PUBLIC_AUTH_REDIRECT;
+			window.location.href = AUTH_REDIRECT;
 		}
 	}
 

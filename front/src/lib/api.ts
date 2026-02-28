@@ -1,4 +1,4 @@
-import { PUBLIC_BR_URL } from '$env/static/public';
+import { BACKEND } from '$lib/env/env'
 import { CheckAndGetJWT } from './jwt';
 import axios from 'axios';
 import type {
@@ -23,7 +23,7 @@ import type {
 	RegisterReq
 } from './types/apiRequest';
 
-const br = PUBLIC_BR_URL;
+const br = BACKEND;
 
 export const api = axios.create({
 	baseURL: br,
