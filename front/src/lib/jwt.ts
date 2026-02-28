@@ -3,7 +3,6 @@ import type { WtsAccess } from './types/enum';
 import { docCookies } from '$lib/vendor/docCookie';
 import { TheLastPage } from './states/theLastPage.svelte';
 import { goto } from '$app/navigation';
-import { page } from '$app/state';
 import { browser } from '$app/environment';
 
 //TODO: 关于JWT，以及前端的权限检查，我觉得这里还是太粗糙了，或许应该重新设计吗？
@@ -90,7 +89,7 @@ export function GetJWTFromCookie(): boolean {
 export function Guard(a: (subject: WtsAccess) => boolean) {
 	let jwt = CheckAndGetJWT('parsed');
 	if (!jwt || jwt.name === '请重新登录') {
-		TheLastPage.Write(page.url.pathname);
+		TheLastPage.Write(window.location.pathname);
 		goto('/login');
 		return;
 	}
