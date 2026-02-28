@@ -6,6 +6,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import { browser } from '$app/environment';
 
+//TODO: 关于JWT，以及前端的权限检查，我觉得这里还是太粗糙了，或许应该重新设计吗？
 export interface WtsJWT {
 	openid: string;
 	sid: string;
@@ -31,8 +32,8 @@ export function CheckAndGetJWT(tx: 'raw' | 'parsed'): WtsJWT | string | null {
 	if (!browser) {
 		return {
 			access: 'user',
-			name: '请刷新页面'
-		} as WtsJWT;
+			name: '请重新登录'
+		}as WtsJWT;
 	}
 	let token: string;
 	token = localStorage.getItem('jwt');
@@ -88,7 +89,7 @@ export function GetJWTFromCookie(): boolean {
 
 export function Guard(a: (subject: WtsAccess) => boolean) {
 	let jwt = CheckAndGetJWT('parsed');
-	if (!jwt) {
+	if (!jwt || jwt.name === '请重新登录') {
 		TheLastPage.Write(page.url.pathname);
 		goto('/login');
 		return;
