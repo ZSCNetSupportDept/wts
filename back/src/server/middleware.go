@@ -33,6 +33,20 @@ func middlewareRegister(app *echo.Echo, cfg *config.Config) {
 			return strings.HasPrefix(c.Request().URL.Path, "/api")
 		},
 	}))
+
+	app.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			path := c.Request().URL.Path
+			// 对 SvelteKit 编译的静态不变资源开启永久缓存
+			if strings.HasPrefix(path, "/_app/immutable/") {
+				c.Response().Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			} else if !strings.HasPrefix(path, "/api/") {
+				// 对 HTML 文件和其它路由（非 API 接口）强制不缓存，确保每次拿到最新的 JS 引用
+				c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			}
+			return next(c)
+		}
+	})
 }
 
 func customContext(next echo.HandlerFunc) echo.HandlerFunc {
