@@ -23,6 +23,7 @@
 	import Renew from 'carbon-icons-svelte/lib/Renew.svelte';
 	import { TheLastPage } from '$lib/states/theLastPage.svelte';
 	import { goto } from '$app/navigation';
+	import { SUPPORT_QQ, CHIEF_QQ, CHIEF_PHONE } from '$lib/env/businesses';
 
 	let pending = $state(true);
 	let info = $state({} as UserProfile);
@@ -143,11 +144,11 @@
 		<AccordionItem title="联系我们">
 			<p>如果您对网维的服务或本系统有任何意见或建议，请尽管联系我们！我们非常重视您的建议。</p>
 			<br />
-			<p>ZSC学生网络支撑QQ群:123123123</p>
+			<p>ZSC学生网络支撑QQ群:{SUPPORT_QQ}</p>
 			<br />
-			<p>科长QQ:</p>
+			<p>科长QQ:{CHIEF_QQ}</p>
 			<br />
-			<p>科长微信/电话：</p>
+			<p>科长微信/电话：{CHIEF_PHONE}</p>
 			<br />
 		</AccordionItem>
 		<AccordionItem title="关于">

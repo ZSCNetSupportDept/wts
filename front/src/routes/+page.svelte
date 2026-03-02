@@ -4,6 +4,7 @@
 	import group from '$lib/assets/picture/girl-using-computer.svg';
 	import help from '$lib/assets/picture/help.svg';
 	import outlook from '$lib/assets/picture/two-people-credit-card.svg';
+	import { SUPPORT_QQ } from '$lib/env/businesses';
 </script>
 
 <h1 style="font-size: 25px">欢迎使用ZSC网维报修系统</h1>
@@ -62,7 +63,7 @@
 				如果有其它问题，您可以加入我们的网络支持QQ群，我们的工作人员会详细解答任何问题。
 			</p>
 			<p style="display: inline-block; margin: 0;">
-				群号：<strong>123123123</strong>
+				群号：<strong>{SUPPORT_QQ}</strong>
 			</p>
 		</div>
 		<img
