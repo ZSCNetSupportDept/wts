@@ -54,7 +54,7 @@ func NewTicket(c *hutil.WtsCtx, op string, r hutil.NewTicketRequest) hutil.NewTi
 			}
 		}
 		//fmt.Println("未结工单数量:", count)
-		if count >= 3 {
+		if count >= 1 {
 			return hutil.NewWtsErr(ErrTicketTooMuch, nil)
 		}
 

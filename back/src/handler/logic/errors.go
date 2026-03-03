@@ -23,7 +23,7 @@ var (
 	ErrAppointTimeInvalid = errors.New("请填写有效的预约时间")
 	// 故障发生时间晚于现在了
 	ErrOccurAtTimeInvalid = errors.New("请填写有效的故障发生时间")
-	// 不允许用户创建太多没有关闭的工单，设置成3个，有需要可以改
+	// 不允许用户创建太多没有关闭的工单，设置成~3~个，有需要可以改
 	ErrTicketTooMuch = errors.New("抱歉，您当前还有正在活跃的报修，无法创建新报修")
 	// 根据工单ID查不到工单
 	ErrNoSuchTicket = errors.New("无法找到对应的工单")
