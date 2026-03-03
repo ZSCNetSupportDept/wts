@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Accordion, AccordionItem } from 'carbon-components-svelte';
 	import RetroCard from '$lib/components/RetroCard.svelte';
+	import { CHIEF_PHONE, SUPPORT_QQ } from '$lib/env/businesses';
 </script>
 
 <h1>校园网使用攻略</h1>
@@ -17,33 +18,50 @@
 	<Accordion size="xl">
 		<AccordionItem title="电脑获取不到IP地址">
 			<p>
-				Natural Language Classifier uses advanced natural language processing and machine learning
-				techniques to create custom classification models. Users train their data and the service
-				predicts the appropriate category for the inputted text.
+				检查网线有没有插好，换一根网线的话能否获取？如果使用转接器的话，也尝试换一个转接器。<br />
+				如果通过Wi-Fi联网，检查路由器“WAN”插口的网线或者光纤是否接触良好，重启路由器试试。<br />
+				如果上述方法都没有效果，请找我们报修。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="忘记了账号密码">
 			<p>
-				Analyze text to extract meta-data from content such as concepts, entities, emotion,
-				relations, sentiment and more.
+				根据校园卡运营商的不同，您可以这样做：<br />
+				如果是电信，默认的密码是`A1234567`。改过的密码可以在中国电信APP或者致电`10000`重置。<br />
+				同理联通也可以在APP和`10001`重置，没有默认密码。<br />
+				移动情况有点儿复杂，如果您忘了网页登录界面的那个密码，界面上有一个找回密码功能可供使用。如果您没有绑定邮箱因而无法找回的话，请提交报修让我们来解决。如果是忘记系统中和校园卡一起绑定的密码，可以在中国移动APP找回或者致电`10086`询问。<br
+				/>
+				如果遇到没办法或者不会的情况，您可以提交报修，我们会竭诚解决您的问题。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="Wi-Fi没法用了">
 			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
+				尝试重启路由器，拔下电源，过1分钟后重新插上去。检查宿舍内有没有过多的无线耳机，键盘或者鼠标等在干扰信号，都关掉试一试。<br
+				/>
+				如果可以使用有线网，但是只有Wi-Fi没法用，最好提交报修让我们检查。<br />
+				总之，这种情况建议向我们提交报修，我们会认真解决您的问题。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="电信客户端故障">
 			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
+				首先，建议最好不要主动升级客户端，除非没法用了。如果客户端出现故障，有可能是最近升级的原因，可以看看电脑下载文件夹里面有无以前的客户端安装包，删除新的再安装这个旧的试一试。<br
+				/>
+				有的时候可能是电信服务器出现大规模故障，这个时候请耐心等待。<br />
+				无论什么情况，您都可以向我们提交报修。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="出现169.254开头的IP">
 			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
+				您可以先确认是不是自己的电脑有问题，比如开启手机热点看看电脑是否连得上。<br />
+				有线网的话，把电脑带到其他同学连接正常的床位那里连一下，如果能连上就证明不是您电脑的问题。<br
+				/>
+				如果不是您电脑的问题，请向我们提交报修。有的时候这是运营商的大规模故障，这时请耐心等待，我们的工作人员会尽可能的跟进，向您解释最新的情况。
+			</p>
+		</AccordionItem>
+		<AccordionItem title="为什么晚上断网？ ">
+			<p>
+				按学校管理要求，为了同学们保持规律的生活作息，在每周日～每周四的晚上23：30起限制校园网连接，每周五～每周六不断网。<strong
+					>网维仅传达断网的通知，无决定是否断网的权力。</strong
+				>
 			</p>
 		</AccordionItem>
 	</Accordion>
@@ -58,27 +76,27 @@
 	<Accordion size="xl">
 		<AccordionItem title="去哪里办校园网？">
 			<p>
-				Natural Language Classifier uses advanced natural language processing and machine learning
-				techniques to create custom classification models. Users train their data and the service
-				predicts the appropriate category for the inputted text.
+				虽然可能有学长学姐上门推销，不过还是建议自己去营业厅办：<br />
+				电信在学校北门外面，出门向右拐，第一个门面就是。<br />
+				联通和正常家宽一样的流程。<br />
+				移动一般在开学季固定在9栋那里开放业务受理处，不过那里不是常年开放的。<br />
+				总之办完了，你会得到一张手机卡，这就是你的校园卡了，把他填到网维报修系统的“校园网账号”那里即可。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="我该办什么套餐？">
 			<p>
-				Analyze text to extract meta-data from content such as concepts, entities, emotion,
-				relations, sentiment and more.
+				<strong>首先要声明：网维是一个中立的组织，我们不参与任何运营商的营销和推广。</strong><br />
+				其次，你必须住在香晖苑才能办联通的卡，因为他们只在香晖苑服务。<br />
+				如果可以的话，最好不要跟那些上门推销的人办卡，自己去营业厅咨询。因为每年这个时候很混乱，会有很多骗子混杂在正常推销的学长学姐中，每年都有新生上当受骗。另外也并不是每一位学长学姐都有道德的，我们确实也遇到过那种满嘴吹牛，只想快点骗你办理拿提成的那种人，营业厅这种情况一般比较少。<br
+				/>
+				每年运营商的套餐活动都略有不同，每个人的情况也不一样。所以就像我们所说的，自己去营业厅看看什么套餐是适合自己的，办什么套餐没有一个标准的最优解。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="如何把我的电脑手机连接到校园网？">
 			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
-			</p>
-		</AccordionItem>
-		<AccordionItem title="我该如何登录校园网？">
-			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
+				办完了套餐一般很快会有工程师或者我们网维的成员联系您，为您安装宽带，装完了一般会告诉你如何使用。<br
+				/>
+				如果办完套餐长期没有人来安装，或是没有人告诉您如何使用校园网的话，请提交报修，我们会为您安装宽带，而且手把手教您如何使用校园网。
 			</p>
 		</AccordionItem>
 	</Accordion>
@@ -92,33 +110,41 @@
 	<Accordion size="xl">
 		<AccordionItem title="如何报修我的网络故障？">
 			<p>
-				Natural Language Classifier uses advanced natural language processing and machine learning
-				techniques to create custom classification models. Users train their data and the service
-				predicts the appropriate category for the inputted text.
+				点击<a href="/repair/new">这里</a
+				>来提交新报修。如果您遇上了任何问题，可以加入QQ群：{SUPPORT_QQ}来反馈。<br />
+				您也可以尝试在我们微信公众号的聊天界面留言，我们看到会回复。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="我报修了，大概多久能上门？">
 			<p>
-				Analyze text to extract meta-data from content such as concepts, entities, emotion,
-				relations, sentiment and more.
+				在当天16：30之前的报修，通常能够在当天内上门解决，在18：00之后的一般报修，通常要等到第二天才能上门。我们每天固定16：30到18：00上班。<br
+				/>
+				预约报修会在预约当天的16：30～18：00上门报修。根据这个时间，您在对应日期当天的16：30到18：00之间需要本人在宿舍。<br
+				/>
+				特殊情况下，时间可能会延迟（详见下一条问题）。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="怎么一直没人来？">
 			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
+				发生这种情况，我们非常抱歉！首先您需要知道的一点是：我们的值班时间固定是每天的下午16：30～18：00,您在这段时间内需要本人在宿舍，如果您本人不在宿舍，我们是没有权力为您维修的。<br
+				/>
+				在每学期开学时（尤其是暑假回来后的9～10月）是我们维修的高峰期，由于我们的人手实在有限，在这段时间我们可能无法在一个半小时内处理当天的所有报修。发生这种情况，请耐心等待，尝试预约报修。我们会认真处理每一单报修，您可以放心。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="你们的人没把问题解决就跑了！">
 			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
+				如果问题在我们解决之后不久复发了，您可以重新提交一个新的报修单。<br />
+				如果网维成员没有解决您的问题，并且没有向您解释原因就离开的话，您可以选择投诉（详见下一条问题）。我们对此感到非常抱歉。<br
+				/>
+				有时候可能是我们的沟通没有传达到位，因为许多网络的问题确实是我们无法解决的，例如运营商的大规模故障，墙壁内部的线路故障等......网维会力所能及地为您提供服务，在不可抗力情况下会为您做好解释。
 			</p>
 		</AccordionItem>
 		<AccordionItem title="我应该如何投诉网维成员？">
 			<p>
-				Translate text, documents, and websites from one language to another. Create industry or
-				region-specific translations via the service's customization capability.
+				您可以选择：<br />
+				1.加入支持QQ群：{SUPPORT_QQ}，私聊群管理进行投诉， <br />
+				2.拨打科长电话{CHIEF_PHONE || '（暂无）'}进行投诉。<br />
+				为您维修的网维成员的名字可以在报修详情页找到。
 			</p>
 		</AccordionItem>
 	</Accordion>
