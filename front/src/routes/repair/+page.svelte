@@ -12,6 +12,7 @@
 	import type { Ticket } from '$lib/types/apiResponse';
 	import { GetTicket } from '$lib/api';
 	import { NotificationQueue } from 'carbon-components-svelte';
+	import { SUPPORT_QQ } from '$lib/env/businesses';
 
 	let q: NotificationQueue;
 
@@ -51,7 +52,7 @@
 <hr />
 <br />
 <p>
-	这里将显示您提交的所有报修记录，由于各种原因，我们可能只会显示您最近几个报修单。点击单子可展开详情。
+	这里将显示您提交的所有报修记录，点击单子可展开详情。有任何问题请加入QQ群：{SUPPORT_QQ}提问。
 </p>
 <br />
 <div
