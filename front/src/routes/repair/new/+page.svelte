@@ -65,8 +65,8 @@
 		occurAt.assert(!r.occur_at || IsRFC3339(r.occur_at), '请输入正确的故障发生时间');
 		appointedAt.assert(!r.appointed_at || IsRFC3339(r.appointed_at), '请输入正确的预约时间');
 		description.assert(r.description && r.description.length > 0, '请填写故障描述');
-		description.assert(r.description.length <= 100, '字数太多了，请控制在100字以内');
-		notes.assert(!r.notes || r.notes.length <= 100, '字数太多了...请控制在100字以内');
+		description.assert(r.description.length <= 200, '字数太多了，请控制在200字以内');
+		notes.assert(!r.notes || r.notes.length <= 200, '字数太多了...请控制在200字以内');
 		if (r.category == undefined) {
 			r.category = 'others';
 		}
@@ -101,9 +101,9 @@
 			q.add({
 				kind: 'success',
 				title: '提交成功',
-				timeout: 3000
+				timeout: 1000
 			});
-			setTimeout(() => goto('/repair'), 3900);
+			setTimeout(() => goto('/repair'), 1500);
 		} catch (e: any) {
 			notLoading = true;
 			const errMsg = e.response?.data?.msg || e.message || '未知错误';
