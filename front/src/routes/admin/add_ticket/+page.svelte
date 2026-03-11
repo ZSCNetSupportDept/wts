@@ -106,7 +106,7 @@
 				title: '提交成功',
 				timeout: 3000
 			});
-			setTimeout(() => goto('/repair'), 3900);
+			setTimeout(() => goto('/admin'), 3900);
 		} catch (e: any) {
 			notLoading = true;
 			const errMsg = e.response?.data?.msg || e.message || '未知错误';
