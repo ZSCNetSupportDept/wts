@@ -99,7 +99,7 @@ var freshTo = map[sqlc.WtsStatus]bool{
 }
 
 var NoPresentTo = map[sqlc.WtsStatus]bool{
-	sqlc.WtsStatusFresh:     false,
+	sqlc.WtsStatusFresh:     true,
 	sqlc.WtsStatusDelay:     true,
 	sqlc.WtsStatusScheduled: true,
 	sqlc.WtsStatusEscalated: true,
@@ -108,7 +108,7 @@ var NoPresentTo = map[sqlc.WtsStatus]bool{
 }
 
 var ScheduledTo = map[sqlc.WtsStatus]bool{
-	sqlc.WtsStatusFresh:     false,
+	sqlc.WtsStatusFresh:     true,
 	sqlc.WtsStatusDelay:     true,
 	sqlc.WtsStatusScheduled: true,
 	sqlc.WtsStatusEscalated: true,
@@ -120,7 +120,7 @@ var EscalatedTo = map[sqlc.WtsStatus]bool{
 	sqlc.WtsStatusFresh:     false,
 	sqlc.WtsStatusDelay:     false,
 	sqlc.WtsStatusScheduled: true,
-	sqlc.WtsStatusEscalated: true,
+	sqlc.WtsStatusEscalated: false,
 	sqlc.WtsStatusCanceled:  true,
 	sqlc.WtsStatusSolved:    true,
 }
