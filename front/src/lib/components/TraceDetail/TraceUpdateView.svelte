@@ -141,6 +141,11 @@
 	</DatePicker>
 {/if}
 
+{#if r.new_status === 'delay'}
+<br/>
+<p class='text-red-500'>如果没人在，请电联用户问一下哪天有空，然后选择”已预约“，预约到那天。<br/>如果预约单没人，你可以直接取消报修。<br/>总之，尽量不要使用改日修。</p>
+{/if}
+
 <br />
 <Select
 	labelText="工单新故障类型"
