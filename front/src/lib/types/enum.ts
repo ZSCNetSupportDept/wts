@@ -137,6 +137,15 @@ export const StatusMap: Record<WtsStatus, string> = {
 	canceled: '已取消'
 };
 
+export const StatusOrder: Record<WtsStatus, number> = {
+	scheduled: 1,
+	fresh: 2,
+	delay: 3,
+	escalated: 4,
+	solved: 5,
+	canceled: 6
+}
+
 export type WtsPriority = 'highest' | 'assigned' | 'mainline' | 'normal' | 'in-passing' | 'least';
 
 export const PriorityMap: Record<WtsPriority, string> = {
@@ -147,6 +156,15 @@ export const PriorityMap: Record<WtsPriority, string> = {
 	'in-passing': '顺路看看',
 	least: '最低'
 };
+
+export const PriorityOrder: Record<WtsPriority, number> = {
+	highest: 1,
+	assigned: 2,
+	mainline: 3,
+	normal: 4,
+	'in-passing': 5,
+	least: 6
+};	
 
 export type WtsCategory =
 	| 'first-install'

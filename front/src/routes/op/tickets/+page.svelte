@@ -4,7 +4,14 @@
 	let { data }: PageProps = $props();
 
 	import { CheckAndGetJWT, Guard } from '$lib/jwt';
-	import { IsAdmin, IsOperator, PriorityMap, CategoryMap } from '$lib/types/enum';
+	import {
+		IsAdmin,
+		IsOperator,
+		PriorityMap,
+		CategoryMap,
+		PriorityOrder,
+		StatusOrder
+	} from '$lib/types/enum';
 	import { onMount } from 'svelte';
 	import { Button, NotificationQueue } from 'carbon-components-svelte';
 	import Return from 'carbon-icons-svelte/lib/Return.svelte';
@@ -54,6 +61,16 @@
 		}
 		if (criteria._order === 'oldest') {
 			tickets = [...tickets].sort((a, b) => toMs(a.submitted_at) - toMs(b.submitted_at));
+		}
+		if (criteria._order === 'priority') {
+			tickets = [...tickets].sort((a, b) => {
+				const priorityDiff = PriorityOrder[a.priority] - PriorityOrder[b.priority];
+				if (priorityDiff !== 0) {
+					return priorityDiff;
+				}
+
+				return StatusOrder[a.status] - StatusOrder[b.status];
+			});
 		}
 		if (criteria._floor !== null && criteria._floor !== undefined && criteria._floor !== 0) {
 			tickets = tickets.filter((t) => getFloorFromRoom(t?.issuer?.room) === criteria._floor);
