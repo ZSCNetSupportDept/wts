@@ -45,7 +45,7 @@ func (i *Ctx) handleWXEvent(m *message.MixMessage) string {
 
 	// 用户关注时发送欢迎文本
 	if m.Event == message.EventSubscribe {
-		return "同学你好，欢迎使用网维报修系统~\n\n建议先看看使用攻略呢：https://wts.zsxyww.com/self-service/usage\n"
+		return "同学你好，欢迎使用网维报修系统~\n\n建议先看看使用攻略呢：https://wwbx.davisye.cn/help\n"
 	}
 	if m.Event == message.EventView {
 		// 不知道为什么，view事件也会被送到这里，如果不处理的话会在log里面出现，有点烦，对用户体验倒是没什么影响
@@ -67,7 +67,7 @@ func (i *Ctx) handleWXTxtMsg(m *message.MixMessage) string {
 }
 
 func (i *Ctx) handleNormalMsg(m *message.MixMessage) string {
-	return "聊天功能正在开发中"
+	return "您好，系统暂时不支持自动回复哦~点击<a href=\"https://wwbx.davisye.cn\">这里</a>进入系统界面进行报修吧~"
 	//return i.superEasyNLPProgram(m)
 }
 
