@@ -174,6 +174,6 @@
 	}
 
 	:global(.zone-red) {
-		background-color: #fff1f1; /* Red 10 */
+		background-color: hsl(0, 100%, 92%); /* 稍微比 Red 10 深一点，这样更明显 */
 	}
 </style>
