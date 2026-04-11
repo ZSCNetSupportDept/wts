@@ -51,7 +51,6 @@ export type NewRepairTraceReq = {
 
 export type FilterTicketsReq = {
 	block?: WtsBlock[];
-	scope?: 'active' | 'all';
 	status?: WtsStatus[];
 	priority?: WtsPriority[];
 	isp?: WtsISP[];

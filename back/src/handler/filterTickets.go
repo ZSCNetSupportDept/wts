@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log/slog"
+	"slices"
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
@@ -60,23 +61,16 @@ func FilterTickets(i echo.Context) error {
 		return i.JSON(400, res)
 	}
 
-	//处理Scope参数的合法性
-	switch r.Scope {
-	case "all":
+	// 限制普通成员只能查询活跃的工单
+	if slices.Contains(r.Status, "solved") && slices.Contains(r.Status, "canceled") {
 		if !hutil.IsAdmin(u.Access) {
 			res.Success = false
 			res.Msg = "only admin can filter all tickets"
 			res.ErrType = hutil.ErrAuth
 			return i.JSON(403, res)
 		}
-	case "active":
-		break
-	default:
-		res.Success = false
-		res.Msg = "invalid scope value"
-		res.ErrType = hutil.ErrReq
-		return i.JSON(400, res)
 	}
+
 	//处理时间参数的合法性
 	if r.OlderThan.IsZero() {
 		r.OlderThan = time.Now()

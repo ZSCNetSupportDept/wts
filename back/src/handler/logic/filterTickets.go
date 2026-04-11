@@ -18,36 +18,17 @@ func FilterTickets(c *hutil.WtsCtx, op string, r hutil.FilterTicketsRequest) hut
 		var err error
 		var t []sqlc.WtsVTicket
 		//执行数据库操作
-		switch r.Scope {
-		case "active":
-			t, err = wrap(q.FilterActiveTickets(ctx, sqlc.FilterActiveTicketsParams{
-				Blocks:    r.Block,
-				Issuer:    wtsTextOpt(r.Issuer),
-				Category:  r.Category,
-				Isp:       r.ISP,
-				NewerThan: timestamptzOpt(r.NewerThan),
-				OlderThan: timestamptzOpt(r.OlderThan),
-				Status:    r.Status,
-			}))
-			if err != nil {
-				return hutil.NewUnknownErr(fmt.Errorf("FilterTickets::FilterTickets()出现错误: %w", err))
-			}
-		case "all":
-			t, err = q.FilterTickets(ctx, sqlc.FilterTicketsParams{
-				Blocks:    r.Block,
-				Issuer:    wtsTextOpt(r.Issuer),
-				Category:  r.Category,
-				Isp:       r.ISP,
-				NewerThan: timestamptzOpt(r.NewerThan),
-				OlderThan: timestamptzOpt(r.OlderThan),
-				Status:    r.Status,
-			})
-			if err != nil {
-				return hutil.NewUnknownErr(fmt.Errorf("FilterTickets::FilterTickets()出现错误: %w", err))
-			}
-		default:
-			return hutil.NewWtsErr(ErrInvalidScope, nil)
-
+		t, err = q.FilterTickets(ctx, sqlc.FilterTicketsParams{
+			Blocks:    r.Block,
+			Issuer:    wtsTextOpt(r.Issuer),
+			Category:  r.Category,
+			Isp:       r.ISP,
+			NewerThan: timestamptzOpt(r.NewerThan),
+			OlderThan: timestamptzOpt(r.OlderThan),
+			Status:    r.Status,
+		})
+		if err != nil {
+			return hutil.NewUnknownErr(fmt.Errorf("FilterTickets::FilterTickets()出现错误: %w", err))
 		}
 
 		for _, a := range t {
@@ -80,10 +61,10 @@ func FilterTickets(c *hutil.WtsCtx, op string, r hutil.FilterTicketsRequest) hut
 	return result
 }
 
-func wrap(t []sqlc.WtsVActiveTicket, e error) ([]sqlc.WtsVTicket, error) {
-	var res []sqlc.WtsVTicket
-	for _, v := range t {
-		res = append(res, sqlc.WtsVTicket(v))
-	}
-	return res, e
-}
+// func wrap(t []sqlc.WtsVActiveTicket, e error) ([]sqlc.WtsVTicket, error) {
+// 	var res []sqlc.WtsVTicket
+// 	for _, v := range t {
+// 		res = append(res, sqlc.WtsVTicket(v))
+// 	}
+// 	return res, e
+// }

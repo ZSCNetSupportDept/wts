@@ -191,22 +191,18 @@
 <br />
 <p>选择您需要检索报修工单的条件</p>
 
-{#if IsAdmin(CheckAndGetJWT('parsed')?.access)}
-	<br />
-	<RadioButtonGroup id="scope" legendText="范围" bind:selected={req.scope} required={true}>
-		<RadioButton labelText="只看活跃的" value="active" />
-		<RadioButton labelText="所有报修单" value="all" />
-	</RadioButtonGroup>
-{/if}
 
-<br />
-<DatePicker datePickerType="single" on:change={onDateChange('newer')}>
-	<DatePickerInput labelText="只看这之后的报修单：" placeholder="从该日开始时起" />
+<br/>
+<br/>
+<DatePicker datePickerType="range">
+	<DatePickerInput labelText="只看该时段内提交的报修" placeholder="起始日期" />
+	<DatePickerInput labelText=" " placeholder="结束日期" />
 </DatePicker>
 
-<br />
-<DatePicker datePickerType="single" on:change={onDateChange('older')}>
-	<DatePickerInput labelText="只看这之前的报修单：" placeholder="从该日结束时起" />
+<br/>
+<DatePicker datePickerType="range">
+	<DatePickerInput labelText="只看该时段内更新的报修" placeholder="起始日期" />
+	<DatePickerInput labelText=" " placeholder="结束日期" />
 </DatePicker>
 <!-- TODO:可以选择时间 -->
 
@@ -390,9 +386,9 @@
 <hr />
 <br />
 <RadioButtonGroup id="order" legendText="排序" bind:selected={order} required={true}>
-	<RadioButton labelText="优先级从高到低" value="priority" />
-	<RadioButton labelText="时间从新到旧" value="newest" />
-	<RadioButton labelText="时间从旧到新" value="oldest" />
+	<RadioButton labelText="优先级高到低" value="priority" />
+	<RadioButton labelText="提交时间新到旧" value="newest" />
+	<RadioButton labelText="提交时间旧到新" value="oldest" />
 </RadioButtonGroup>
 
 <br />

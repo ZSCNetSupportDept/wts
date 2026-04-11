@@ -62,7 +62,6 @@ type NewRepairTraceRequest struct {
 // Used By: /api/v3/filter_tickets
 type FilterTicketsRequest struct {
 	Block     []sqlc.WtsBlock    `json:"block" validate:"omitempty,dive,isWtsBlock"`
-	Scope     string             `json:"scope" validate:"omitempty"`
 	Status    []sqlc.WtsStatus   `json:"status" validate:"omitempty,dive,isValidStatus"`
 	Priority  []sqlc.WtsPriority `json:"priority" validate:"omitempty,dive,isValidPriority"`
 	ISP       []sqlc.WtsIsp      `json:"isp" validate:"omitempty,dive,isValidISP"`
