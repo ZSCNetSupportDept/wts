@@ -26,14 +26,14 @@
 
 ### 请求体 (JSON)
 
-| 字段      | 类型     | 描述                                       | 校验规则     |
-| --------- | -------- | ------------------------------------------ | ------------ |
-| `who`     | string   | 要修改信息用户的微信 OpenID                | `required`   |
-| `block`   | string   | 新的宿舍区         | `required`   |
-| `room`    | string   | 新的房间号                                 | `required`   |
-| `phone`   | string   | 新的手机号码                               | `required`   |
-| `isp`     | string   | 新的宽带运营商| `required`   |
-| `account` | string   | 新的宽带账号                               | `required`   |
+| 字段      | 类型   | 描述                        | 校验规则   |
+| --------- | ------ | --------------------------- | ---------- |
+| `who`     | string | 要修改信息用户的微信 OpenID | `required` |
+| `block`   | string | 新的宿舍区                  | `required` |
+| `room`    | string | 新的房间号                  | `required` |
+| `phone`   | string | 新的手机号码                | `required` |
+| `isp`     | string | 新的宽带运营商              | `required` |
+| `account` | string | 新的宽带账号                | `required` |
 
 **请求示例 (普通用户修改自己信息)**:
 
@@ -65,10 +65,10 @@
 
 ### 成功响应 (200 OK)
 
-| 字段    | 类型    | 描述                 |
-| ------- | ------- | -------------------- |
-| `success` | boolean | `true` 表示操作成功  |
-| `msg`     | string  | 成功的提示信息     |
+| 字段      | 类型    | 描述                |
+| --------- | ------- | ------------------- |
+| `success` | boolean | `true` 表示操作成功 |
+| `msg`     | string  | 成功的提示信息      |
 
 **响应示例**:
 
@@ -97,7 +97,7 @@
 
 | `msg` 内容                   | `errType` | 描述                     |
 | ---------------------------- | --------- | ------------------------ |
-| `no such user`               | `logic`   | 目标用户不存在         |
+| `no such user`               | `logic`   | 目标用户不存在           |
 | `phone number has been used` | `logic`   | 该手机号已被其他用户注册 |
 
 #### 403 Forbidden (权限错误)

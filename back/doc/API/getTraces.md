@@ -25,13 +25,13 @@
 
 ### 查询参数
 
-| 参数 | 类型   | 描述             | 是否必须 |
-| ---- | ------ | ---------------- | -------- |
-| `tid`  | string | 要查询的工单 ID。 | 是       |
+| 参数  | 类型   | 描述              | 是否必须 |
+| ----- | ------ | ----------------- | -------- |
+| `tid` | string | 要查询的工单 ID。 | 是       |
 
 **请求示例**:
 
-```
+```text
 GET /api/v3/get_traces?tid=123
 ```
 
@@ -41,21 +41,21 @@ GET /api/v3/get_traces?tid=123
 
 响应体包含一个 `traces` 数组，其中每个元素都是一条工单处理记录。
 
-| 字段        | 类型    | 描述                                                         |
-| ----------- | ------- | ------------------------------------------------------------ |
-| `success`   | boolean | `true` 表示操作成功                                          |
-| `msg`       | string  | 成功的提示信息                                               |
-| `traces`    | array   | 追踪记录对象数组                                             |
-| `trace.opid`          | integer | 操作记录的唯一 ID                                            |
-| `trace.tid`           | integer | 所属工单的 ID                                                |
-| `trace.updated_at`    | string  | 本次记录的更新时间                                           |
-| `trace.op`            | string  | 操作人员的 ID (如果是用户自己取消，可能为特殊值如 "-1")      |
-| `trace.op_name`       | string  | 操作人的姓名                                                |
-| `trace.new_status`    | string  | 本次操作后工单的新状态                                       |
-| `trace.new_priority`  | string  | 本次操作后工单的新优先级                                     |
-| `trace.new_appointment`| string | 本次操作后工单的新预约时间                                   |
-| `trace.new_category`   | string | 本次操作后工单的类型                                          |
-| `trace.remark`        | string  | 本次操作的备注信息                                           |
+| 字段                    | 类型    | 描述                                                    |
+| ----------------------- | ------- | ------------------------------------------------------- |
+| `success`               | boolean | `true` 表示操作成功                                     |
+| `msg`                   | string  | 成功的提示信息                                          |
+| `traces`                | array   | 追踪记录对象数组                                        |
+| `trace.opid`            | integer | 操作记录的唯一 ID                                       |
+| `trace.tid`             | integer | 所属工单的 ID                                           |
+| `trace.updated_at`      | string  | 本次记录的更新时间                                      |
+| `trace.op`              | string  | 操作人员的 ID (如果是用户自己取消，可能为特殊值如 "-1") |
+| `trace.op_name`         | string  | 操作人的姓名                                            |
+| `trace.new_status`      | string  | 本次操作后工单的新状态                                  |
+| `trace.new_priority`    | string  | 本次操作后工单的新优先级                                |
+| `trace.new_appointment` | string  | 本次操作后工单的新预约时间                              |
+| `trace.new_category`    | string  | 本次操作后工单的类型                                    |
+| `trace.remark`          | string  | 本次操作的备注信息                                      |
 
 **响应示例**:
 
@@ -107,9 +107,9 @@ GET /api/v3/get_traces?tid=123
 
 #### 400 Bad Request (业务逻辑错误)
 
-| `msg` 内容         | `errType` | 描述                          |
-| ------------------ | --------- | ----------------------------- |
-| "无法找到对应的工单"   | `logic`   | 提供的 `tid` 对应的工单不存在。 |
+| `msg` 内容           | `errType` | 描述                            |
+| -------------------- | --------- | ------------------------------- |
+| "无法找到对应的工单" | `logic`   | 提供的 `tid` 对应的工单不存在。 |
 
 #### 403 Forbidden (权限错误)
 

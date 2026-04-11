@@ -26,16 +26,16 @@
 
 ### 请求体 (JSON)
 
-| 字段          | 类型     | 描述                                                                 | 校验规则     |
-| ------------- | -------- | -------------------------------------------------------------------- | ------------ |
-| `issuer_sid`   | string   | 报修人的学号                                                 | `required`   |
-| `description` | string   | 问题描述                                                             | `required`   |
-| `category`    | string   | 问题分类  | `required`   |
-| `occur_at`    | string   | 问题发生时间 (RFC3339 格式, 例如: "2025-12-06T10:00:00Z")             | `required`   |
-| `appointed_at`| string   | 预约上门维修日期 (RFC3339 日期格式, 例如: "2025-12-07T00:00:00Z")     | (可选)       |
-| `notes`       | string   | 备注信息                                                             | (可选)       |
-| `status`      | string   | **(仅管理员)** 工单状态) | (可选)       |
-| `priority`    | string   | **(仅管理员)** 工单优先级           | (可选)       |
+| 字段           | 类型   | 描述                                                              | 校验规则   |
+| -------------- | ------ | ----------------------------------------------------------------- | ---------- |
+| `issuer_sid`   | string | 报修人的学号                                                      | `required` |
+| `description`  | string | 问题描述                                                          | `required` |
+| `category`     | string | 问题分类                                                          | `required` |
+| `occur_at`     | string | 问题发生时间 (RFC3339 格式, 例如: "2025-12-06T10:00:00Z")         | `required` |
+| `appointed_at` | string | 预约上门维修日期 (RFC3339 日期格式, 例如: "2025-12-07T00:00:00Z") | (可选)     |
+| `notes`        | string | 备注信息                                                          | (可选)     |
+| `status`       | string | **(仅管理员)** 工单状态)                                          | (可选)     |
+| `priority`     | string | **(仅管理员)** 工单优先级                                         | (可选)     |
 
 **请求示例 (普通用户)**:
 
@@ -67,11 +67,11 @@
 
 ### 成功响应 (201 Created)
 
-| 字段    | 类型    | 描述                 |
-| ------- | ------- | -------------------- |
-| `success` | boolean | `true` 表示操作成功  |
-| `msg`     | string  | 成功的提示信息     |
-| `tid`     | string  | 编号              |
+| 字段      | 类型    | 描述                |
+| --------- | ------- | ------------------- |
+| `success` | boolean | `true` 表示操作成功 |
+| `msg`     | string  | 成功的提示信息      |
+| `tid`     | string  | 编号                |
 
 **响应示例**:
 
@@ -99,12 +99,12 @@
 
 #### 400 Bad Request (业务逻辑错误)
 
-| `msg` 内容                               | `errType` | 描述                                       |
-| ---------------------------------------- | --------- | ------------------------------------------ |
-| `no such user`                           | `logic`   | `issuer_sid` 对应的用户不存在             |
-| `appointment time is invalid`            | `logic`   | 预约时间 `appointed_at` 在当前时间之前     |
-| `occur time is invalid`                  | `logic`   | 问题发生时间 `occur_at` 在当前时间之后     |
-| `you have too many active tickets`       | `logic`   | 用户有过多（例如超过3个）未完成的工单      |
+| `msg` 内容                         | `errType` | 描述                                   |
+| ---------------------------------- | --------- | -------------------------------------- |
+| `no such user`                     | `logic`   | `issuer_sid` 对应的用户不存在          |
+| `appointment time is invalid`      | `logic`   | 预约时间 `appointed_at` 在当前时间之前 |
+| `occur time is invalid`            | `logic`   | 问题发生时间 `occur_at` 在当前时间之后 |
+| `you have too many active tickets` | `logic`   | 用户有过多（例如超过3个）未完成的工单  |
 
 #### 403 Forbidden (权限错误)
 

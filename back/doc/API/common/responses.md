@@ -1,4 +1,5 @@
 # 返回内容的格式
+
 本项目的API通常返回JSON，格式预览如下：
 
 ```JSON
@@ -20,7 +21,6 @@
 }
 
 ```
-
 
 任何API都会返回`success`和`msg`字段，错误时还会返回`error_type`字段，如果打开`Debug.APIVerbose`会返回`debug`字段。
 

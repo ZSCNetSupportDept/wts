@@ -25,19 +25,19 @@
 
 ### 查询参数
 
-| 参数 | 类型   | 描述                                                         | 是否必须 |
-| ---- | ------ | ------------------------------------------------------------ | -------- |
-| `who`  | string | 要查询工单的用户的微信 OpenID。如果留空，则默认为当前登录用户的 OpenID。 | 否       |
+| 参数  | 类型   | 描述                                                                     | 是否必须 |
+| ----- | ------ | ------------------------------------------------------------------------ | -------- |
+| `who` | string | 要查询工单的用户的微信 OpenID。如果留空，则默认为当前登录用户的 OpenID。 | 否       |
 
 **请求示例 (查看自己工单)**:
 
-```
+```text
 GET /api/v3/get_ticket
 ```
 
 **请求示例 (管理员查看他人所有工单)**:
 
-```
+```text
 GET /api/v3/get_ticket?who=another_user_openid_456
 ```
 
@@ -47,22 +47,22 @@ GET /api/v3/get_ticket?who=another_user_openid_456
 
 响应体包含一个 `tickets` 数组，其中每个元素都是一个工单的详细信息。
 
-| 字段        | 类型    | 描述                                                         |
-| ----------- | ------- | ------------------------------------------------------------ |
-| `success`   | boolean | `true` 表示操作成功                                          |
-| `msg`       | string  | 成功的提示信息                                               |
-| `tickets`   | array   | 工单对象数组                                                 |
-| `ticket.tid`          | string  | 工单 ID                                                      |
-| `ticket.submitted_at` | string  | 提交时间                                                     |
-| `ticket.occur_at`     | string  | 问题发生时间                                                 |
-| `ticket.description`  | string  | 问题描述                                                     |
-| `ticket.appointed_at` | string  | 预约上门时间                                                 |
-| `ticket.notes`        | string  | 备注                                                         |
-| `ticket.priority`     | string  | 优先级                                                       |
-| `ticket.category`     | string  | 问题分类                                                     |
-| `ticket.status`       | string  | 当前状态                                                     |
-| `ticket.last_updated_at`| string  | 最后更新时间                                                 |
-| `ticket.issuer`       | object  | 报修人信息对象 (结构同 `view_profile` API 的 `profile` 对象) |
+| 字段                     | 类型    | 描述                                                         |
+| ------------------------ | ------- | ------------------------------------------------------------ |
+| `success`                | boolean | `true` 表示操作成功                                          |
+| `msg`                    | string  | 成功的提示信息                                               |
+| `tickets`                | array   | 工单对象数组                                                 |
+| `ticket.tid`             | string  | 工单 ID                                                      |
+| `ticket.submitted_at`    | string  | 提交时间                                                     |
+| `ticket.occur_at`        | string  | 问题发生时间                                                 |
+| `ticket.description`     | string  | 问题描述                                                     |
+| `ticket.appointed_at`    | string  | 预约上门时间                                                 |
+| `ticket.notes`           | string  | 备注                                                         |
+| `ticket.priority`        | string  | 优先级                                                       |
+| `ticket.category`        | string  | 问题分类                                                     |
+| `ticket.status`          | string  | 当前状态                                                     |
+| `ticket.last_updated_at` | string  | 最后更新时间                                                 |
+| `ticket.issuer`          | object  | 报修人信息对象 (结构同 `view_profile` API 的 `profile` 对象) |
 
 **响应示例**:
 

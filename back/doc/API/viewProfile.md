@@ -25,19 +25,19 @@
 
 ### 查询参数
 
-| 参数 | 类型   | 描述                                                         | 是否必须 |
-| ---- | ------ | ------------------------------------------------------------ | -------- |
-| `who`  | string | 要查询用户的微信 OpenID。如果留空，则默认为当前登录用户的 OpenID。 | 否       |
+| 参数  | 类型   | 描述                                                               | 是否必须 |
+| ----- | ------ | ------------------------------------------------------------------ | -------- |
+| `who` | string | 要查询用户的微信 OpenID。如果留空，则默认为当前登录用户的 OpenID。 | 否       |
 
 **请求示例 (查看自己信息)**:
 
-```
+```text
 GET /api/v3/view_profile
 ```
 
 **请求示例 (管理员查看他人信息)**:
 
-```
+```text
 GET /api/v3/view_profile?who=hajimihajimihajimi
 ```
 
@@ -47,20 +47,20 @@ GET /api/v3/view_profile?who=hajimihajimihajimi
 
 响应体包含一个 `profile` 对象，其中有用户的详细信息。
 
-| 字段      | 类型    | 描述                                       |
-| --------- | ------- | ------------------------------------------ |
-| `success` | boolean | `true` 表示操作成功                        |
-| `msg`     | string  | 成功的提示信息                             |
-| `profile` | object  | 用户信息对象                               |
-| `profile.sid`     | string  | 学号                                       |
-| `profile.name`    | string  | 姓名                                       |
-| `profile.block`   | string  | 宿舍楼                                     |
-| `profile.access`  | string  | 用户权限等级 (例如: "user", "admin")       |
-| `profile.room`    | string  | 房间号                                     |
-| `profile.phone`   | string  | 手机号码                                   |
-| `profile.isp`     | string  | 宽带运营商                                 |
-| `profile.account` | string  | 宽带账号                                   |
-| `profile.wx`      | string  | 微信 OpenID                                |
+| 字段              | 类型    | 描述                                 |
+| ----------------- | ------- | ------------------------------------ |
+| `success`         | boolean | `true` 表示操作成功                  |
+| `msg`             | string  | 成功的提示信息                       |
+| `profile`         | object  | 用户信息对象                         |
+| `profile.sid`     | string  | 学号                                 |
+| `profile.name`    | string  | 姓名                                 |
+| `profile.block`   | string  | 宿舍楼                               |
+| `profile.access`  | string  | 用户权限等级 (例如: "user", "admin") |
+| `profile.room`    | string  | 房间号                               |
+| `profile.phone`   | string  | 手机号码                             |
+| `profile.isp`     | string  | 宽带运营商                           |
+| `profile.account` | string  | 宽带账号                             |
+| `profile.wx`      | string  | 微信 OpenID                          |
 
 **响应示例**:
 
@@ -86,8 +86,8 @@ GET /api/v3/view_profile?who=hajimihajimihajimi
 
 #### 400 Bad Request (业务逻辑错误)
 
-| `msg` 内容     | `errType` | 描述           |
-| -------------- | --------- | -------------- |
+| `msg` 内容                       | `errType` | 描述           |
+| -------------------------------- | --------- | -------------- |
 | "无法找到该微信账户所请求的用户" | `logic`   | 目标用户不存在 |
 
 #### 403 Forbidden (权限错误)
