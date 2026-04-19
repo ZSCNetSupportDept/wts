@@ -3,18 +3,6 @@
 -- ** PostgreSQL version: 17.0
 -- ** Project Site: pgmodeler.io
 -- ** Model Author: ---
--- object: app | type: ROLE --
--- DROP ROLE IF EXISTS app;
-CREATE ROLE app WITH 
-	LOGIN
-	 PASSWORD 'ZSCNetworkSupport::WTS@2025';
--- ddl-end --
-COMMENT ON ROLE app IS E'Web后端系统连接数据库的默认Role';
--- ddl-end --
-
-
--- ** Database creation must be performed outside a multi lined SQL file. 
--- ** These commands were put in this file only as a convenience.
 
 -- object: zsc | type: DATABASE --
 -- DROP DATABASE IF EXISTS zsc;

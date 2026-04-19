@@ -143,7 +143,9 @@
 <hr />
 <br />
 <p>
-	您的个人信息被我们用于提供上门维修服务，如果信息有更新的，可以在这里修改。但是如果需要修改学号或者姓名则不能在这里修改，请联系我们手动修改。
+	<span>您的个人信息被我们用于提供上门维修服务，如果信息有更新的，可以在这里修改。</span>
+	<br/>
+	<span style="font-size:0.9em; color: gray; font-style: italic;">如果需要修改学号或者姓名，请联系我们手动修改。</span>
 </p>
 <br />
 <RadioButtonGroup
@@ -248,7 +250,7 @@
 <Button
 	on:click={() => {
 		check() ? (open = true) : jump();
-	}}>提交注册</Button
+	}}>确认修改</Button
 >
 
 <ComposedModal
