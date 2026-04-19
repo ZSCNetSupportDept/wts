@@ -1,52 +1,44 @@
 {
-        "button": [
-          {
-            "name": "快捷操作",
-            "sub_button": [
-              {
-                "type": "view",
-                "name": "我要报修！",
-                "url": "https://wwbx.davisye.cn/repair/new"
-              },
-              {
-                "type": "view",
-                "name": "查看报修",
-                "url": "https://wwbx.davisye.cn/repair"
-              },
+  "button": [
+    {
+      "type": "view",
+      "name": "进入报修系统",
+      "url": "https://wwbx.davisye.cn"
+    },
+    {
+      "name": "快捷操作",
+      "sub_button": [
         {
-                "type": "view",
-                "name": "使用攻略",
-                "url": "https://wwbx.davisye.cn/help"
+          "type": "view",
+          "name": "我要报修！",
+          "url": "https://wwbx.davisye.cn/repair/new"
+        },
+        {
+          "type": "view",
+          "name": "查看报修",
+          "url": "https://wwbx.davisye.cn/repair"
+        },
+        {
+          "type": "view",
+          "name": "使用攻略",
+          "url": "https://wwbx.davisye.cn/help"
+        },
+        {
+          "type": "view",
+          "name": "查看/修改个人资料",
+          "url": "https://wwbx.davisye.cn/me"
+        },
+        {
+          "type": "view",
+          "name": "联系我们",
+          "url": "https://wwbx.davisye.cn/about/contact"
         }
-
-            ]
-          },
-          {
-            "name": "全部功能",
-            "sub_button": [
-              {
-                  "type": "view",
-                  "name": "进入报修系统",
-                  "url": "https://wwbx.davisye.cn"
-              },
-              {       
-                "type": "view",
-                "name": "查看/修改个人资料",
-                "url": "https://wwbx.davisye.cn/me"
-                },
-
-              {
-                        "type": "view",
-                        "name": "联系我们",
-                        "url": "https://wwbx.davisye.cn"
-              }
-              
-            ]
-          },
-          {
-            "type": "view",
-            "name": "关于网维",
-            "url": "https://wwbx.davisye.cn/about"
-          }
-        ]
-      }
+      ]
+    },
+    {
+      "type": "view",
+      "name": "关于网维",
+      "url": "https://wwbx.davisye.cn/about"
+    }
+  ]
+}
