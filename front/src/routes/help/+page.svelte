@@ -152,3 +152,14 @@
 
 <br />
 <br />
+<RetroCard>
+	<h3 style="font-size: 25px; ">💡 其它问题</h3>
+	<br />
+	<Accordion size="xl">
+		<AccordionItem title="这里的攻略解决不了我的问题！">
+			<p>
+				如果有其它问题或是需要进一步的帮助，请随时联系我们。您可以加入我们的支持QQ群：{SUPPORT_QQ}，我们会热情地解答您的问题。
+			</p>
+		</AccordionItem>
+	</Accordion>
+</RetroCard>
