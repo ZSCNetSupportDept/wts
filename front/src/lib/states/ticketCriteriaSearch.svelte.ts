@@ -3,7 +3,7 @@ import type { WtsZone } from '$lib/types/enum';
 
 export type Criteria = {
 	r: FilterTicketsReq;
-	_order: 'priority' | 'newest' | 'oldest';
+	_order: 'priority' | 'newest' | 'oldest' | 'newest_up' | 'oldest_up';
 	_floor: number | null;
 	_blocks_in_zone: WtsZone[]; //需要和req.block保持一致，注意
 	_view_today_scheduled: boolean;
@@ -11,7 +11,6 @@ export type Criteria = {
 
 export let criteria: Criteria = {
 	r: {
-		scope: 'active',
 		issuer: undefined,
 		block: [],
 		status: [],
@@ -30,7 +29,6 @@ export let criteria: Criteria = {
 export function resetCriteria() {
 	criteria = {
 		r: {
-			scope: 'active',
 			issuer: undefined,
 			block: [],
 			status: [],

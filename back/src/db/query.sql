@@ -95,6 +95,8 @@ AND (sqlc.narg('isp')::wts.isp[] IS NULL OR t.isp = ANY(sqlc.narg('isp')::wts.is
 AND t.submitted_at >= COALESCE(sqlc.narg('newerThan'), '1970-01-01'::timestamptz)
 AND t.submitted_at <= COALESCE(sqlc.narg('olderThan'), NOW()::timestamptz)
 AND (sqlc.narg('status')::wts.status[] IS NULL OR t.status = ANY(sqlc.narg('status')::wts.status[]))
+AND t.last_updated_at >= COALESCE(sqlc.narg('newerThanUp'), '1970-01-01'::timestamptz)
+AND t.last_updated_at <= COALESCE(sqlc.narg('olderThanUp'), NOW()::timestamptz)
 ORDER BY t.priority ASC;
 
 -- name: FilterActiveTickets :many
@@ -108,6 +110,8 @@ AND (sqlc.narg('isp')::wts.isp[] IS NULL OR t.isp = ANY(sqlc.narg('isp')::wts.is
 AND t.submitted_at >= COALESCE(sqlc.narg('newerThan'), '1970-01-01'::timestamptz)
 AND t.submitted_at <= COALESCE(sqlc.narg('olderThan'), NOW()::timestamptz)
 AND (sqlc.narg('status')::wts.status[] IS NULL OR t.status = ANY(sqlc.narg('status')::wts.status[]))
+AND t.last_updated_at >= COALESCE(sqlc.narg('newerThanUp'), '1970-01-01'::timestamptz)
+AND t.last_updated_at <= COALESCE(sqlc.narg('olderThanUp'), NOW()::timestamptz)
 ORDER BY t.priority ASC;
 
 

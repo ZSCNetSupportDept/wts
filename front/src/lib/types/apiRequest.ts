@@ -58,4 +58,6 @@ export type FilterTicketsReq = {
 	category?: WtsCategory[];
 	newer_than?: RFC3339;
 	older_than?: RFC3339;
+	newer_than_up?: RFC3339;
+	older_than_up?: RFC3339;
 };

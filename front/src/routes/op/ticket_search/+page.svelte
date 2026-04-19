@@ -29,6 +29,7 @@
 	import { criteria } from '$lib/states/ticketCriteriaSearch.svelte';
 	import { goto } from '$app/navigation';
 	import type { WtsStatus, WtsPriority, WtsCategory, WtsISP } from '$lib/types/enum';
+	import { parseISO } from 'date-fns';
 
 	onMount(() => Guard(IsOperator));
 	//onMount(() => setTimeout(() => goto('/op/ticket_search'), 500));//暂时的权宜之计
@@ -37,18 +38,18 @@
 
 	let zoneSelected: WtsZone[] = $state(criteria._blocks_in_zone ?? []);
 
-	let order: 'priority' | 'newest' | 'oldest' = $state(criteria._order ?? 'priority');
+	let order: 'priority' | 'newest' | 'oldest' | 'newest_up' | 'oldest_up' = $state(criteria._order ?? 'priority');
 	let floor: number | null = $state(criteria._floor ?? null);
 	let viewTodayScheduled = $state(criteria._view_today_scheduled ?? false);
 
 	let isScheduledSelected = $state(req.status?.includes('scheduled') ?? false);
 
-	// $effect(() => {
-	// 	$inspect(req);
-	// 	$inspect(zoneSelected);
-	// 	$inspect(order);
-	// 	$inspect(floor);
-	// });
+	$effect(() => {
+		$inspect(req);
+		$inspect(zoneSelected);
+		$inspect(order);
+		$inspect(floor);
+	});
 
 	let onDateChange = (which: 'newer' | 'older') => (event: CustomEvent) => {
 		const { dateStr } = event.detail;
@@ -62,6 +63,32 @@
 				req.older_than = rfcDate;
 			}
 		}
+	};
+
+	let onDateChange2 = (which: 'submit' | 'update') => (event: CustomEvent) => {
+		const { dateStr, selectedDates } = event.detail;
+		switch (which) {
+			case 'submit':
+				if (dateStr.from) {
+					req.newer_than = (startOfDay((selectedDates[0] as Date)).toISOString() as RFC3339);
+				}
+				if (dateStr.to) {
+					req.older_than = (endOfDay((selectedDates[1] as Date)).toISOString() as RFC3339);
+				}
+				break;
+			case 'update':
+				if (dateStr.from) {
+					req.newer_than_up = (startOfDay((selectedDates[0] as Date)).toISOString() as RFC3339);
+				}
+				if (dateStr.to) {
+					req.older_than_up = (endOfDay((selectedDates[1] as Date)).toISOString() as RFC3339);
+				}
+				break;
+		}
+	};
+
+	let eventDebug = (event: CustomEvent) => {
+		console.log(event);
 	};
 
 	let q: NotificationQueue;
@@ -191,16 +218,15 @@
 <br />
 <p>选择您需要检索报修工单的条件</p>
 
-
-<br/>
-<br/>
-<DatePicker datePickerType="range">
+<br />
+<br />
+<DatePicker datePickerType="range" on:change={onDateChange2('submit')}>
 	<DatePickerInput labelText="只看该时段内提交的报修" placeholder="起始日期" />
 	<DatePickerInput labelText=" " placeholder="结束日期" />
 </DatePicker>
 
-<br/>
-<DatePicker datePickerType="range">
+<br />
+<DatePicker datePickerType="range" on:change={onDateChange2('update')}>
 	<DatePickerInput labelText="只看该时段内更新的报修" placeholder="起始日期" />
 	<DatePickerInput labelText=" " placeholder="结束日期" />
 </DatePicker>
@@ -385,10 +411,12 @@
 <br />
 <hr />
 <br />
-<RadioButtonGroup id="order" legendText="排序" bind:selected={order} required={true}>
+<RadioButtonGroup id="order" legendText="排序" bind:selected={order} required={true} orientation="vertical">
 	<RadioButton labelText="优先级高到低" value="priority" />
 	<RadioButton labelText="提交时间新到旧" value="newest" />
 	<RadioButton labelText="提交时间旧到新" value="oldest" />
+	<RadioButton labelText="更新时间新到旧" value="newest_up" />
+	<RadioButton labelText="更新时间旧到新" value="oldest_up" />
 </RadioButtonGroup>
 
 <br />

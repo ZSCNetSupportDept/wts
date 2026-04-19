@@ -167,17 +167,21 @@ AND ($4::wts.isp[] IS NULL OR t.isp = ANY($4::wts.isp[]))
 AND t.submitted_at >= COALESCE($5, '1970-01-01'::timestamptz)
 AND t.submitted_at <= COALESCE($6, NOW()::timestamptz)
 AND ($7::wts.status[] IS NULL OR t.status = ANY($7::wts.status[]))
+AND t.last_updated_at >= COALESCE($8, '1970-01-01'::timestamptz)
+AND t.last_updated_at <= COALESCE($9, NOW()::timestamptz)
 ORDER BY t.priority ASC
 `
 
 type FilterActiveTicketsParams struct {
-	Blocks    []WtsBlock         `json:"blocks"`
-	Issuer    pgtype.Text        `json:"issuer"`
-	Category  []WtsCategory      `json:"category"`
-	Isp       []WtsIsp           `json:"isp"`
-	NewerThan pgtype.Timestamptz `json:"newerThan"`
-	OlderThan pgtype.Timestamptz `json:"olderThan"`
-	Status    []WtsStatus        `json:"status"`
+	Blocks      []WtsBlock         `json:"blocks"`
+	Issuer      pgtype.Text        `json:"issuer"`
+	Category    []WtsCategory      `json:"category"`
+	Isp         []WtsIsp           `json:"isp"`
+	NewerThan   pgtype.Timestamptz `json:"newerThan"`
+	OlderThan   pgtype.Timestamptz `json:"olderThan"`
+	Status      []WtsStatus        `json:"status"`
+	NewerThanUp pgtype.Timestamptz `json:"newerThanUp"`
+	OlderThanUp pgtype.Timestamptz `json:"olderThanUp"`
 }
 
 func (q *Queries) FilterActiveTickets(ctx context.Context, arg FilterActiveTicketsParams) ([]WtsVActiveTicket, error) {
@@ -189,6 +193,8 @@ func (q *Queries) FilterActiveTickets(ctx context.Context, arg FilterActiveTicke
 		arg.NewerThan,
 		arg.OlderThan,
 		arg.Status,
+		arg.NewerThanUp,
+		arg.OlderThanUp,
 	)
 	if err != nil {
 		return nil, err
@@ -237,17 +243,21 @@ AND ($4::wts.isp[] IS NULL OR t.isp = ANY($4::wts.isp[]))
 AND t.submitted_at >= COALESCE($5, '1970-01-01'::timestamptz)
 AND t.submitted_at <= COALESCE($6, NOW()::timestamptz)
 AND ($7::wts.status[] IS NULL OR t.status = ANY($7::wts.status[]))
+AND t.last_updated_at >= COALESCE($8, '1970-01-01'::timestamptz)
+AND t.last_updated_at <= COALESCE($9, NOW()::timestamptz)
 ORDER BY t.priority ASC
 `
 
 type FilterTicketsParams struct {
-	Blocks    []WtsBlock         `json:"blocks"`
-	Issuer    pgtype.Text        `json:"issuer"`
-	Category  []WtsCategory      `json:"category"`
-	Isp       []WtsIsp           `json:"isp"`
-	NewerThan pgtype.Timestamptz `json:"newerThan"`
-	OlderThan pgtype.Timestamptz `json:"olderThan"`
-	Status    []WtsStatus        `json:"status"`
+	Blocks      []WtsBlock         `json:"blocks"`
+	Issuer      pgtype.Text        `json:"issuer"`
+	Category    []WtsCategory      `json:"category"`
+	Isp         []WtsIsp           `json:"isp"`
+	NewerThan   pgtype.Timestamptz `json:"newerThan"`
+	OlderThan   pgtype.Timestamptz `json:"olderThan"`
+	Status      []WtsStatus        `json:"status"`
+	NewerThanUp pgtype.Timestamptz `json:"newerThanUp"`
+	OlderThanUp pgtype.Timestamptz `json:"olderThanUp"`
 }
 
 func (q *Queries) FilterTickets(ctx context.Context, arg FilterTicketsParams) ([]WtsVTicket, error) {
@@ -259,6 +269,8 @@ func (q *Queries) FilterTickets(ctx context.Context, arg FilterTicketsParams) ([
 		arg.NewerThan,
 		arg.OlderThan,
 		arg.Status,
+		arg.NewerThanUp,
+		arg.OlderThanUp,
 	)
 	if err != nil {
 		return nil, err

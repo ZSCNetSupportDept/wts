@@ -61,12 +61,14 @@ type NewRepairTraceRequest struct {
 
 // Used By: /api/v3/filter_tickets
 type FilterTicketsRequest struct {
-	Block     []sqlc.WtsBlock    `json:"block" validate:"omitempty,dive,isWtsBlock"`
-	Status    []sqlc.WtsStatus   `json:"status" validate:"omitempty,dive,isValidStatus"`
-	Priority  []sqlc.WtsPriority `json:"priority" validate:"omitempty,dive,isValidPriority"`
-	ISP       []sqlc.WtsIsp      `json:"isp" validate:"omitempty,dive,isValidISP"`
-	Issuer    string             `json:"issuer" validate:"omitempty"`
-	Category  []sqlc.WtsCategory `json:"category" validate:"omitempty,dive,isValidCategory"`
-	NewerThan time.Time          `json:"newer_than" validate:"omitempty"`
-	OlderThan time.Time          `json:"older_than" validate:"omitempty"`
+	Block       []sqlc.WtsBlock    `json:"block" validate:"omitempty,dive,isWtsBlock"`
+	Status      []sqlc.WtsStatus   `json:"status" validate:"omitempty,dive,isValidStatus"`
+	Priority    []sqlc.WtsPriority `json:"priority" validate:"omitempty,dive,isValidPriority"`
+	ISP         []sqlc.WtsIsp      `json:"isp" validate:"omitempty,dive,isValidISP"`
+	Issuer      string             `json:"issuer" validate:"omitempty"`
+	Category    []sqlc.WtsCategory `json:"category" validate:"omitempty,dive,isValidCategory"`
+	NewerThan   time.Time          `json:"newer_than" validate:"omitempty"`
+	OlderThan   time.Time          `json:"older_than" validate:"omitempty"`
+	NewerThanUp time.Time          `json:"newer_than_up" validate:"omitempty"`
+	OlderThanUp time.Time          `json:"older_than_up" validate:"omitempty"`
 }

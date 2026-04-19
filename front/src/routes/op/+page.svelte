@@ -74,7 +74,6 @@
 	function search(zone: WtsZone): Criteria {
 		return {
 			r: {
-				scope: 'active',
 				issuer: undefined,
 				block: ZoneToBlock[zone],
 				status: ['fresh', 'scheduled', 'escalated', 'delay'],
@@ -82,7 +81,9 @@
 				category: Object.keys(CategoryMap) as WtsCategory[],
 				isp: Object.keys(ISPMap) as WtsISP[],
 				newer_than: undefined,
-				older_than: undefined
+				older_than: undefined,
+				newer_than_up: undefined,
+				older_than_up: undefined
 			},
 			_order: 'priority',
 			_floor: null,

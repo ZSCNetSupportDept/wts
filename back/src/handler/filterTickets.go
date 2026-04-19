@@ -75,9 +75,18 @@ func FilterTickets(i echo.Context) error {
 	if r.OlderThan.IsZero() {
 		r.OlderThan = time.Now()
 	}
-	if r.NewerThan.After(r.OlderThan) {
+	if !r.NewerThan.IsZero() && !r.OlderThan.IsZero() && r.NewerThan.After(r.OlderThan) {
 		res.Success = false
 		res.Msg = "newerThan cannot be after olderThan"
+		res.ErrType = hutil.ErrReq
+		return i.JSON(400, res)
+	}
+	if r.OlderThanUp.IsZero() {
+		r.OlderThanUp = time.Now()
+	}
+	if !r.NewerThanUp.IsZero() && !r.OlderThanUp.IsZero() && r.NewerThanUp.After(r.OlderThanUp) {
+		res.Success = false
+		res.Msg = "newerThanUp cannot be after olderThanUp"
 		res.ErrType = hutil.ErrReq
 		return i.JSON(400, res)
 	}

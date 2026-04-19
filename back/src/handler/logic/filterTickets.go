@@ -19,13 +19,15 @@ func FilterTickets(c *hutil.WtsCtx, op string, r hutil.FilterTicketsRequest) hut
 		var t []sqlc.WtsVTicket
 		//执行数据库操作
 		t, err = q.FilterTickets(ctx, sqlc.FilterTicketsParams{
-			Blocks:    r.Block,
-			Issuer:    wtsTextOpt(r.Issuer),
-			Category:  r.Category,
-			Isp:       r.ISP,
-			NewerThan: timestamptzOpt(r.NewerThan),
-			OlderThan: timestamptzOpt(r.OlderThan),
-			Status:    r.Status,
+			Blocks:      r.Block,
+			Issuer:      wtsTextOpt(r.Issuer),
+			Category:    r.Category,
+			Isp:         r.ISP,
+			NewerThan:   timestamptzOpt(r.NewerThan),
+			OlderThan:   timestamptzOpt(r.OlderThan),
+			Status:      r.Status,
+			NewerThanUp: timestamptzOpt(r.NewerThanUp),
+			OlderThanUp: timestamptzOpt(r.OlderThanUp),
 		})
 		if err != nil {
 			return hutil.NewUnknownErr(fmt.Errorf("FilterTickets::FilterTickets()出现错误: %w", err))

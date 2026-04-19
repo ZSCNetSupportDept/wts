@@ -72,6 +72,12 @@
 				return StatusOrder[a.status] - StatusOrder[b.status];
 			});
 		}
+		if (criteria._order === 'newest_up') {
+			tickets = [...tickets].sort((a, b) => toMs(b.last_updated_at) - toMs(a.last_updated_at));
+		}
+		if (criteria._order === 'oldest_up') {
+			tickets = [...tickets].sort((a, b) => toMs(a.last_updated_at) - toMs(b.last_updated_at));
+		}
 		if (criteria._floor !== null && criteria._floor !== undefined && criteria._floor !== 0) {
 			tickets = tickets.filter((t) => getFloorFromRoom(t?.issuer?.room) === criteria._floor);
 		}
