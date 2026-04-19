@@ -176,12 +176,12 @@ func IsOwningTicket(c *hutil.WtsCtx, user string, tidInt int32) (bool, error) {
 	}
 }
 
-func emptyTime(t time.Time) string {
-	if t.IsZero() {
-		return ""
-	}
-	return t.String()
-}
+// func emptyTime(t time.Time) string {
+// 	if t.IsZero() {
+// 		return ""
+// 	}
+// 	return t.String()
+// }
 
 func emptyText(t pgtype.Text) string {
 	if !t.Valid {
@@ -197,12 +197,12 @@ func timeOptOut(t pgtype.Timestamptz) time.Time {
 	return t.Time
 }
 
-func dateOptOut(t pgtype.Date) time.Time {
-	if !t.Valid {
-		return time.Time{}
-	}
-	return t.Time
-}
+// func dateOptOut(t pgtype.Date) time.Time {
+// 	if !t.Valid {
+// 		return time.Time{}
+// 	}
+// 	return t.Time
+// }
 
 func timePtrOptOut(t pgtype.Timestamptz) *time.Time {
 	if !t.Valid {

@@ -67,6 +67,7 @@ func (i *Ctx) handleWXTxtMsg(m *message.MixMessage) string {
 }
 
 func (i *Ctx) handleNormalMsg(m *message.MixMessage) string {
+	_ = i.superEasyNLPProgram(m)
 	return "您好，系统暂时不支持自动回复哦~点击<a href=\"https://wwbx.davisye.cn\">这里</a>进入系统界面进行报修吧~"
 	//return i.superEasyNLPProgram(m)
 }
