@@ -97,3 +97,27 @@ export const sampleTrace: Trace[] = [
 		new_status: 'solved'
 	}
 ];
+
+export const sample3issuer: UserProfile = {
+	sid: 'gdXHC',
+	name: '香晖C工单',
+	block: 'XHC',
+	access: 'user',
+	room: '工单',
+	phone: '',
+	isp: 'telecom',
+	account: '',
+	wx: 'zhangsan_wx'
+};
+
+export const sample3: Ticket = {
+	tid: 3,
+	issuer: sample3issuer,
+	description: '香晖C-701 电信 ',
+	occur_at: RFC3339('2023-12-31T23:59:59Z'),
+	submitted_at: RFC3339('2024-01-01T00:10:00Z'),
+	category: 'first-install',
+	status: 'fresh',
+	priority: 'assigned',
+	notes: '上不了网，用户今天有空'
+};

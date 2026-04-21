@@ -23,6 +23,7 @@
 	import TicketDetail from '$lib/components/TraceDetail/TicketDetail.svelte';
 	import { TicketModal } from '$lib/states/ticketDetails.svelte';
 	import type { RFC3339 } from '$lib/types/RFC3339';
+	import { IsAssigned } from '$lib/utils/utils';
 
 	let q: NotificationQueue;
 	let tickets = $state([] as Ticket[]);
@@ -79,7 +80,7 @@
 			tickets = [...tickets].sort((a, b) => toMs(a.last_updated_at) - toMs(b.last_updated_at));
 		}
 		if (criteria._floor !== null && criteria._floor !== undefined && criteria._floor !== 0) {
-			tickets = tickets.filter((t) => getFloorFromRoom(t?.issuer?.room) === criteria._floor);
+			tickets = tickets.filter((t) => getFloorFromRoom(t?.issuer?.room) === criteria._floor || IsAssigned(t?.issuer?.sid));
 		}
 		if (criteria._view_today_scheduled) {
 			const todayStart = new Date().setHours(0, 0, 0, 0);

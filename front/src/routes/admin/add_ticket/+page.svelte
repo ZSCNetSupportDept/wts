@@ -142,7 +142,7 @@
 <br />
 <hr />
 <br />
-<p>为他人增添报修，注意，首先需要知道他人的学号。单独的工单增添正在开发中...</p>
+<p>为他人增添报修，注意，在这里提交首先需要知道他人的学号。<br/>录入不确定信息的工单请点击<a href="/admin/new_assignment">这里</a></p>
 <br />
 
 <TextInput labelText="用户的学号" placeholder="请输入用户学号" bind:value={r.issuer_sid} />

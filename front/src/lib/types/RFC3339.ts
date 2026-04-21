@@ -14,6 +14,20 @@ export function DateRFC3339(input: RFC3339): Date {
 	return parseISO(input);
 }
 
+export function IsDaysAgo(input: RFC3339, day: number): boolean {
+	const date = DateRFC3339(input);
+	const target = new Date();
+	target.setDate(target.getDate() - day);
+	return date < target;
+}
+
+export function IsDaysLater(input: RFC3339, day: number): boolean {
+	const date = DateRFC3339(input);
+	const target = new Date();
+	target.setDate(target.getDate() + day);
+	return date > target;
+}
+
 export function FormatDate(dateStr: string) {
 	if (!dateStr) return '未知时间';
 	return new Date(dateStr).toLocaleString('zh-CN', {

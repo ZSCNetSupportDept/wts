@@ -15,3 +15,8 @@
 <hr />
 <br />
 <p>正在开发中</p>
+<a href="/admin/new_assignment">录入工单</a>
+<br />
+<a href="/admin/add_ticket">增添报修</a>
+<br />
+<a href="/admin/filter_users">查找用户</a>

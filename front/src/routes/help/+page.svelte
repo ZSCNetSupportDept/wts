@@ -2,6 +2,8 @@
 	import { Accordion, AccordionItem } from 'carbon-components-svelte';
 	import RetroCard from '$lib/components/RetroCard.svelte';
 	import { CHIEF_PHONE, SUPPORT_QQ } from '$lib/env/businesses';
+	import OperatorTicket from '$lib/components/Ticket/OperatorTicket.svelte';
+	import { sample3 } from '$lib/testData/ticket';
 </script>
 
 <h1>校园网使用攻略</h1>
@@ -163,3 +165,5 @@
 		</AccordionItem>
 	</Accordion>
 </RetroCard>
+
+<!--<OperatorTicket t={sample3} />-->
