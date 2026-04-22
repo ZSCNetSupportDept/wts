@@ -4,6 +4,10 @@
 	import type { FilterUsersReq } from '$lib/types/apiRequest';
 	import { BlockMap, ISPMap } from '$lib/types/enum';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { Guard } from '$lib/jwt';
+	import { IsAdmin } from '$lib/types/enum';
+
 
 	let { data }: PageProps = $props();
 
@@ -28,6 +32,8 @@
 
 		goto(`/admin/filter_users/result?${params.toString()}`);
 	}
+
+	onMount(() => Guard(IsAdmin));
 </script>
 
 <h1>用户查找</h1>
@@ -42,7 +48,7 @@
 <br />
 <br />
 
-<TextInput id="name" labelText="用户的姓名" placeholder="请输入用户姓名" bind:value={r.name} />
+<TextInput id="name" labelText="用户的姓名" placeholder="可模糊搜索" bind:value={r.name} />
 <br />
 <MultiSelect
 	id="block"
@@ -60,19 +66,19 @@
 	bind:selectedIds={r.isp}
 />
 <br />
-<TextInput id="room" labelText="用户的宿舍号" placeholder="请输入用户宿舍号" bind:value={r.room} />
+<TextInput id="room" labelText="用户的宿舍号" placeholder="可模糊搜索" bind:value={r.room} />
 <br />
 <TextInput
 	id="phone"
 	labelText="用户的联系电话"
-	placeholder="请输入用户联系电话"
+	placeholder="可模糊搜索"
 	bind:value={r.phone}
 />
 <br />
 <TextInput
 	id="account"
 	labelText="用户的校园网账号"
-	placeholder="请输入用户校园网账号"
+	placeholder="可模糊搜索"
 	bind:value={r.account}
 />
 <br />

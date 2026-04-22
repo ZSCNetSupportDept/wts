@@ -2,17 +2,19 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import type { FilterUsersReq } from '$lib/types/apiRequest';
-    import type { FilterUsersRes } from '$lib/types/apiResponse';
+	import type { FilterUsersRes } from '$lib/types/apiResponse';
 	import type { WtsBlock, WtsISP } from '$lib/types/enum';
 	import type { UserProfile as UserProfileType } from '$lib/types/apiResponse';
 	import { Button, NotificationQueue } from 'carbon-components-svelte';
 	import Return from 'carbon-icons-svelte/lib/Return.svelte';
 	import { FilterUsers } from '$lib/api';
-    import UserProfile from '$lib/components/UserProfile.svelte';
+	import UserProfile from '$lib/components/UserProfile.svelte';
+	import { Guard } from '$lib/jwt';
+	import { IsAdmin } from '$lib/types/enum';
 
 	let ok = $state(false);
 	let users: UserProfileType[] = $state([] as UserProfileType[]);
-    let userEmpty = $state(false);
+	let userEmpty = $state(false);
 
 	let r: FilterUsersReq = $state({
 		name: page.url.searchParams.get('name') ?? undefined,
@@ -34,14 +36,15 @@
 	async function fetchUsers() {
 		ok = false;
 		try {
-			let r1: FilterUsersRes =  await FilterUsers(r);
+			let r1: FilterUsersRes = await FilterUsers(r);
 			if (!r1.success) {
 				throw new Error(r1.msg || '获取用户失败');
 			}
 			users = r1.profiles;
-			if (!users) {
+			if (!users || users.length === 0) {
 				userEmpty = true;
 			}
+			ok = true;
 		} catch (e: any) {
 			const errMsg = e.response?.data?.msg || e.message || '未知错误';
 			q.add({
@@ -55,6 +58,8 @@
 	}
 
 	let q: NotificationQueue;
+
+	onMount(() => Guard(IsAdmin));
 </script>
 
 <h1>用户查找结果</h1>
@@ -70,14 +75,14 @@
 </div>
 
 {#if !ok}
-    <p>处理中，请稍等...</p>
+	<p>处理中，请稍等...</p>
 {/if}
 {#if userEmpty === false}
-     {#each users as u}
-        <UserProfile {u} />
-    {/each}
+	{#each users as u}
+		<UserProfile {u} />
+	{/each}
 {:else}
-    <span>没有找到符合条件的用户。</span>
+	<span>没有找到符合条件的用户。</span>
 {/if}
 
 <NotificationQueue bind:this={q} />

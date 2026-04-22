@@ -15,8 +15,11 @@
 <hr />
 <br />
 <p>正在开发中</p>
-<a href="/admin/new_assignment">录入工单</a>
+<a href="/admin/new_assignment" style="font-size:xx-large;">录入工单</a>
 <br />
-<a href="/admin/add_ticket">增添报修</a>
+<br/>
+<a href="/admin/add_ticket" style="font-size:xx-large">增添报修</a>
 <br />
-<a href="/admin/filter_users">查找用户</a>
+<br/>
+<a href="/admin/filter_users" style="font-size:xx-large">查找用户</a>
+<p style="font-size:large; font-style:italic;">（已经做好的功能）</p>
