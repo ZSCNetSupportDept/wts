@@ -17,9 +17,9 @@ func FilterUsers(c *hutil.WtsCtx, op string, r hutil.FilterUsersRequest) hutil.F
 		u, err := q.FilterUsers(ctx, sqlc.FilterUsersParams{
 			Name:    wtsTextOpt(r.Name),
 			Phone:   wtsTextOpt(r.Phone),
-			Block:   wtsBlockOpt(r.Block),
+			Blocks:  r.Block,
 			Room:    wtsTextOpt(r.Room),
-			Isp:     wtsIspOpt(r.ISP),
+			Isps:    r.ISP,
 			Account: wtsTextOpt(r.Account),
 		})
 		if err != nil {

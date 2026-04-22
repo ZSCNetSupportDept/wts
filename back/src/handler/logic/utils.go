@@ -19,19 +19,19 @@ func wtsTextOpt(s string) pgtype.Text {
 	return pgtype.Text{String: s, Valid: true}
 }
 
-func wtsBlockOpt(s string) sqlc.NullWtsBlock {
-	if s == "" {
-		return sqlc.NullWtsBlock{Valid: false}
-	}
-	return sqlc.NullWtsBlock{WtsBlock: sqlc.WtsBlock(s), Valid: true}
-}
+// func wtsBlockOpt(s string) sqlc.NullWtsBlock {
+// 	if s == "" {
+// 		return sqlc.NullWtsBlock{Valid: false}
+// 	}
+// 	return sqlc.NullWtsBlock{WtsBlock: sqlc.WtsBlock(s), Valid: true}
+// }
 
-func wtsIspOpt(s string) sqlc.NullWtsIsp {
-	if s == "" {
-		return sqlc.NullWtsIsp{Valid: false}
-	}
-	return sqlc.NullWtsIsp{WtsIsp: sqlc.WtsIsp(s), Valid: true}
-}
+// func wtsIspOpt(s string) sqlc.NullWtsIsp {
+// 	if s == "" {
+// 		return sqlc.NullWtsIsp{Valid: false}
+// 	}
+// 	return sqlc.NullWtsIsp{WtsIsp: sqlc.WtsIsp(s), Valid: true}
+// }
 
 func timestamptzOpt(t time.Time) pgtype.Timestamptz {
 	if t.IsZero() {

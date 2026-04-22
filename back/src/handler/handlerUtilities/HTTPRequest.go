@@ -29,12 +29,12 @@ type ChangeUserProfileRequest struct {
 
 // Used By: /api/v3/filter_users
 type FilterUsersRequest struct {
-	Name    string `json:"name" validate:"omitempty,max=32"`
-	Block   string `json:"block" validate:"omitempty,isWtsBlock"`
-	Room    string `json:"room" validate:"omitempty,max=15"`
-	Phone   string `json:"phone" validate:"omitempty,isValidPhone"`
-	ISP     string `json:"isp" validate:"omitempty,isValidISP"`
-	Account string `json:"account" validate:"omitempty,max=32"`
+	Name    string          `json:"name" validate:"omitempty,max=32"`
+	Block   []sqlc.WtsBlock `json:"block" validate:"omitempty,dive,isWtsBlock"`
+	Room    string          `json:"room" validate:"omitempty,max=15"`
+	Phone   string          `json:"phone" validate:"omitempty,isValidPhone"`
+	ISP     []sqlc.WtsIsp   `json:"isp" validate:"omitempty,dive,isValidISP"`
+	Account string          `json:"account" validate:"omitempty,max=32"`
 }
 
 // Used By: /api/v3/new_ticket

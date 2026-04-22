@@ -42,12 +42,12 @@ RETURNING *;
 SELECT *
 FROM wts.v_users u
 WHERE 
-    u.name LIKE COALESCE(sqlc.narg('name'), '%')
-AND u.phone = COALESCE(sqlc.narg('phone'), u.phone)
-AND u.block = COALESCE(sqlc.narg('block'), u.block)
-AND u.room = COALESCE(sqlc.narg('room'), u.room)
-AND u.isp = COALESCE(sqlc.narg('isp'), u.isp)
-AND u.account = COALESCE(sqlc.narg('account'), u.account)
+    (sqlc.narg('name')::text IS NULL OR u.name ILIKE '%' || sqlc.narg('name')::text || '%')
+AND (sqlc.narg('phone')::text IS NULL OR u.phone ILIKE '%' || sqlc.narg('phone')::text || '%')
+AND (sqlc.narg('blocks')::wts.block[] IS NULL OR u.block = ANY(sqlc.narg('blocks')::wts.block[]))
+AND (sqlc.narg('room')::text IS NULL OR u.room ILIKE '%' || sqlc.narg('room')::text || '%')
+AND (sqlc.narg('isps')::wts.isp[] IS NULL OR u.isp = ANY(sqlc.narg('isps')::wts.isp[]))
+AND (sqlc.narg('account')::text IS NULL OR u.account ILIKE '%' || sqlc.narg('account')::text || '%')
 ORDER BY u.sid;
 
 

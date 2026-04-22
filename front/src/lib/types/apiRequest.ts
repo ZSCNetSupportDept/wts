@@ -22,10 +22,10 @@ export type ChangeProfileReq = {
 
 export type FilterUsersReq = {
 	name?: string;
-	block?: WtsBlock;
+	block?: WtsBlock[];
 	room?: string;
 	phone?: string;
-	isp?: WtsISP;
+	isp?: WtsISP[];
 	account?: string;
 };
 
