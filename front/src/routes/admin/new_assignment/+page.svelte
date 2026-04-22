@@ -253,7 +253,7 @@
 	invalid={issuer.notOK}
 	invalidText={issuer.txt}
 >
-	<SelectItem value="0" text="..." disabled hidden />
+	<SelectItem value="0" text="请选择宿舍" disabled hidden />
 	<SelectItemGroup label="凤翔宿舍区">
 		<SelectItem value="gd1" text="1栋" />
 		<SelectItem value="gd2" text="2栋" />

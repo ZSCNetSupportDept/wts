@@ -64,7 +64,7 @@
 			{/if}
 			<div class="flex items-baseline" style="margin-top: 12.5px; font-size: 15.5px;">
 				<strong style="flex-shrink: 0;width: 7em;">描述</strong>
-				<p style="font-size: 15px;">
+				<p style="font-size: 15px; white-space: pre-wrap;">
 					{t.description}
 					{#if t.occur_at}
 						<br />发生时间：{FormatDate(t.occur_at)}
@@ -111,7 +111,7 @@
 			</div>
 			<div class="flex items-baseline" style="margin-top: 12.5px; font-size: 15.5px;">
 				<strong style="flex-shrink: 0;width: 7em;">信息</strong>
-				<p style="font-size: 15px;">
+				<p style="font-size: 15px; white-space: pre-wrap;">
 					<strong>{t.issuer.name}</strong><br />{t.description}
 					<!--  用户的宿舍，运营商，联系电话，账号，名字 -->
 				</p>
