@@ -6,7 +6,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Guard } from '$lib/jwt';
-	import { IsAdmin } from '$lib/types/enum';
+	import { IsAdmin, IsAccessIn } from '$lib/types/enum';
+
 
 
 	let { data }: PageProps = $props();
@@ -33,7 +34,7 @@
 		goto(`/admin/filter_users/result?${params.toString()}`);
 	}
 
-	onMount(() => Guard(IsAdmin));
+	onMount(() => Guard(IsAccessIn('dev')));
 </script>
 
 <h1>用户查找</h1>
