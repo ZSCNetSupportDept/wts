@@ -2,11 +2,11 @@
   "button": [
     {
       "type": "view",
-      "name": "进入报修系统",
+      "name": "报修系统",
       "url": "https://wwbx.davisye.cn"
     },
     {
-      "name": "快捷操作",
+      "name": "功能导航",
       "sub_button": [
         {
           "type": "view",

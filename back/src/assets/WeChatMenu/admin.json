@@ -1,54 +1,37 @@
 {
-        "button": [
-          {
-            "name": "报修",
-            "sub_button": [
-                {
-                        "type":"view",
-                        "name":"(先自己修修看！)",
-                        "url":"https://www.zsxyww.com/wiki"
-                },
-              {
-                "type": "view",
-                "name": "快速报修",
-                "url": "https://wwbx.davisye.cn/repair/new"
-              },
-              {
-                "type": "view",
-                "name": "查看报修",
-                "url": "https://wwbx.davisye.cn/repair"
-              },
+  "button": [
+    {
+      "type": "view",
+      "name": "报修系统",
+      "url": "https://wwbx.davisye.cn"
+    },
+    {
+      "type": "view",
+      "name": "wiki",
+      "url": "https://www.zsxyww.com/wiki"
+    },
+    {
+      "name": "后台",
+      "sub_button": [
         {
-                "type": "view",
-                "name": "进入报修系统",
-                "url": "https://wwbx.davisye.cn"
-            }
-
-            ]
-          },
-          {
-            "name": "后台",
-            "sub_button": [
-                {
-                        "type":"view",
-                        "name":"查看维修后台",
-                        "url":"https://wwbx.davisye.cn/op"
-                },
-                                {
-                        "type":"view",
-                        "name":"查看管理层后台",
-                        "url":"https://wwbx.davisye.cn/admin"
-                },
-                {
-                "type":"view",
-                "name":"我的排班",
-                "url":"https://wwbx.davisye.cn/op/scheduler"
-                }
-
-            ]
-          }
-        ],
-        "matchrule": {
-          "tag_id": "100"
+          "type": "view",
+          "name": "查看后台",
+          "url": "https://wwbx.davisye.cn/op"
+        },
+        {
+          "type": "view",
+          "name": "我的排班",
+          "url": "https://wwbx.davisye.cn/op/scheduler"
+        },
+        {
+          "type": "view",
+          "name": "管理界面",
+          "url": "https://wwbx.davisye.cn/admin"
         }
-      }
+      ]
+    }
+  ],
+  "matchrule": {
+    "tag_id": "101"
+  }
+}
