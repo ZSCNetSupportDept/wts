@@ -138,11 +138,11 @@
 	onMount(() => Guard(IsAdmin));
 </script>
 
-<h1>增添工单</h1>
+<h1>增添报修</h1>
 <br />
 <hr />
 <br />
-<p>为他人增添报修，注意，在这里提交首先需要知道他人的学号。<br/>录入不确定信息的工单请点击<a href="/admin/new_assignment">这里</a></p>
+<p>为他人增添报修，注意，在这里提交首先需要知道他人的学号。<br/>录入不确定信息的运营商工单请点击<a href="/admin/new_assignment">这里</a></p>
 <br />
 
 <TextInput labelText="用户的学号" placeholder="请输入用户学号" bind:value={r.issuer_sid} />

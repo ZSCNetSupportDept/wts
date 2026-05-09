@@ -34,7 +34,7 @@
 		goto(`/admin/filter_users/result?${params.toString()}`);
 	}
 
-	onMount(() => Guard(IsAccessIn('dev')));
+	onMount(() => Guard(IsAdmin));
 </script>
 
 <h1>用户查找</h1>

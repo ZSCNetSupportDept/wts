@@ -73,12 +73,12 @@
 		</a>
 
 		<a
-			href="/admin/add_ticket"
+			href="/admin/new_assignment"
 			class="nav-item"
-			class:active={page.url.pathname === '/admin/add_ticket'}
+			class:active={page.url.pathname === '/admin/new_assignment'}
 		>
 			<SearchAdvanced />
-			<span>增添工单</span>
+			<span>录入工单</span>
 		</a>
 		<a
 			href="/admin/scheduler"
