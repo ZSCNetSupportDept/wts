@@ -163,12 +163,13 @@ WHERE
     ($1::wts.block[] IS NULL OR t.block = ANY($1::wts.block[]))
 AND t.issuer = COALESCE($2, t.issuer)
 AND ($3::wts.category[] IS NULL OR t.category = ANY($3::wts.category[]))
-AND ($4::wts.isp[] IS NULL OR t.isp = ANY($4::wts.isp[]))
-AND t.submitted_at >= COALESCE($5, '1970-01-01'::timestamptz)
-AND t.submitted_at <= COALESCE($6, NOW()::timestamptz)
-AND ($7::wts.status[] IS NULL OR t.status = ANY($7::wts.status[]))
-AND t.last_updated_at >= COALESCE($8, '1970-01-01'::timestamptz)
-AND t.last_updated_at <= COALESCE($9, NOW()::timestamptz)
+AND ($4::wts.priority[] IS NULL OR t.priority = ANY($4::wts.priority[]))
+AND ($5::wts.isp[] IS NULL OR t.isp = ANY($5::wts.isp[]))
+AND t.submitted_at >= COALESCE($6, '1970-01-01'::timestamptz)
+AND t.submitted_at <= COALESCE($7, NOW()::timestamptz)
+AND ($8::wts.status[] IS NULL OR t.status = ANY($8::wts.status[]))
+AND t.last_updated_at >= COALESCE($9, '1970-01-01'::timestamptz)
+AND t.last_updated_at <= COALESCE($10, NOW()::timestamptz)
 ORDER BY t.priority ASC
 `
 
@@ -176,6 +177,7 @@ type FilterActiveTicketsParams struct {
 	Blocks      []WtsBlock         `json:"blocks"`
 	Issuer      pgtype.Text        `json:"issuer"`
 	Category    []WtsCategory      `json:"category"`
+	Priority    []WtsPriority      `json:"priority"`
 	Isp         []WtsIsp           `json:"isp"`
 	NewerThan   pgtype.Timestamptz `json:"newerThan"`
 	OlderThan   pgtype.Timestamptz `json:"olderThan"`
@@ -189,6 +191,7 @@ func (q *Queries) FilterActiveTickets(ctx context.Context, arg FilterActiveTicke
 		arg.Blocks,
 		arg.Issuer,
 		arg.Category,
+		arg.Priority,
 		arg.Isp,
 		arg.NewerThan,
 		arg.OlderThan,
@@ -239,12 +242,13 @@ WHERE
     ($1::wts.block[] IS NULL OR t.block = ANY($1::wts.block[]))
 AND t.issuer = COALESCE($2, t.issuer)
 AND ($3::wts.category[] IS NULL OR t.category = ANY($3::wts.category[]))
-AND ($4::wts.isp[] IS NULL OR t.isp = ANY($4::wts.isp[]))
-AND t.submitted_at >= COALESCE($5, '1970-01-01'::timestamptz)
-AND t.submitted_at <= COALESCE($6, NOW()::timestamptz)
-AND ($7::wts.status[] IS NULL OR t.status = ANY($7::wts.status[]))
-AND t.last_updated_at >= COALESCE($8, '1970-01-01'::timestamptz)
-AND t.last_updated_at <= COALESCE($9, NOW()::timestamptz)
+AND ($4::wts.priority[] IS NULL OR t.priority = ANY($4::wts.priority[]))
+AND ($5::wts.isp[] IS NULL OR t.isp = ANY($5::wts.isp[]))
+AND t.submitted_at >= COALESCE($6, '1970-01-01'::timestamptz)
+AND t.submitted_at <= COALESCE($7, NOW()::timestamptz)
+AND ($8::wts.status[] IS NULL OR t.status = ANY($8::wts.status[]))
+AND t.last_updated_at >= COALESCE($9, '1970-01-01'::timestamptz)
+AND t.last_updated_at <= COALESCE($10, NOW()::timestamptz)
 ORDER BY t.priority ASC
 `
 
@@ -252,6 +256,7 @@ type FilterTicketsParams struct {
 	Blocks      []WtsBlock         `json:"blocks"`
 	Issuer      pgtype.Text        `json:"issuer"`
 	Category    []WtsCategory      `json:"category"`
+	Priority    []WtsPriority      `json:"priority"`
 	Isp         []WtsIsp           `json:"isp"`
 	NewerThan   pgtype.Timestamptz `json:"newerThan"`
 	OlderThan   pgtype.Timestamptz `json:"olderThan"`
@@ -265,6 +270,7 @@ func (q *Queries) FilterTickets(ctx context.Context, arg FilterTicketsParams) ([
 		arg.Blocks,
 		arg.Issuer,
 		arg.Category,
+		arg.Priority,
 		arg.Isp,
 		arg.NewerThan,
 		arg.OlderThan,

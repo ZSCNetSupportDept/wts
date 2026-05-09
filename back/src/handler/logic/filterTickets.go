@@ -22,6 +22,7 @@ func FilterTickets(c *hutil.WtsCtx, op string, r hutil.FilterTicketsRequest) hut
 			Blocks:      r.Block,
 			Issuer:      wtsTextOpt(r.Issuer),
 			Category:    r.Category,
+			Priority:    r.Priority,
 			Isp:         r.ISP,
 			NewerThan:   timestamptzOpt(r.NewerThan),
 			OlderThan:   timestamptzOpt(r.OlderThan),
