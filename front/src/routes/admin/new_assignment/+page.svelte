@@ -235,7 +235,7 @@
 		}
 	}
 
-	// onMount(() => Guard(IsAdmin));
+	onMount(() => Guard(IsAdmin));
 </script>
 
 <h1>录入运营商工单</h1>
