@@ -13,7 +13,11 @@ class theLastPage {
 	Write(p: string) {
 		this.p = p;
 		if (browser) {
-			sessionStorage.setItem('_the_last_page', p);
+			try {
+				sessionStorage.setItem('_the_last_page', p);
+			} catch (e) {
+				console.error('Failed to write to sessionStorage:', e);
+			}
 		}
 	}
 
