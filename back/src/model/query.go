@@ -34,6 +34,7 @@ func (store *Store) DoQuery(ctx context.Context, wx string, fn Query) error {
 
 	qtx := store.WithTx(tx)
 
+	// 微信OpenID作为JWT的内容，这样做应该不会有安全问题
 	_, err = tx.Exec(ctx, fmt.Sprintf("SET LOCAL wts.wx = '%s'", wx))
 	if err != nil {
 		return fmt.Errorf("failed to set local wx context: %w", err)
