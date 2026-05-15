@@ -28,7 +28,7 @@ func Connect(cfg *config.Config) *pgxpool.Pool {
 		}
 		dbcfg.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
 			// pgx无法自动识别数据库里自定义的枚举类型及其数组类型，在这里手动注册
-			for _, baseTypeName := range []string{"wts.block", "wts.isp", "wts.category", "wts.status"} {
+			for _, baseTypeName := range []string{"wts.block", "wts.isp", "wts.category", "wts.status", "wts.priority"} {
 
 				baseType, err := conn.LoadType(ctx, baseTypeName)
 				if err != nil {
