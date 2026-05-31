@@ -24,14 +24,14 @@
 	import { Register } from '$lib/api';
 	import { TheLastPage } from '$lib/states/theLastPage.svelte';
 	import { onMount } from 'svelte';
-	import { IsUnregistered } from '$lib/types/enum';
+	import { IsUnregistered, IsAccessIn } from '$lib/types/enum';
 	import { Guard } from '$lib/jwt';
 
 	let q: NotificationQueue;
 
 	let notLoading: boolean = $state(true);
 
-	onMount(() => Guard(IsUnregistered));
+	onMount(() => Guard(IsAccessIn('unregistered', 'dev')));
 
 	//注册请求体状态变量
 	let req = $state({
@@ -212,6 +212,11 @@
 	invalid={account.notOK}
 	invalidText={account.txt}
 />
+<br />
+<br />
+<p style="color: gray; font-style: italic;">
+	（如果您还没有校园网账号，请选择“其它”运营商并在账号一栏填写“暂无”。）
+</p>
 <br />
 <br />
 <hr />
