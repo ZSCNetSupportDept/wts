@@ -217,3 +217,44 @@ func datePtrOptOut(t pgtype.Date) *time.Time {
 	}
 	return &t.Time
 }
+
+func getUserByWX(c *hutil.WtsCtx, wx string) (hutil.UserProfile, error) {
+	ctx := c.Request().Context()
+	id := c.Response().Header().Get(echo.HeaderXRequestID)
+	var res hutil.UserProfile
+	var err error
+	err = c.DB.DoQuery(ctx, "system", func(q *sqlc.Queries) error {
+		u, err := q.GetUserByWX(ctx, wx)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return hutil.NewWtsErr(ErrNoSuchUser, err)
+			}
+			return err
+		}
+		res = hutil.UserProfile{
+			Sid:     u.Sid.String,
+			Name:    u.Name.String,
+			Block:   string(u.Block.WtsBlock),
+			Access:  string(u.Access.WtsAccess),
+			Room:    u.Room.String,
+			Phone:   u.Phone.String,
+			ISP:     string(u.Isp.WtsIsp),
+			Account: u.Account.String,
+			WX:      u.Wx,
+		}
+		return nil
+	})
+	if err != nil {
+		if hutil.IsKnownErr(err) {
+			return res, err
+
+		} else {
+			slog.Warn("getUserByWX数据库操作失败", "id", id, "error", err)
+			if c.Cfg.Debug.APIVerbose {
+				return res, err
+			}
+			return res, errors.New("database operation failed,please view logs")
+		}
+	}
+	return res, err
+}

@@ -20,23 +20,33 @@ func (i *Ctx) processCommand(m *message.MixMessage) string {
 	switch m.Content {
 	case "/debug OpenID":
 		return "您的OpenID是:" + m.GetOpenID()
-	//TODO： 真的要加上这个功能吗。。。
-	case "/debug deleteAccount":
-		return "您的账号已删除，如需重新使用请重新绑定~"
-	//TODO: 只有管理员才能调用/debug tagme相关命令~
-	case "/debug tagme default":
+	case "/tagme default":
 		err := i.ChangeUserTag(u, "default")
 		if err != nil {
 			return "操作失败：" + err.Error()
 		}
 		return "您的标签已设置为默认用户~"
-	case "/debug tagme operator":
+	case "/tagme operator":
+		who, err1 := getUserByWX((*hutil.WtsCtx)(i), u)
+		if err1 != nil {
+			return "操作失败：" + err1.Error()
+		}
+		if !hutil.IsOperator(sqlc.WtsAccess(who.Access)) {
+			return "您还不是网维的成员，无法进行此操作~"
+		}
 		err := i.ChangeUserTag(u, "operator")
 		if err != nil {
 			return "操作失败：" + err.Error()
 		}
 		return "您的标签已设置为网维成员~"
-	case "/debug tagme admin":
+	case "/tagme admin":
+		who, err1 := getUserByWX((*hutil.WtsCtx)(i), u)
+		if err1 != nil {
+			return "操作失败：" + err1.Error()
+		}
+		if !hutil.IsAdmin(sqlc.WtsAccess(who.Access)) {
+			return "您还不是管理层，无法进行此操作~"
+		}
 		err := i.ChangeUserTag(u, "admin")
 		if err != nil {
 			return "操作失败：" + err.Error()
@@ -111,7 +121,7 @@ func (i *Ctx) ChangeUserTag(oid string, tag string) error {
 
 }
 
-// 检查用户是否已经在operators表中，若是则修改菜单栏
+// 检查用户是否已经在operators或admin表中，若是则修改菜单栏为对应权限的。
 func (i *Ctx) auth(u string) string {
 	ctx := context.Background()
 	err := i.DB.DoQuery(ctx, u, func(q *sqlc.Queries) error {
@@ -127,6 +137,7 @@ func (i *Ctx) auth(u string) string {
 		}
 		if hutil.IsAdmin(u.Access.WtsAccess) {
 			i.ChangeUserTag(u.Wx, "admin")
+			return nil
 		}
 		i.ChangeUserTag(u.Wx, "operator")
 		return nil
