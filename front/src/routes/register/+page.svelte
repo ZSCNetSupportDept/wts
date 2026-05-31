@@ -66,14 +66,14 @@
 		name.assert(req.name.length <= 15, '姓名不能超过15个字符');
 		sid.assert(req.sid.length > 0, '学号不能为空');
 		sid.assert(req.sid.length <= 15, '学号不能超过15个字符');
-		// 然后，校园网账号和手机号是中国大陆的11位手机号码
+		// 然后，除了联通之外的校园网账号和手机号是中国大陆的11位手机号码
 		const phoneRegex = /^1[3-9]\d{9}$/;
 		account.assert(
-			req.isp === 'others' || phoneRegex.test(req.account),
+			req.isp === 'others' || req.isp === 'unicom' || phoneRegex.test(req.account),
 			'校园网账号应为有效的11位手机号'
 		);
 		account.assert(req.isp !== 'others' || req.account.length > 0, '请输入您的校园网账号');
-		account.assert(req.isp !== 'others' || req.account.length <= 15, '校园网账号不能超过15个字符');
+		account.assert(req.isp !== 'others' || req.account.length <= 50, '校园网账号不能超过50个字符');
 		phone.assert(phoneRegex.test(req.phone), '联系电话应为有效的11位手机号');
 		// 接着，宿舍楼不能为空且房间号不能超过5个字符且不能为空
 		block.assert(req.block !== '0', '请选择宿舍楼');

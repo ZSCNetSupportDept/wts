@@ -53,14 +53,14 @@
 		phone.reset();
 		block.reset();
 		room.reset();
-		// 然后，校园网账号和手机号是中国大陆的11位手机号码
+		// 然后，除了联通之外的校园网账号和手机号是中国大陆的11位手机号码
 		const phoneRegex = /^1[3-9]\d{9}$/;
 		account.assert(
-			req.isp === 'others' || phoneRegex.test(req.account),
+			req.isp === 'others' || req.isp === 'unicom' || phoneRegex.test(req.account),
 			'校园网账号应为有效的11位手机号'
 		);
 		account.assert(req.isp !== 'others' || req.account.length > 0, '请输入您的校园网账号');
-		account.assert(req.isp !== 'others' || req.account.length <= 15, '校园网账号不能超过15个字符');
+		account.assert(req.isp !== 'others' || req.account.length <= 50, '校园网账号不能超过50个字符');
 		phone.assert(phoneRegex.test(req.phone), '联系电话应为有效的11位手机号');
 		// 接着，宿舍楼不能为空且房间号不能超过5个字符且不能为空
 		block.assert(req.block !== '0', '请选择宿舍楼');
@@ -144,8 +144,10 @@
 <br />
 <p>
 	<span>您的个人信息被我们用于提供上门维修服务，如果信息有更新的，可以在这里修改。</span>
-	<br/>
-	<span style="font-size:0.9em; color: gray; font-style: italic;">如果需要修改学号或者姓名，请联系我们手动修改。</span>
+	<br />
+	<span style="font-size:0.9em; color: gray; font-style: italic;"
+		>如果需要修改学号或者姓名，请联系我们手动修改。</span
+	>
 </p>
 <br />
 <RadioButtonGroup
