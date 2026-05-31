@@ -12,6 +12,7 @@
 	function gotoAuthAPI() {
 		if (dev) {
 			if (env.PUBLIC_JWT) {
+				console.log('当前PUBLIC_JWT:', env.PUBLIC_JWT);
 				docCookies.setItem('jwt', env.PUBLIC_JWT, Infinity, '/');
 				goto('/login/success');
 			} else {
