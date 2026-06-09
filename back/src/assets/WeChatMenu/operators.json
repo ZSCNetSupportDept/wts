@@ -11,11 +11,11 @@
       "url": "https://www.zsxyww.com/wiki"
     },
     {
-      "name": "后台",
+      "name": "快捷入口",
       "sub_button": [
         {
           "type": "view",
-          "name": "查看后台",
+          "name": "修理后台",
           "url": "https://wwbx.davisye.cn/op"
         },
         {

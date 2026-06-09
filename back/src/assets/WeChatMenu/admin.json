@@ -11,22 +11,22 @@
       "url": "https://www.zsxyww.com/wiki"
     },
     {
-      "name": "快捷入口",
+      "name": "管理入口",
       "sub_button": [
-        {
-          "type": "view",
-          "name": "查看后台",
-          "url": "https://wwbx.davisye.cn/op"
-        },
-        {
-          "type": "view",
-          "name": "我的排班",
-          "url": "https://wwbx.davisye.cn/op/scheduler"
-        },
         {
           "type": "view",
           "name": "管理界面",
           "url": "https://wwbx.davisye.cn/admin"
+        },
+        {
+          "type": "view",
+          "name": "录入运营商工单",
+          "url": "https://wwbx.davisye.cn/admin/new_assignment"
+        },
+        {
+          "type": "view",
+          "name": "维修后台",
+          "url": "https://wwbx.davisye.cn/op"
         }
       ]
     }
