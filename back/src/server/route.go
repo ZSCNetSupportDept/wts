@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"zsxyww.com/wts/config"
 	"zsxyww.com/wts/handler"
+	hutil "zsxyww.com/wts/handler/handlerUtilities"
 )
 
 func routeRegister(app *echo.Echo, cfg *config.Config) { // Routes
@@ -19,7 +20,9 @@ func routeRegister(app *echo.Echo, cfg *config.Config) { // Routes
 
 	if !cfg.Debug.SkipJWTAuth {
 		v3.Use(JWTAuthMiddleware(cfg.JWTKey))
+		v3.Use(TokenBlockMiddleware(hutil.TokenBl))
 		v3rest.Use(JWTAuthMiddleware(cfg.JWTKey))
+		v3rest.Use(TokenBlockMiddleware(hutil.TokenBl))
 	}
 
 	{ //Debug and Miscellaneous Routes
@@ -46,6 +49,7 @@ func routeRegister(app *echo.Echo, cfg *config.Config) { // Routes
 		v3.POST("/filter_tickets", handler.FilterTickets)
 		v3.GET("/get_traces", handler.GetTraces)
 		v3.GET("/ticket_overview", handler.TicketOverview)
+			v3.POST("/revoke_my_token", handler.RevokeMyToken)
 
 	}
 

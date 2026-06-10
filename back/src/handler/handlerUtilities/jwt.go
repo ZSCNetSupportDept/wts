@@ -1,6 +1,8 @@
 package hutil
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
@@ -21,6 +23,7 @@ var NewWtsJWT func(openID, sid string, access sqlc.WtsAccess, username string, a
 
 func InitJWTKey(key string) {
 	NewWtsJWT = func(openID, sid string, access sqlc.WtsAccess, username string, avatar string, name string, expire int) (string, error) {
+		jti := generateJTI()
 
 		t := &WtsJWT{
 			OpenID:   openID,
@@ -30,6 +33,7 @@ func InitJWTKey(key string) {
 			Avatar:   avatar,
 			Name:     name,
 			RegisteredClaims: jwt.RegisteredClaims{
+				ID:        jti,
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expire) * time.Minute)),
 				IssuedAt:  jwt.NewNumericDate(time.Now()),
 			},
@@ -42,5 +46,10 @@ func InitJWTKey(key string) {
 		}
 		return token, nil
 	}
+}
 
+func generateJTI() string {
+	b := make([]byte, 16)
+	rand.Read(b)
+	return hex.EncodeToString(b)
 }

@@ -62,6 +62,33 @@ func customContext(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+func TokenBlockMiddleware(bl *hutil.TokenBlacklist) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			user := c.Get("jwt")
+			if user == nil {
+				return next(c)
+			}
+			token, ok := user.(*jwt.Token)
+			if !ok {
+				return next(c)
+			}
+			claims, ok := token.Claims.(*hutil.WtsJWT)
+			if !ok {
+				return next(c)
+			}
+			if claims.ID != "" && bl != nil && bl.IsRevoked(claims.ID) {
+				return c.JSON(403, map[string]string{
+					"msg":        "您的登录凭证已被吊销，请重新登录。",
+					"success":    "false",
+					"error_type": string(rune(hutil.ErrAuth)),
+				})
+			}
+			return next(c)
+		}
+	}
+}
+
 func JWTAuthMiddleware(key string) echo.MiddlewareFunc {
 	return echojwt.WithConfig(echojwt.Config{
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {

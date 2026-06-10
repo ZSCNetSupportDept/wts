@@ -12,7 +12,10 @@ import (
 func Setup(cfg *config.Config, dbx *pgxpool.Pool, wx *officialaccount.OfficialAccount) *echo.Echo {
 	app := echo.New()
 
-	setDefaultContext(cfg, dbx, wx) // For custom context,read the comment on this function
+	setDefaultContext(cfg, dbx, wx)
+
+	hutil.InitTokenBlacklist()
+
 	middlewareRegister(app, cfg)
 	routeRegister(app, cfg)
 
