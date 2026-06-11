@@ -36,7 +36,7 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
-		"axios": "^1.13.2",
+		"axios": "^1.16.0",
 		"carbon-components-svelte": "^0.101.1",
 		"carbon-icons-svelte": "^13.8.0",
 		"carbon-pictograms-svelte": "^13.14.0",
