@@ -1,11 +1,11 @@
 module zsxyww.com/wts
 
-go 1.24.6
+go 1.25.0
 
 require (
 	github.com/go-playground/validator/v10 v10.28.0
 	github.com/golang-jwt/jwt/v5 v5.3.0
-	github.com/jackc/pgx/v5 v5.7.6
+	github.com/jackc/pgx/v5 v5.9.2
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/silenceper/wechat/v2 v2.1.9
