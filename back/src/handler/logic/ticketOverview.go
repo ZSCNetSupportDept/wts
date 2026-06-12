@@ -23,18 +23,22 @@ func TicketOverview(c *hutil.WtsCtx, op string) hutil.TicketOverviewResponse {
 		//println("")
 
 		resultMap := make(map[sqlc.WtsBlock]int64)
+		todayResultMap := make(map[sqlc.WtsBlock]int64)
 
 		allZone, _ := model.BlocksInZone("all") //大概不会有问题
 		for _, a := range allZone {
 			resultMap[a] = 0
+			todayResultMap[a] = 0
 		}
 
 		for _, a := range count {
 			if a.Block.Valid { //应该不会有没有信息的情况，除非用户是通过数据库直接插进来的，不过还是要严谨一点
 				resultMap[a.Block.WtsBlock] = a.Total
+				todayResultMap[a.Block.WtsBlock] = a.Today
 			}
 		}
 		result.CountByBlock = resultMap
+		result.TodayCountByBlock = todayResultMap
 		return nil
 	})
 	result.Err = err

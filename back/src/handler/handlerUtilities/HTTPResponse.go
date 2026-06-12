@@ -116,7 +116,8 @@ type GetTracesResponse struct {
 // Used by: /api/v3/ticket_overview
 type TicketOverviewResponse struct {
 	commonMember
-	CountByBlock map[sqlc.WtsBlock]int64 `json:"count_by_block,omitempty"`
+	CountByBlock      map[sqlc.WtsBlock]int64 `json:"count_by_block,omitempty"`
+	TodayCountByBlock map[sqlc.WtsBlock]int64 `json:"today_count_by_block,omitempty"`
 }
 
 // Used by various APIs......

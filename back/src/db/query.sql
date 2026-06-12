@@ -149,7 +149,13 @@ LIMIT 1;
 --数据分析--
 
 -- name: GetActiveTicketCountByBlock :many
-SELECT block, COUNT(*) AS total
+SELECT
+  block,
+  COUNT(*) AS total,
+  COUNT(*) FILTER (
+    WHERE status IN ('fresh', 'delay', 'escalated')
+      OR (status = 'scheduled' AND appointed_at::date = CURRENT_DATE)
+  ) AS today
 FROM wts.v_active_tickets
 WHERE block IS NOT NULL
 GROUP BY block

@@ -92,4 +92,5 @@ export type GetTracesRes = CommonResponse & {
 // used by: /api/v3/ticket_overview
 export type TicketOverviewRes = CommonResponse & {
 	count_by_block: Record<WtsBlock, number>;
+	today_count_by_block: Record<WtsBlock, number>;
 };

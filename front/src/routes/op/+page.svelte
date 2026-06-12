@@ -25,7 +25,9 @@
 	onMount(() => getTicketOverview());
 
 	let countByBlock: Record<WtsBlock, number> = $state(undefined);
+	let todayCountByBlock: Record<WtsBlock, number> = $state(undefined);
 	let countByZone: Record<WtsZone, number> = $state(undefined);
+	let todayCountByZone: Record<WtsZone, number> = $state(undefined);
 
 	const zoneDisplayOrder: WtsZone[] = ['FX', 'BM', 'DM', 'QT', 'XHAB', 'XHCD', 'ZH'];
 
@@ -44,6 +46,7 @@
 				throw new Error(res.msg || '获取片区总览失败');
 			}
 			countByBlock = res.count_by_block;
+			todayCountByBlock = res.today_count_by_block;
 			parseTicketCount();
 		} catch (e: any) {
 			const errMsg = e.response?.data?.msg || e.message || '未知错误';
@@ -60,15 +63,20 @@
 
 	function parseTicketCount() {
 		const zoneCounts: Record<WtsZone, number> = {} as Record<WtsZone, number>;
+		const todayZoneCounts: Record<WtsZone, number> = {} as Record<WtsZone, number>;
 
 		(Object.keys(ZoneToBlock) as WtsZone[]).forEach((zone) => {
 			const blocks = ZoneToBlock[zone];
 			zoneCounts[zone] = blocks.reduce((acc, block) => {
 				return acc + (countByBlock?.[block] ?? 0);
 			}, 0);
+			todayZoneCounts[zone] = blocks.reduce((acc, block) => {
+				return acc + (todayCountByBlock?.[block] ?? 0);
+			}, 0);
 		});
 
 		countByZone = zoneCounts;
+		todayCountByZone = todayZoneCounts;
 	}
 
 	function search(zone: WtsZone): Criteria {
@@ -121,12 +129,20 @@
 				on:click={() => jumpSearch(zone)}
 			>
 				<span class="zone-name">{ZoneMap[zone]}</span>
-				<span class="zone-count">{countByZone?.[zone] ?? 0}</span>
+				<span class="zone-count">
+					<span class="zone-count-today">{todayCountByZone?.[zone] ?? 0}</span>
+					<span class="zone-count-separator"> / </span>
+					<span class="zone-count-total">{countByZone?.[zone] ?? 0}</span>
+				</span>
 			</Tile>
 		{:else}
 			<Tile class="zone-tile zone-none" on:click={() => jumpSearch(zone)}>
 				<span class="zone-name">{ZoneMap[zone]}</span>
-				<span class="zone-count">0</span>
+				<span class="zone-count">
+					<span class="zone-count-today">0</span>
+					<span class="zone-count-separator"> / </span>
+					<span class="zone-count-total">0</span>
+				</span>
 			</Tile>
 		{/if}
 	{/each}
@@ -154,10 +170,25 @@
 	}
 
 	.zone-count {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.1rem;
 		text-align: right;
 		margin-left: auto;
-		min-width: 2ch;
+		min-width: 4ch;
 		font-variant-numeric: tabular-nums;
+	}
+
+	.zone-count-today {
+		color: var(--cds-text-primary, #161616);
+		font-weight: 700;
+	}
+
+	.zone-count-separator {
+		color: var(--cds-text-secondary, #555555);
+	}
+
+	.zone-count-total {
 		color: var(--cds-text-secondary, #525252);
 		font-weight: 600;
 	}
