@@ -131,8 +131,8 @@
 				<span class="zone-name">{ZoneMap[zone]}</span>
 				<span class="zone-count">
 					<span class="zone-count-today">{todayCountByZone?.[zone] ?? 0}</span>
-					<span class="zone-count-separator"> / </span>
-					<span class="zone-count-total">{countByZone?.[zone] ?? 0}</span>
+					<!-- <span class="zone-count-separator">/</span> -->
+					<span class="zone-count-total">({countByZone?.[zone] ?? 0})</span>
 				</span>
 			</Tile>
 		{:else}
@@ -140,8 +140,8 @@
 				<span class="zone-name">{ZoneMap[zone]}</span>
 				<span class="zone-count">
 					<span class="zone-count-today">0</span>
-					<span class="zone-count-separator"> / </span>
-					<span class="zone-count-total">0</span>
+					<!-- <span class="zone-count-separator">/</span> -->
+					<span class="zone-count-total">(0)</span>
 				</span>
 			</Tile>
 		{/if}
@@ -182,15 +182,17 @@
 	.zone-count-today {
 		color: var(--cds-text-primary, #161616);
 		font-weight: 700;
+		font-size: 1.1em;
 	}
 
 	.zone-count-separator {
-		color: var(--cds-text-secondary, #555555);
+		color: var(--cds-text-secondary, rgb(75, 75, 75));
 	}
 
 	.zone-count-total {
-		color: var(--cds-text-secondary, #525252);
-		font-weight: 600;
+		color: var(--cds-text-secondary, #cacaca);
+		font-weight: 500;
+		font-size: 1.1em;
 	}
 
 	:global(.zone-none) {
