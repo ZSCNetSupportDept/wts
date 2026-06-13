@@ -24,7 +24,14 @@ func middlewareRegister(app *echo.Echo, cfg *config.Config) {
 		_ = human
 	}
 	app.Use(middleware.Recover())
-	app.Use(middleware.Secure())
+	app.Use(middleware.SecureWithConfig(middleware.SecureConfig{
+		XSSProtection:         "1; mode=block",
+		ContentTypeNosniff:    "nosniff",
+		XFrameOptions:         "SAMEORIGIN",
+		HSTSMaxAge:            3600,
+		ContentSecurityPolicy: "default-src 'self' https://zsxyww.com",
+		ReferrerPolicy:        "strict-origin-when-cross-origin",
+	}))
 	app.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20.0)))
 
 	app.Use(middleware.GzipWithConfig(middleware.GzipConfig{
