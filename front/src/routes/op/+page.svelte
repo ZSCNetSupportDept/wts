@@ -185,9 +185,9 @@
 		font-size: 1.1em;
 	}
 
-	.zone-count-separator {
+	/* .zone-count-separator {
 		color: var(--cds-text-secondary, rgb(75, 75, 75));
-	}
+	} */
 
 	.zone-count-total {
 		color: var(--cds-text-secondary, #cacaca);
