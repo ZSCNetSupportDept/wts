@@ -117,10 +117,10 @@ var ScheduledTo = map[sqlc.WtsStatus]bool{
 }
 
 var EscalatedTo = map[sqlc.WtsStatus]bool{
-	sqlc.WtsStatusFresh:     false,
-	sqlc.WtsStatusDelay:     false,
+	sqlc.WtsStatusFresh:     true,
+	sqlc.WtsStatusDelay:     true,
 	sqlc.WtsStatusScheduled: true,
-	sqlc.WtsStatusEscalated: false,
+	sqlc.WtsStatusEscalated: true,
 	sqlc.WtsStatusCanceled:  true,
 	sqlc.WtsStatusSolved:    true,
 }
