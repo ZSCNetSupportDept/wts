@@ -44,7 +44,7 @@ func GetTicket(c *hutil.WtsCtx, op string, who string) hutil.GetTicketResponse {
 				SubmittedAt:   timeOptOut(ti.SubmittedAt),
 				OccurAt:       timePtrOptOut(ti.OccurAt),
 				Description:   ti.Description,
-				AppointedAt:   datePtrOptOut(ti.AppointedAt),
+				AppointedAt:   appointDatePtrOptOut(ti.AppointedAt),
 				Notes:         ti.Notes.String,
 				Priority:      string(ti.Priority),
 				Category:      string(ti.Category),

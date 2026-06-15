@@ -53,7 +53,7 @@ func FilterTickets(c *hutil.WtsCtx, op string, r hutil.FilterTicketsRequest) hut
 				Notes:         a.Notes.String,
 				Priority:      string(a.Priority),
 				Status:        string(a.Status),
-				AppointedAt:   datePtrOptOut(a.AppointedAt),
+				AppointedAt:   appointDatePtrOptOut(a.AppointedAt),
 				LastUpdatedAt: timeOptOut(a.LastUpdatedAt),
 			})
 		}

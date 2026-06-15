@@ -32,7 +32,7 @@ func GetTraces(c *hutil.WtsCtx, op string, tidInt int32) hutil.GetTracesResponse
 				OpName:         emptyText(tr.Name),
 				NewStatus:      string(tr.NewStatus.WtsStatus),
 				NewPriority:    string(tr.NewPriority.WtsPriority),
-				NewAppointment: datePtrOptOut(tr.NewAppointment),
+				NewAppointment: appointDatePtrOptOut(tr.NewAppointment),
 				NewCategory:    string(tr.NewCategory.WtsCategory),
 				Remark:         tr.Remark,
 				//TODO： 是不是也写emptyStatus这种的？

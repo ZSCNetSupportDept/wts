@@ -208,14 +208,18 @@ func timePtrOptOut(t pgtype.Timestamptz) *time.Time {
 	if !t.Valid {
 		return nil
 	}
-	return &t.Time
+	t1 := t.Time
+
+	return &t1
 }
 
-func datePtrOptOut(t pgtype.Date) *time.Time {
+// 只用于预约时间的输出
+func appointDatePtrOptOut(t pgtype.Date) *time.Time {
 	if !t.Valid {
 		return nil
 	}
-	return &t.Time
+	t1 := time.Date(t.Time.Year(), t.Time.Month(), t.Time.Day(), 16, 30, 0, 0, t.Time.Location())
+	return &t1
 }
 
 func getUserByWX(c *hutil.WtsCtx, wx string) (hutil.UserProfile, error) {
