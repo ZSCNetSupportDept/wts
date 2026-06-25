@@ -363,6 +363,14 @@ func (ns NullWtsStatus) Value() (driver.Value, error) {
 	return string(ns.WtsStatus), nil
 }
 
+// 简单键值存储
+type DataKvstore struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+	// 更新/创建时间
+	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+}
+
 // 学校所有学生的姓名和学号，系统依赖于这个表运行，记录由管理人员负责插入
 type DataStudent struct {
 	// 学号
@@ -377,6 +385,24 @@ type SchedulerFreeday struct {
 	Wid string `json:"wid"`
 	// 在哪天有空
 	FreeAt SchedulerWeekday `json:"free_at"`
+}
+
+// 系统的通知公告
+type WtsNotice struct {
+	// 编号
+	Nid int32 `json:"nid"`
+	// 标题
+	Title string `json:"title"`
+	// 内容
+	Content string `json:"content"`
+	// 公告录入数据库的日期
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	// 公告开始推送的日期
+	StartsAt pgtype.Timestamptz `json:"starts_at"`
+	// 公告结束推送的日期
+	EndsAt pgtype.Timestamptz `json:"ends_at"`
+	// 是否启用该公告
+	Enable bool `json:"enable"`
 }
 
 // 网维的成员
@@ -461,6 +487,14 @@ type WtsUser struct {
 	RegisteredAt pgtype.Timestamptz `json:"registered_at"`
 	// 最近个人信息更新的时间
 	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+}
+
+// 当前活跃的通知
+type WtsVActiveNotice struct {
+	Nid       int32              `json:"nid"`
+	Title     string             `json:"title"`
+	Content   string             `json:"content"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
 // 活跃的工单

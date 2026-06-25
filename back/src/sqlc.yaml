@@ -1,7 +1,7 @@
 version: "2"
 sql:
   - engine: "postgresql"
-    schema: "db/wts3_v0.3.30-script.sql"
+    schema: "db/wts3_v0.3.125-script_public.sql"
     queries: "db/query.sql"
     gen:
       go:

@@ -34,7 +34,7 @@ type Ticket struct {
 	Tid           int32       `json:"tid"`
 	Issuer        UserProfile `json:"issuer"`
 	SubmittedAt   time.Time   `json:"submitted_at"`
-	OccurAt       *time.Time  `json:"occur_at,,omitempty"`
+	OccurAt       *time.Time  `json:"occur_at,omitempty"`
 	Description   string      `json:"description"`
 	Category      string      `json:"category"`
 	Notes         string      `json:"notes"`

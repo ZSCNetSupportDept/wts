@@ -1,8 +1,10 @@
 -- ** Database generated with pgModeler (PostgreSQL Database Modeler).
--- ** pgModeler version: 1.2.2
+-- ** pgModeler version: 1.2.3
 -- ** PostgreSQL version: 17.0
 -- ** Project Site: pgmodeler.io
 -- ** Model Author: ---
+-- ** Database creation must be performed outside a multi lined SQL file. 
+-- ** These commands were put in this file only as a convenience.
 
 -- object: zsc | type: DATABASE --
 -- DROP DATABASE IF EXISTS zsc;
@@ -226,61 +228,61 @@ INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered
 -- ddl-end --
 INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'-2', NULL, NULL, NULL, NULL, NULL, E'user', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd1', NULL, E'1', E'工单', NULL, NULL, E'1', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd1', NULL, E'1', E'工单', E'others', NULL, E'1', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd2', NULL, E'2', E'工单', NULL, NULL, E'2', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd2', NULL, E'2', E'工单', E'others', NULL, E'2', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd3', NULL, E'3', E'工单', NULL, NULL, E'3', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd3', NULL, E'3', E'工单', E'others', NULL, E'3', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd4', NULL, E'4', E'工单', NULL, NULL, E'4', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd4', NULL, E'4', E'工单', E'others', NULL, E'4', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd5', NULL, E'5', E'工单', NULL, NULL, E'5', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd5', NULL, E'5', E'工单', E'others', NULL, E'5', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd6', NULL, E'6', E'工单', NULL, NULL, E'6', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd6', NULL, E'6', E'工单', E'others', NULL, E'6', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd7', NULL, E'7', E'工单', NULL, NULL, E'7', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd7', NULL, E'7', E'工单', E'others', NULL, E'7', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd8', NULL, E'8', E'工单', NULL, NULL, E'8', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd8', NULL, E'8', E'工单', E'others', NULL, E'8', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd9', NULL, E'9', E'工单', NULL, NULL, E'9', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd9', NULL, E'9', E'工单', E'others', NULL, E'9', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd10', NULL, E'10', E'工单', NULL, NULL, E'10', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd10', NULL, E'10', E'工单', E'others', NULL, E'10', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd11', NULL, E'11', E'工单', NULL, NULL, E'11', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd11', NULL, E'11', E'工单', E'others', NULL, E'11', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd12', NULL, E'12', E'工单', NULL, NULL, E'12', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd12', NULL, E'12', E'工单', E'others', NULL, E'12', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd13', NULL, E'13', E'工单', NULL, NULL, E'13', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd13', NULL, E'13', E'工单', E'others', NULL, E'13', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd14', NULL, E'14', E'工单', NULL, NULL, E'14', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd14', NULL, E'14', E'工单', E'others', NULL, E'14', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd15', NULL, E'15', E'工单', NULL, NULL, E'15', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd15', NULL, E'15', E'工单', E'others', NULL, E'15', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd16', NULL, E'16', E'工单', NULL, NULL, E'16', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd16', NULL, E'16', E'工单', E'others', NULL, E'16', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd17', NULL, E'17', E'工单', NULL, NULL, E'17', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd17', NULL, E'17', E'工单', E'others', NULL, E'17', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd18', NULL, E'18', E'工单', NULL, NULL, E'18', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd18', NULL, E'18', E'工单', E'others', NULL, E'18', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd19', NULL, E'19', E'工单', NULL, NULL, E'19', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd19', NULL, E'19', E'工单', E'others', NULL, E'19', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd20', NULL, E'20', E'工单', NULL, NULL, E'20', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd20', NULL, E'20', E'工单', E'others', NULL, E'20', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd21', NULL, E'21', E'工单', NULL, NULL, E'21', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd21', NULL, E'21', E'工单', E'others', NULL, E'21', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd22', NULL, E'22', E'工单', NULL, NULL, E'22', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gd22', NULL, E'22', E'工单', E'others', NULL, E'22', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHA', NULL, E'XHA', E'工单', NULL, NULL, E'xha', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHA', NULL, E'XHA', E'工单', E'others', NULL, E'xha', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHB', NULL, E'XHB', E'工单', NULL, NULL, E'xhb', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHB', NULL, E'XHB', E'工单', E'others', NULL, E'xhb', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHC', NULL, E'XHC', E'工单', NULL, NULL, E'xhc', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHC', NULL, E'XHC', E'工单', E'others', NULL, E'xhc', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHD', NULL, E'XHD', E'工单', NULL, NULL, E'xhd', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdXHD', NULL, E'XHD', E'工单', E'others', NULL, E'xhd', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdZH', NULL, E'ZH', E'工单', NULL, NULL, E'zh', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdZH', NULL, E'ZH', E'工单', E'others', NULL, E'zh', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
-INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdOther', NULL, E'other', E'工单', NULL, NULL, E'other', E'false', current_timestamp, current_timestamp);
+INSERT INTO wts.users (sid, phone, block, room, isp, account, wx, op, registered_at, updated_at) VALUES (E'gdOther', NULL, E'other', E'工单', E'others', NULL, E'other', E'false', current_timestamp, current_timestamp);
 -- ddl-end --
 
 -- object: wts.category | type: TYPE --
@@ -783,7 +785,8 @@ CREATE POLICY update_only_self ON wts.users
 	FOR UPDATE
 	TO app
 	USING (wx = current_setting('wts.wx', true))
-	WITH CHECK (wx = current_setting('wx', true));
+	WITH CHECK (wx = current_setting('wts.wx', true)
+);
 -- ddl-end --
 
 -- object: insert_only_self | type: POLICY --
@@ -895,6 +898,65 @@ SELECT * FROM wts.v_tickets WHERE status <> 'solved' AND status <> 'canceled';
 ALTER VIEW wts.v_active_tickets OWNER TO postgres;
 -- ddl-end --
 COMMENT ON VIEW wts.v_active_tickets IS E'活跃的工单';
+-- ddl-end --
+
+-- object: data.kvstore | type: TABLE --
+-- DROP TABLE IF EXISTS data.kvstore CASCADE;
+CREATE TABLE data.kvstore (
+	key text NOT NULL,
+	value text NOT NULL,
+	updated_at timestamptz NOT NULL DEFAULT NOW(),
+	CONSTRAINT kvstore_pk PRIMARY KEY (key)
+);
+-- ddl-end --
+COMMENT ON TABLE data.kvstore IS E'简单键值存储';
+-- ddl-end --
+COMMENT ON COLUMN data.kvstore.updated_at IS E'更新/创建时间';
+-- ddl-end --
+ALTER TABLE data.kvstore OWNER TO postgres;
+-- ddl-end --
+
+-- object: wts.notices | type: TABLE --
+-- DROP TABLE IF EXISTS wts.notices CASCADE;
+CREATE TABLE wts.notices (
+	nid integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT BY 1 MINVALUE 0 MAXVALUE 2147483647 START WITH 1 CACHE 1 ),
+	title text NOT NULL,
+	content text NOT NULL,
+	created_at timestamptz NOT NULL DEFAULT NOW(),
+	starts_at timestamptz NOT NULL,
+	ends_at timestamptz NOT NULL,
+	enable boolean NOT NULL,
+	CONSTRAINT notices_pk PRIMARY KEY (nid)
+);
+-- ddl-end --
+COMMENT ON TABLE wts.notices IS E'系统的通知公告';
+-- ddl-end --
+COMMENT ON COLUMN wts.notices.nid IS E'编号';
+-- ddl-end --
+COMMENT ON COLUMN wts.notices.title IS E'标题';
+-- ddl-end --
+COMMENT ON COLUMN wts.notices.content IS E'内容';
+-- ddl-end --
+COMMENT ON COLUMN wts.notices.created_at IS E'公告录入数据库的日期';
+-- ddl-end --
+COMMENT ON COLUMN wts.notices.starts_at IS E'公告开始推送的日期';
+-- ddl-end --
+COMMENT ON COLUMN wts.notices.ends_at IS E'公告结束推送的日期';
+-- ddl-end --
+COMMENT ON COLUMN wts.notices.enable IS E'是否启用该公告';
+-- ddl-end --
+ALTER TABLE wts.notices OWNER TO postgres;
+-- ddl-end --
+
+-- object: wts.v_active_notices | type: VIEW --
+-- DROP VIEW IF EXISTS wts.v_active_notices CASCADE;
+CREATE OR REPLACE VIEW wts.v_active_notices
+AS 
+SELECT a.nid,a.title,a.content,a.created_at FROM wts.notices as a WHERE NOW() > a.starts_at AND NOW() < a.ends_at AND a.enable = true;
+-- ddl-end --
+ALTER VIEW wts.v_active_notices OWNER TO postgres;
+-- ddl-end --
+COMMENT ON VIEW wts.v_active_notices IS E'当前活跃的通知';
 -- ddl-end --
 
 -- object: sid_fk | type: CONSTRAINT --

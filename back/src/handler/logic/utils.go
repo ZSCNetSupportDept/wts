@@ -208,9 +208,7 @@ func timePtrOptOut(t pgtype.Timestamptz) *time.Time {
 	if !t.Valid {
 		return nil
 	}
-	t1 := t.Time
-
-	return &t1
+	return &t.Time
 }
 
 // 只用于预约时间的输出
