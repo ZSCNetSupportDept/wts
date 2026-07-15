@@ -110,7 +110,7 @@
 			q.add({
 				kind: 'error',
 				title: '提交失败',
-				subtitle: errMsg + '，请重试',
+				subtitle: errMsg,
 				timeout: 5000
 			});
 		}

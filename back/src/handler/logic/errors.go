@@ -35,4 +35,8 @@ var (
 	ErrInvalidScope = errors.New("Scope参数无效")
 	//无效的片区
 	ErrInvalidZone = errors.New("无效的片区参数")
+	//预约报修时间早于开始值班时间
+	ErrBeforeDutyStart = errors.New("您预约的时间早于我们本学期开始值班的时间")
+	//预约报修时间晚于结束值班时间
+	ErrAfterDutyEnd = errors.New("您预约的时间晚于我们本学期结束值班的时间")
 )

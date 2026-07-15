@@ -160,3 +160,19 @@ FROM wts.v_active_tickets
 WHERE block IS NOT NULL
 GROUP BY block
 ORDER BY total DESC;
+
+--键值操作--
+
+-- name: KVGet :one
+SELECT value FROM data.kvstore
+WHERE key = $1
+LIMIT 1;
+
+-- name: KVPut :exec
+INSERT INTO data.kvstore (key, value, updated_at)
+VALUES ($1, $2, NOW())
+ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW();
+
+-- name: KVDelete :exec
+DELETE FROM data.kvstore
+WHERE key = $1;

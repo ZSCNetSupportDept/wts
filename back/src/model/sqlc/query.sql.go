@@ -551,6 +551,47 @@ func (q *Queries) GetUserByWX(ctx context.Context, wx string) (WtsVUser, error) 
 	return i, err
 }
 
+const kVDelete = `-- name: KVDelete :exec
+DELETE FROM data.kvstore
+WHERE key = $1
+`
+
+func (q *Queries) KVDelete(ctx context.Context, key string) error {
+	_, err := q.db.Exec(ctx, kVDelete, key)
+	return err
+}
+
+const kVGet = `-- name: KVGet :one
+
+SELECT value FROM data.kvstore
+WHERE key = $1
+LIMIT 1
+`
+
+// 键值操作--
+func (q *Queries) KVGet(ctx context.Context, key string) (string, error) {
+	row := q.db.QueryRow(ctx, kVGet, key)
+	var value string
+	err := row.Scan(&value)
+	return value, err
+}
+
+const kVPut = `-- name: KVPut :exec
+INSERT INTO data.kvstore (key, value, updated_at)
+VALUES ($1, $2, NOW())
+ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()
+`
+
+type KVPutParams struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+func (q *Queries) KVPut(ctx context.Context, arg KVPutParams) error {
+	_, err := q.db.Exec(ctx, kVPut, arg.Key, arg.Value)
+	return err
+}
+
 const listActiveTickets = `-- name: ListActiveTickets :many
 SELECT tid, issuer, submitted_at, category, description, occur_at, notes, appointed_at, priority, status, last_updated_at, name, block, room, isp, account, phone FROM wts.v_active_tickets
 ORDER BY priority DESC, submitted_at DESC

@@ -3,6 +3,7 @@ package logic
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -22,6 +23,57 @@ func NewTicket(c *hutil.WtsCtx, op string, r hutil.NewTicketRequest) hutil.NewTi
 
 	err := c.DB.DoQuery(ctx, op, func(q *sqlc.Queries) error {
 
+		var err error
+
+		// 检查报修提交的时间是否在值班时间内
+		var dutyStart, dutyEnd string
+		var dutyStartTime, dutyEndTime time.Time
+
+		if !r.AppointedAt.IsZero() {
+			goto dutyCheckFinish
+		}
+
+		dutyStart, err = q.KVGet(ctx, "WTS_DUTY_START")
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				slog.Warn("检测到未设置WTS_DUTY_START，跳过值班时间检查")
+				goto dutyCheckFinish
+			} else {
+				return hutil.NewUnknownErr(fmt.Errorf("NewTicket::KVGet数据库操作失败: %w", err))
+			}
+		}
+		dutyEnd, err = q.KVGet(ctx, "WTS_DUTY_END")
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				slog.Warn("检测到未设置WTS_DUTY_END，跳过值班时间检查")
+				goto dutyCheckFinish
+			} else {
+				return hutil.NewUnknownErr(fmt.Errorf("NewTicket::KVGet数据库操作失败: %w", err))
+			}
+		}
+
+		dutyStartTime, err = time.Parse(time.RFC3339, dutyStart)
+		if err != nil {
+			slog.Warn("WTS_DUTY_START不符合RFC3339格式，跳过值班时间检查，")
+			goto dutyCheckFinish
+		}
+		dutyEndTime, err = time.Parse(time.RFC3339, dutyEnd)
+		if err != nil {
+			slog.Warn("WTS_DUTY_END不符合RFC3339格式，跳过值班时间检查")
+			goto dutyCheckFinish
+		}
+		if dutyStartTime.After(dutyEndTime) {
+			slog.Warn("WTS_DUTY_START晚于WTS_DUTY_END，跳过值班时间检查")
+			goto dutyCheckFinish
+		}
+		if r.AppointedAt.Before(dutyStartTime) {
+			return hutil.NewWtsErr(errors.Join(ErrBeforeDutyStart, errors.New("我们开始值班的时间为"+dutyStartTime.Format(time.DateOnly))), nil)
+		}
+		if r.AppointedAt.After(dutyEndTime) {
+			return hutil.NewWtsErr(errors.Join(ErrAfterDutyEnd, errors.New("我们结束值班的时间为"+dutyEndTime.Format(time.DateOnly))), nil)
+		}
+
+	dutyCheckFinish:
 		//检查时间是否是合理的
 		if !r.AppointedAt.IsZero() && r.AppointedAt.Before(time.Now()) { //TODO:预约可以在今天！！！重要！！！
 			return hutil.NewWtsErr(ErrAppointTimeInvalid, nil)

@@ -50,7 +50,7 @@
 			q.add({
 				kind: 'error',
 				title: '获取用户信息失败',
-				subtitle: errMsg + '，请重试',
+				subtitle: errMsg,
 				timeout: 5000
 			});
 		}
