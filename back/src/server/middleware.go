@@ -29,7 +29,7 @@ func middlewareRegister(app *echo.Echo, cfg *config.Config) {
 		ContentTypeNosniff:    "nosniff",
 		XFrameOptions:         "SAMEORIGIN",
 		HSTSMaxAge:            3600,
-		ContentSecurityPolicy: "default-src 'self' https://zsxyww.com",
+		ContentSecurityPolicy: "default-src 'self' https://zsxyww.com https://s81c.com https://*.s81c.com https://www.s81c.com https://*.www.s81c.com",
 		ReferrerPolicy:        "strict-origin-when-cross-origin",
 	}))
 	app.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20.0)))
