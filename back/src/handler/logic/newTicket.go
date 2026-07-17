@@ -29,7 +29,7 @@ func NewTicket(c *hutil.WtsCtx, op string, r hutil.NewTicketRequest) hutil.NewTi
 		var dutyStart, dutyEnd string
 		var dutyStartTime, dutyEndTime time.Time
 
-		if !r.AppointedAt.IsZero() {
+		if r.AppointedAt.IsZero() {
 			goto dutyCheckFinish
 		}
 
