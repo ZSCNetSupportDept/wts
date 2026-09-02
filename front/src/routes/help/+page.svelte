@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Accordion, AccordionItem } from 'carbon-components-svelte';
 	import RetroCard from '$lib/components/RetroCard.svelte';
-	import { CHIEF_PHONE, SUPPORT_QQ } from '$lib/env/businesses';
+	import { CHIEF_PHONE, SUPPORT_QQ, CHIEF_QQ } from '$lib/env/businesses';
 	import OperatorTicket from '$lib/components/Ticket/OperatorTicket.svelte';
 	import { sample3 } from '$lib/testData/ticket';
 </script>
@@ -145,7 +145,8 @@
 			<p>
 				您可以选择：<br />
 				1.加入支持QQ群：{SUPPORT_QQ}，私聊群管理进行投诉， <br />
-				2.拨打科长电话{CHIEF_PHONE || '（暂无）'}进行投诉。<br />
+				2.拨打科长电话/加科长微信：{CHIEF_PHONE || '（暂无）'}进行投诉。<br />
+				3.添加科长QQ:{CHIEF_QQ || '（暂无）'}进行投诉。<br />
 				为您维修的网维成员的名字可以在报修详情页找到。
 			</p>
 		</AccordionItem>
