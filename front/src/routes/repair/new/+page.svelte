@@ -6,6 +6,7 @@
 	import { RFC3339 } from '$lib/types/RFC3339';
 	import { onMount } from 'svelte';
 	import { IsUser } from '$lib/types/enum';
+	import { SUPPORT_QQ } from '$lib/env/businesses';
 
 	import {
 		DatePicker,
@@ -200,6 +201,10 @@
 	invalidText={notes.txt}
 />
 <br />
+<br />
+<p style="color: gray; font-style: italic;">
+	如果报修时有任何疑问，请加入QQ群：{SUPPORT_QQ} 询问与反馈，我们会热情地解答您的问题。
+</p>
 <br />
 <Button on:click={handleSubmit}>提交</Button>
 

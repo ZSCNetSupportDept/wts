@@ -26,6 +26,7 @@
 	import { onMount } from 'svelte';
 	import { IsUnregistered, IsAccessIn } from '$lib/types/enum';
 	import { Guard } from '$lib/jwt';
+	import { SUPPORT_QQ } from '$lib/env/businesses';
 
 	let q: NotificationQueue;
 
@@ -295,6 +296,10 @@
 />
 <br />
 <br />
+<br />
+<p style="color: gray; font-style: italic;">
+	如果注册时有任何疑问，请加入QQ群：{SUPPORT_QQ} 询问与反馈，我们会热情地解答您的问题。
+</p>
 <br />
 <Button
 	on:click={() => {
