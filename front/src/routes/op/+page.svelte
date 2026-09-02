@@ -14,6 +14,8 @@
 	import { CategoryMap, type WtsCategory } from '$lib/types/enum';
 	import { ISPMap, type WtsISP } from '$lib/types/enum';
 	import { goto } from '$app/navigation';
+	import { IsAdmin } from '$lib/types/enum';
+	import { AccessMap } from '$lib/types/enum';
 
 	let name: string = $state('网维成员');
 
@@ -111,7 +113,12 @@
 <hr />
 <br />
 <p>
-	你好，{name}!今天修了多少单？
+	{#if IsAdmin(CheckAndGetJWT('parsed')?.access)}
+		🖐️😭🖐️伟大滴{name}{AccessMap[CheckAndGetJWT('parsed')?.access]}，没有您就没有网维🖐️😭🖐️
+		<a href="/admin">（点击我前往管理后台）</a>
+	{:else}
+		你好，{name}!今天修了多少单？
+	{/if}
 </p>
 <br />
 <br />

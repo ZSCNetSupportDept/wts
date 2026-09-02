@@ -72,9 +72,9 @@ export type WtsAccess =
 
 export const IsAccessIn =
 	(...targets: WtsAccess[]) =>
-	(subject: WtsAccess): boolean => {
-		return targets.includes(subject);
-	};
+		(subject: WtsAccess): boolean => {
+			return targets.includes(subject);
+		};
 
 export const IsOperator = IsAccessIn(
 	'api',
@@ -105,7 +105,7 @@ export const IsFormalMember = IsAccessIn('group-leader', 'api', 'chief', 'dev', 
 export const IsUnregistered = IsAccessIn('unregistered');
 
 export const AccessMap: Record<WtsAccess, string> = {
-	dev: '开发组',
+	dev: '组长',
 	chief: '科长',
 	api: 'API',
 	'group-leader': '组长',
@@ -164,7 +164,7 @@ export const PriorityOrder: Record<WtsPriority, number> = {
 	normal: 4,
 	'in-passing': 5,
 	least: 6
-};	
+};
 
 export type WtsCategory =
 	| 'first-install'
