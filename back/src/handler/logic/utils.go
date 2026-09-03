@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"time"
@@ -259,4 +260,33 @@ func getUserByWX(c *hutil.WtsCtx, wx string) (hutil.UserProfile, error) {
 		}
 	}
 	return res, err
+}
+
+// TODO: 因为可能要在API返回后执行这两个函数，所以暂时额外添加一个ctx参数......
+func getTicketIssuer(c *hutil.WtsCtx, ctx context.Context, tid int32) (string, error) {
+	var issuer string
+	err := c.DB.DoQuery(ctx, "system", func(q *sqlc.Queries) error {
+		t, err := q.GetTicket(ctx, tid)
+		if err != nil {
+			slog.Warn("getTicketIssuer数据库操作失败", "tid", tid, "error", err)
+			return err
+		}
+		issuer = t.Issuer
+		return nil
+	})
+	return issuer, err
+}
+
+func getWXBySID(c *hutil.WtsCtx, ctx context.Context, sid string) (string, error) {
+	var openid string
+	err := c.DB.DoQuery(ctx, "system", func(q *sqlc.Queries) error {
+		u, err := q.GetUserBySID(ctx, pgtype.Text{String: sid, Valid: true})
+		if err != nil {
+			slog.Warn("getWXBySID数据库操作失败", "sid", sid, "error", err)
+			return err
+		}
+		openid = u.Wx
+		return nil
+	})
+	return openid, err
 }

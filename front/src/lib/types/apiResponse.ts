@@ -94,3 +94,9 @@ export type TicketOverviewRes = CommonResponse & {
 	count_by_block: Record<WtsBlock, number>;
 	today_count_by_block: Record<WtsBlock, number>;
 };
+
+
+export type SubscribeConfigRes = CommonResponse & {
+	appid: string;
+	template_id: string;
+};

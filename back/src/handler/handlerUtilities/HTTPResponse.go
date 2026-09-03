@@ -120,6 +120,13 @@ type TicketOverviewResponse struct {
 	TodayCountByBlock map[sqlc.WtsBlock]int64 `json:"today_count_by_block,omitempty"`
 }
 
+// Used by: /api/v3p/wx/get_subscribe_config
+type SubscribeConfigResponse struct {
+	commonMember
+	AppID      string `json:"appid"`
+	TemplateID string `json:"template_id"`
+}
+
 // Used by various APIs......
 type GenericResponse struct {
 	commonMember

@@ -9,16 +9,47 @@
 	import { onMount } from 'svelte';
 	import { IsUser } from '$lib/types/enum';
 	import { CheckAndGetJWT, Guard } from '$lib/jwt';
-	import type { Ticket } from '$lib/types/apiResponse';
-	import { GetTicket } from '$lib/api';
+	import type { Ticket, SubscribeConfigRes } from '$lib/types/apiResponse';
+	import { GetTicket, GetSubscribeConfig } from '$lib/api';
 	import { NotificationQueue } from 'carbon-components-svelte';
 	import { SUPPORT_QQ } from '$lib/env/businesses';
+	import { AskForWechatNotifySubscription } from '$lib/wechat/subscribeNotify';
+	import { hasAskedSubscribe } from '$lib/states/wechatSubscribeStatus';
 
 	let q: NotificationQueue;
 
 	let tickets = $state([] as Ticket[]);
 
-	onMount(() => (Guard(IsUser), fetchTickets()));
+	onMount(() => (Guard(IsUser), fetchTickets(), askNotify()));
+
+	async function askNotify() {
+		//确认用户是否在微信中打开网页
+		// TODO:如果将来加入网页版支持，需要在这里修改逻辑...
+		const ua = navigator.userAgent.toLowerCase();
+		if (!ua.includes('micromessenger')) return;
+
+		//本次会话已经询问过（无论接受或拒绝），不再重复跳转授权页，防止无限循环
+		if (hasAskedSubscribe()) return;
+
+		let cfg: SubscribeConfigRes;
+
+		try {
+			cfg = await GetSubscribeConfig();
+			if (!cfg.success) {
+				throw new Error(cfg.msg || '获取订阅配置失败');
+			}
+		} catch (e: any) {
+			const errMsg = e.response?.data?.msg || e.message || '未知错误';
+			q.add({
+				kind: 'warning',
+				title: '获取订阅配置失败',
+				subtitle: errMsg,
+				timeout: 3000
+			});
+			return;
+		}
+		AskForWechatNotifySubscription(cfg, '/repair', 1);
+	}
 
 	async function fetchTickets() {
 		try {
@@ -52,7 +83,9 @@
 <hr />
 <br />
 <p>
-	这里将显示您提交的所有报修记录，点击单子可展开详情。有任何问题请加入QQ群<strong>{SUPPORT_QQ}</strong>询问。
+	这里将显示您提交的所有报修记录，点击单子可展开详情。有任何问题请加入QQ群<strong
+		>{SUPPORT_QQ}</strong
+	>询问。
 </p>
 <br />
 <div

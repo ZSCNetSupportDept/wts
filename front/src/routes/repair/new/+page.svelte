@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { CheckAndGetJWT, Guard } from '$lib/jwt';
 	import type { NewTicketReq } from '$lib/types/apiRequest';
+	import type { SubscribeConfigRes } from '$lib/types/apiResponse';
 	import type { PageProps } from './$types';
 	let { data }: PageProps = $props();
 	import { RFC3339 } from '$lib/types/RFC3339';
@@ -20,8 +21,10 @@
 	} from 'carbon-components-svelte';
 	import { IsRFC3339 } from '$lib/types/RFC3339';
 	import { invalidState } from '$lib/types/invalidState.svelte';
-	import { NewTicket } from '$lib/api';
+	import { NewTicket, GetSubscribeConfig } from '$lib/api';
 	import { goto } from '$app/navigation';
+	import { AskForWechatNotifySubscription } from '$lib/wechat/subscribeNotify';
+	import { hasAskedSubscribe } from '$lib/states/wechatSubscribeStatus';
 
 	let notLoading: boolean = $state(true);
 
@@ -133,7 +136,36 @@
 		}
 	}
 
-	onMount(() => Guard(IsUser));
+	async function askNotify() {
+		//确认用户是否在微信中打开网页
+		// TODO:如果将来加入网页版支持，需要在这里修改逻辑...
+		const ua = navigator.userAgent.toLowerCase();
+		if (!ua.includes('micromessenger')) return;
+
+		//本次会话已经询问过（无论接受或拒绝），不再重复跳转授权页，防止无限循环
+		if (hasAskedSubscribe()) return;
+
+		let cfg: SubscribeConfigRes;
+
+		try {
+			cfg = await GetSubscribeConfig();
+			if (!cfg.success) {
+				throw new Error(cfg.msg || '获取订阅配置失败');
+			}
+		} catch (e: any) {
+			const errMsg = e.response?.data?.msg || e.message || '未知错误';
+			q.add({
+				kind: 'warning',
+				title: '获取订阅配置失败',
+				subtitle: errMsg,
+				timeout: 3000
+			});
+			return;
+		}
+		AskForWechatNotifySubscription(cfg, '/repair/new', 0);
+	}
+
+	onMount(() => (Guard(IsUser), askNotify()));
 </script>
 
 <h1>提交新报修</h1>

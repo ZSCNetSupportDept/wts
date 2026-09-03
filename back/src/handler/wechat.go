@@ -200,3 +200,41 @@ func emptyText1(t pgtype.Text) string {
 	}
 	return t.String
 }
+
+// GET: /api/v3p/wx/get_subscribe_config
+// receive: none
+// return: 200 + JSON {appid, template_id} on success；template_id may be empty if not configured；500 on error
+// 供前端拼接微信 H5 订阅授权链接使用
+func GetSubscribeConfig(i echo.Context) error {
+	c := i.(*hutil.WtsCtx)
+
+	var res hutil.SubscribeConfigResponse
+
+	var templateID string
+	err := c.DB.DoQuery(i.Request().Context(), "system", func(q *sqlc.Queries) error {
+		v, e := q.KVGet(i.Request().Context(), "WX_NOTIFY_NEW_STATUS_TEMPLATE_ID")
+		if e != nil {
+			if errors.Is(e, pgx.ErrNoRows) {
+				return nil // 未配置视为空，不视为错误
+			}
+			return e
+		}
+		templateID = v
+		return nil
+	})
+	if err != nil {
+		slog.Warn("GetSubscribeConfig::KVGet()读取模板ID失败", "error", err)
+		res.Success = false
+		res.ErrType = hutil.ErrInternal
+		res.Msg = "读取模板ID失败"
+		if c.Cfg.Debug.APIVerbose {
+			res.Debug = err.Error()
+		}
+		return i.JSON(500, res)
+	}
+
+	res.Success = true
+	res.AppID = c.Cfg.WX.AppID
+	res.TemplateID = templateID
+	return i.JSON(200, res)
+}

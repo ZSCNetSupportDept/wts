@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"log/slog"
+
 	"github.com/silenceper/wechat/v2/officialaccount/message"
 	. "zsxyww.com/wts/handler/handlerUtilities"
 )
@@ -49,6 +51,20 @@ func (i *Ctx) handleWXEvent(m *message.MixMessage) string {
 	}
 	if m.Event == message.EventView {
 		// 不知道为什么，view事件也会被送到这里，如果不处理的话会在log里面出现，有点烦，对用户体验倒是没什么影响
+		return ""
+	}
+
+	// 订阅通知授权事件：记录微信通知的授权结果，只是用于观测用户的授权概率
+	if m.Event == message.EventSubscribeMsgPopupEvent {
+		for _, item := range m.GetSubscribeMsgPopupEvents() {
+			slog.Info("订阅通知授权事件结果",
+				"openid", m.GetOpenID(),
+				"template_id", item.TemplateID,
+				"status", item.SubscribeStatusString, // accept / reject / ban
+				"scene", item.PopupScene,
+				"event", m.EventKey,
+			)
+		}
 		return ""
 	}
 

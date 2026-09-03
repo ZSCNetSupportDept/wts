@@ -7,10 +7,12 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"zsxyww.com/wts/model"
 	"zsxyww.com/wts/model/sqlc"
 	"zsxyww.com/wts/server"
+	"zsxyww.com/wts/wechat"
 
 	"math/rand"
 )
@@ -58,6 +60,7 @@ func scheduledAutoCancel() {
 func doCancelJob(jobID int) error {
 	slog.Info("开始执行每日预约处理程序", "ID", jobID)
 	ctx := context.Background()
+	// TODO：现在是所有取消操作都在一个事务中，一次失败全部都回滚，改成每个工单单独一个事务，失败的工单记录下来，继续处理其他工单
 	err := server.DB.DoQuery(context.Background(), "system", func(q *sqlc.Queries) error {
 		//1.获取今日（实际上获取所有过去的预约单来保险）预约
 		allZone, _ := model.BlocksInZone("all")
@@ -107,7 +110,7 @@ func doCancelJob(jobID int) error {
 					WtsPriority: "mainline",
 					Valid:       true,
 				},
-				Remark: "系统检测到预约已过期，似乎是我们爽约了，我们非常抱歉为您造成的不便，您可以再次提交报修预约，我们会努力做得更好。",
+				Remark: "系统检测到预约已过期,故自动取消。似乎是我们爽约了，我们非常抱歉为您造成的不便。您可以再次提交报修预约，我们会努力做得更好。",
 			})
 			if err != nil {
 				noErr = false
@@ -115,6 +118,8 @@ func doCancelJob(jobID int) error {
 				continue
 			}
 			result = append(result, t.Tid)
+			// 状态变更通知（canceled），异步执行，不阻塞批量任务
+			go notifyTicketCanceled(a)
 		}
 		slog.Info("本次操作实际操作的工单", "t", result, "ID", jobID)
 		//3.如果没有问题就提交事务
@@ -124,4 +129,71 @@ func doCancelJob(jobID int) error {
 		return nil
 	})
 	return err
+}
+
+func notifyTicketCanceled(tid int32) {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	// 查报修人 openid（工单 issuer 学号 → users.wx）
+	var openid string
+	err := server.DB.DoQuery(ctx, "system", func(q *sqlc.Queries) error {
+		t, err := q.GetTicket(ctx, tid)
+		if err != nil {
+			slog.Warn("scheduledAutoCancel::GetTicket()失败", "tid", tid, "error", err)
+			return err
+		}
+		u, err := q.GetUserBySID(ctx, pgtype.Text{String: t.Issuer, Valid: true})
+		if err != nil {
+			slog.Warn("scheduledAutoCancel::GetUserBySID()失败", "sid", t.Issuer, "error", err)
+			return err
+		}
+		openid = u.Wx
+		return nil
+	})
+	if err != nil || openid == "" {
+		// 错误在上面的流程中已经记录了，这里就直接返回
+		return
+	}
+
+	// 读订阅模板 ID
+	var templateID string
+	err = server.DB.DoQuery(ctx, "system", func(q *sqlc.Queries) error {
+		var e error
+		templateID, e = q.KVGet(ctx, "WX_NOTIFY_NEW_STATUS_TEMPLATE_ID")
+		return e
+	})
+	if err != nil || templateID == "" {
+		if errors.Is(err, pgx.ErrNoRows) {
+			slog.Warn("scheduledAutoCancel::KVGet()读取模板ID失败：未配置模板ID（kvstore: WX_NOTIFY_NEW_STATUS_TEMPLATE_ID）", "tid", tid)
+			return
+		}
+		slog.Warn("scheduledAutoCancel::KVGet()读取模板ID失败", "tid", tid, "error", err)
+		return
+	}
+
+	//这段消息最大不能超过20个汉字，如果要修改的话请注意......
+	message := "您的预约报修单过期未处理，已自动取消。"
+	data := map[string]string{
+		"character_string1": fmt.Sprintf("%d", tid),
+		"phrase2":           "已取消",
+		"thing3":            truncateRunes(message, 20),
+	}
+	// TODO: 硬编码
+	page := "https://wwbx.daivsye.cn/repair/"
+
+	if err := wechat.SendNotify(server.WX, openid, templateID, data, page, true); err != nil {
+		slog.Warn("scheduledAutoCancel::SendNotify()发送失败", "tid", tid, "openid", openid, "error", err)
+		return
+	}
+	slog.Info("scheduledAutoCancel::SendNotify()发送成功", "tid", tid, "openid", openid)
+}
+
+// truncateRunes 按字符数截断（微信 thing 类型关键词限 20 字符）
+func truncateRunes(s string, n int) string {
+	r := []rune(s)
+	if len(r) <= n {
+		return s
+	}
+	return string(r[:n])
 }
