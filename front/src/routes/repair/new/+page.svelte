@@ -162,7 +162,7 @@
 			});
 			return;
 		}
-		AskForWechatNotifySubscription(cfg, '/repair/new', 0);
+		AskForWechatNotifySubscription(cfg, '/repair/new', 1);
 	}
 
 	onMount(() => (Guard(IsUser), askNotify()));
