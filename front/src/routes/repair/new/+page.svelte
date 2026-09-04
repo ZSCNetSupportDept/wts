@@ -23,14 +23,14 @@
 	import { invalidState } from '$lib/types/invalidState.svelte';
 	import { NewTicket, GetSubscribeConfig } from '$lib/api';
 	import { goto } from '$app/navigation';
-	import { AskForWechatNotifySubscription } from '$lib/wechat/subscribeNotify';
-	import { hasAskedSubscribe } from '$lib/states/wechatSubscribeStatus';
+	import WxOpenSubscribe from '$lib/components/WxOpenSubscribe.svelte';
 
 	let notLoading: boolean = $state(true);
 
 	let q: NotificationQueue;
 
 	let r = $state({} as NewTicketReq);
+	let subscribeTemplateId = $state('');
 
 	function onOccurDateChange(event: CustomEvent) {
 		const { dateStr } = event.detail;
@@ -136,36 +136,27 @@
 		}
 	}
 
-	async function askNotify() {
+	async function fetchSubscribeConfig() {
 		//确认用户是否在微信中打开网页
-		// TODO:如果将来加入网页版支持，需要在这里修改逻辑...
 		const ua = navigator.userAgent.toLowerCase();
 		if (!ua.includes('micromessenger')) return;
 
-		//本次会话已经询问过（无论接受或拒绝），不再重复跳转授权页，防止无限循环
-		if (hasAskedSubscribe()) return;
-
-		let cfg: SubscribeConfigRes;
-
 		try {
-			cfg = await GetSubscribeConfig();
-			if (!cfg.success) {
-				throw new Error(cfg.msg || '获取订阅配置失败');
+			const cfg = await GetSubscribeConfig();
+			if (cfg.success && cfg.template_id) {
+				subscribeTemplateId = cfg.template_id;
 			}
 		} catch (e: any) {
-			const errMsg = e.response?.data?.msg || e.message || '未知错误';
 			q.add({
 				kind: 'warning',
 				title: '获取订阅配置失败',
-				subtitle: errMsg,
+				subtitle: e.response?.data?.msg || e.message || '未知错误',
 				timeout: 3000
 			});
-			return;
 		}
-		AskForWechatNotifySubscription(cfg, '/repair/new', 1);
 	}
 
-	onMount(() => (Guard(IsUser), askNotify()));
+	onMount(() => (Guard(IsUser), fetchSubscribeConfig()));
 </script>
 
 <h1>提交新报修</h1>
@@ -239,6 +230,12 @@
 </p>
 <br />
 <Button on:click={handleSubmit}>提交</Button>
+
+{#if subscribeTemplateId}
+	<div style="margin-top: 16px;">
+		<WxOpenSubscribe templateId={subscribeTemplateId} scene={0} />
+	</div>
+{/if}
 
 <NotificationQueue bind:this={q} />
 

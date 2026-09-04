@@ -18,3 +18,12 @@ export function AskForWechatNotifySubscription(cfg: SubscribeConfigRes, redirect
         markSubscribeAsked();
         window.location.href = buildSubscribeURL(cfg, redirectPath, scene);
 }
+
+
+
+
+
+
+
+
+

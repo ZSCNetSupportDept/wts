@@ -59,6 +59,7 @@ func routeRegister(app *echo.Echo, cfg *config.Config) { // Routes
 		v3p.GET("/wx/auth", handler.WXAuth)
 		v3p.GET("/wx/authsuccess", handler.WXAuthSuccess)
 		v3p.GET("/wx/get_subscribe_config", handler.GetSubscribeConfig)
+		v3p.GET("/wx/get_jsapi_config", handler.GetJsApiConfig)
 	}
 
 }

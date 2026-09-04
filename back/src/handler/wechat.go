@@ -238,3 +238,40 @@ func GetSubscribeConfig(i echo.Context) error {
 	res.TemplateID = templateID
 	return i.JSON(200, res)
 }
+
+// GET: /api/v3p/wx/get_jsapi_config
+// receive: query param "url" (前端页面的完整 URL，用于生成 JS-SDK 签名)
+// return: 200 + JSON {appId, timestamp, nonceStr, signature} on success；400/500 on error
+// 供前端 wx.config() 注入权限验证配置使用
+func GetJsApiConfig(i echo.Context) error {
+	c := i.(*hutil.WtsCtx)
+
+	var res hutil.JsApiConfigResponse
+
+	url := i.QueryParam("url")
+	if url == "" {
+		res.Success = false
+		res.ErrType = hutil.ErrReq
+		res.Msg = "缺少 url 参数"
+		return i.JSON(400, res)
+	}
+
+	cfg, err := c.WX.GetJs().GetConfig(url)
+	if err != nil {
+		slog.Warn("GetJsApiConfig::GetConfig()生成签名失败", "url", url, "error", err)
+		res.Success = false
+		res.ErrType = hutil.ErrInternal
+		res.Msg = "生成 JS-SDK 签名失败"
+		if c.Cfg.Debug.APIVerbose {
+			res.Debug = err.Error()
+		}
+		return i.JSON(500, res)
+	}
+
+	res.Success = true
+	res.AppID = cfg.AppID
+	res.Timestamp = cfg.Timestamp
+	res.NonceStr = cfg.NonceStr
+	res.Signature = cfg.Signature
+	return i.JSON(200, res)
+}

@@ -13,7 +13,8 @@ import type {
 	ViewProfileRes,
 	TicketOverviewRes,
 	FilterTicketsRes,
-	SubscribeConfigRes
+	SubscribeConfigRes,
+	JsApiConfigRes
 } from './types/apiResponse';
 import type {
 	ChangeProfileReq,
@@ -101,5 +102,10 @@ export async function TicketOverview(): Promise<TicketOverviewRes> {
 
 export async function GetSubscribeConfig(): Promise<SubscribeConfigRes> {
 	const res = await api.get('/api/v3p/wx/get_subscribe_config');
+	return res.data;
+}
+
+export async function GetJsApiConfig(url: string): Promise<JsApiConfigRes> {
+	const res = await api.get('/api/v3p/wx/get_jsapi_config', { params: { url } });
 	return res.data;
 }

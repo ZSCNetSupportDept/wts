@@ -100,3 +100,10 @@ export type SubscribeConfigRes = CommonResponse & {
 	appid: string;
 	template_id: string;
 };
+
+export type JsApiConfigRes = CommonResponse & {
+	appid: string;
+	timestamp: number;
+	nonce_str: string;
+	signature: string;
+};

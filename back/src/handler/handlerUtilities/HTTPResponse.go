@@ -127,6 +127,15 @@ type SubscribeConfigResponse struct {
 	TemplateID string `json:"template_id"`
 }
 
+// Used by: /api/v3p/wx/get_jsapi_config
+type JsApiConfigResponse struct {
+	commonMember
+	AppID     string `json:"appid"`
+	Timestamp int64  `json:"timestamp"`
+	NonceStr  string `json:"nonce_str"`
+	Signature string `json:"signature"`
+}
+
 // Used by various APIs......
 type GenericResponse struct {
 	commonMember

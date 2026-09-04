@@ -13,42 +13,33 @@
 	import { GetTicket, GetSubscribeConfig } from '$lib/api';
 	import { NotificationQueue } from 'carbon-components-svelte';
 	import { SUPPORT_QQ } from '$lib/env/businesses';
-	import { AskForWechatNotifySubscription } from '$lib/wechat/subscribeNotify';
-	import { hasAskedSubscribe } from '$lib/states/wechatSubscribeStatus';
+	import WxOpenSubscribe from '$lib/components/WxOpenSubscribe.svelte';
 
 	let q: NotificationQueue;
 
 	let tickets = $state([] as Ticket[]);
+	let subscribeTemplateId = $state('');
 
-	onMount(() => (Guard(IsUser), fetchTickets(), askNotify()));
+	onMount(() => (Guard(IsUser), fetchTickets(), fetchSubscribeConfig()));
 
-	async function askNotify() {
+	async function fetchSubscribeConfig() {
 		//确认用户是否在微信中打开网页
-		// TODO:如果将来加入网页版支持，需要在这里修改逻辑...
 		const ua = navigator.userAgent.toLowerCase();
 		if (!ua.includes('micromessenger')) return;
 
-		//本次会话已经询问过（无论接受或拒绝），不再重复跳转授权页，防止无限循环
-		if (hasAskedSubscribe()) return;
-
-		let cfg: SubscribeConfigRes;
-
 		try {
-			cfg = await GetSubscribeConfig();
-			if (!cfg.success) {
-				throw new Error(cfg.msg || '获取订阅配置失败');
+			const cfg = await GetSubscribeConfig();
+			if (cfg.success && cfg.template_id) {
+				subscribeTemplateId = cfg.template_id;
 			}
 		} catch (e: any) {
-			const errMsg = e.response?.data?.msg || e.message || '未知错误';
 			q.add({
 				kind: 'warning',
 				title: '获取订阅配置失败',
-				subtitle: errMsg,
+				subtitle: e.response?.data?.msg || e.message || '未知错误',
 				timeout: 3000
 			});
-			return;
 		}
-		AskForWechatNotifySubscription(cfg, '/repair', 1);
 	}
 
 	async function fetchTickets() {
@@ -89,8 +80,11 @@
 </p>
 <br />
 <div
-	style="display: flex; justify-content: flex-end; transform: translate(-17px,0px); margin-bottom: 15px;"
+	style="display: flex; justify-content: flex-end; transform: translate(-17px,0px); margin-bottom: 15px; gap: 10px; align-items: center;"
 >
+	{#if subscribeTemplateId}
+		<WxOpenSubscribe templateId={subscribeTemplateId} scene={1} />
+	{/if}
 	<Button href="/repair/new">提交新报修</Button>
 </div>
 
