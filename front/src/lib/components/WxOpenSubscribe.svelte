@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { GetJsApiConfig } from '$lib/api';
 	import { markSubscribeAsked, hasAskedSubscribe } from '$lib/states/wechatSubscribeStatus';
 
@@ -68,9 +68,12 @@
 				openTagList: ['wx-open-subscribe']
 			});
 
-			wx.ready(() => {
+			wx.ready(async () => {
 				ready = true;
-				// 在 DOM 就绪后插入开放标签
+				// ready 置位后 Svelte 的 DOM 更新在微任务中批量刷新，
+				// 必须等下一个 tick，<span bind:this={container}> 才会真正挂载，
+				// 否则 insertOpenTag 会因 container 为 undefined 而静默返回。
+				await tick();
 				insertOpenTag();
 			});
 
@@ -90,11 +93,12 @@
 		wrapper.setAttribute('template', templateId);
 		wrapper.id = 'wx-open-subscribe-btn';
 
-		// 样式插槽
+		// 样式插槽（官方示例要求内容用 <style> 标签包裹）
 		const styleScript = document.createElement('script');
 		styleScript.type = 'text/wxtag-template';
 		styleScript.slot = 'style';
 		styleScript.textContent = `
+			<style>
 			.subscribe-btn {
 				display: inline-block;
 				padding: 8px 16px;
@@ -105,6 +109,7 @@
 				font-size: 14px;
 				cursor: pointer;
 			}
+			</style>
 		`;
 
 		// 按钮插槽
