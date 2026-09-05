@@ -51,9 +51,11 @@
 			await loadWxSdk();
 			const wx = (window as any).wx;
 
-			// 微信签名校验的 URL = 当前 location.href 去掉 hash 后的部分（含 query）。
-			// 不要用 origin+pathname：若入口 URL 带 ?op=xxx 等参数，会丢参数导致签名不符。
-			const url = window.location.href.split('#')[0];
+			// SPA 场景（SvelteKit adapter-static + prerender）：微信校验的是「页面初次加载时的 URL」，
+			// 不是当前 location.href（从首页点进 /repair 是 history pushState，href 已变但微信仍记录 /）。
+			// document.baseURI 在 history 路由后保持不变，与微信记录一致，故用它签名。
+			// 去掉 hash，保留 query（与微信校验逻辑一致）。
+			const url = document.baseURI.split('#')[0];
 			const res = await GetJsApiConfig(url);
 			if (!res.success) {
 				throw new Error(res.msg || '获取 JS-SDK 配置失败');
