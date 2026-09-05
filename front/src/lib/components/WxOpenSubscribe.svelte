@@ -3,10 +3,10 @@
 	import { GetJsApiConfig } from '$lib/api';
 	import { markSubscribeAsked, hasAskedSubscribe } from '$lib/states/wechatSubscribeStatus';
 
-	// 关键：在模块首次加载（即页面初次加载、JS 首次执行）时捕获并缓存 URL。
-	// SPA 前端路由（history pushState）后 location.href 会变，但此模块级变量不会重新执行，
-	// 因此它始终是「初次加载时的 URL」，与微信签名校验时记录的 realAuthUrl 一致。
-	const INITIAL_URL = window.location.href.split('#')[0];
+	// SPA 场景下，微信签名校验用的是微信内置浏览器记录的「入口 URL」（realAuthUrl），
+	// 从前端路由进入子页面时该值仍是首页（如 https://site/），JS 运行时无法可靠获取。
+	// 因此统一使用站点根 origin 签名，与微信记录的入口 URL 保持一致。
+	const SIGN_URL = window.location.origin + '/';
 
 	let {
 		templateId = '',
@@ -56,8 +56,8 @@
 			await loadWxSdk();
 			const wx = (window as any).wx;
 
-			// 使用模块加载时缓存的初次加载 URL 进行签名（SPA 场景下与微信校验的 realAuthUrl 一致）。
-			const url = INITIAL_URL;
+			// 统一用站点根 URL 签名（SPA 入口 URL，与微信 realAuthUrl 一致）。
+			const url = SIGN_URL;
 			console.log('[WxOpenSubscribe] 签名 URL:', url, '| 当前 href:', window.location.href);
 			const res = await GetJsApiConfig(url);
 			if (!res.success) {
