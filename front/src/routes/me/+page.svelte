@@ -24,6 +24,7 @@
 	import { TheLastPage } from '$lib/states/theLastPage.svelte';
 	import { goto } from '$app/navigation';
 	import { SUPPORT_QQ, CHIEF_QQ, CHIEF_PHONE } from '$lib/env/businesses';
+	import { clearKeepSubscribeChoice } from '$lib/states/wechatSubscribeStatus';
 
 	let pending = $state(true);
 	let info = $state({} as UserProfile);
@@ -54,6 +55,10 @@
 				timeout: 5000
 			});
 		}
+	}
+
+	function clearCache(){
+		clearKeepSubscribeChoice();
 	}
 </script>
 
@@ -140,6 +145,9 @@
 				<!-- <Theme bind:theme persist persistKey="__carbon-theme" /> -->
 				<Toggle labelText="深色模式(暂时用不了)" disabled />
 			</div>
+			<br />
+			<br />
+			<Button on:click={clearCache}>清除缓存 </Button>
 		</AccordionItem>
 		<AccordionItem title="联系我们">
 			<p>如果您对网维的服务或本系统有任何意见或建议，请尽管联系我们！我们非常重视您的建议。</p>
