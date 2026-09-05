@@ -10,9 +10,10 @@
 	const SIGN_URL =
 		(window as any).__ENTRY_URL__ || window.location.href.split('#')[0];
 
-	// 本组件是「纯授权触发器」：不渲染可见按钮，只负责初始化 wx.config 并插入一个
-	// 视觉透明的 wx-open-subscribe 开放标签。外部通过 trigger() 在真实用户点击事件的
-	// 调用栈中触发授权（微信要求移动端原生授权必须由用户手势触发）。
+	// 本组件渲染一个「透明的 wx-open-subscribe 开放标签覆盖层」，铺满其父容器。
+	// 用法：将本组件叠放在真实交互按钮（如模态框的「好」）之上——用户的真实点击落在
+	// 透明开放标签上，从而以真实用户手势触发微信原生授权（合成 click() 会被微信拦截）。
+	// 父容器需 position:relative 并提供尺寸；授权结果通过 onSuccess/onError 回调抛出。
 	let {
 		templateId = '',
 		scene = 2,
@@ -30,7 +31,6 @@
 	let ready = $state(false);
 	let errorMsg = $state('');
 	let container: HTMLSpanElement | undefined = $state(undefined);
-	let openTagEl: HTMLElement | null = null;
 
 	// 加载微信 JS-SDK 脚本
 	function loadWxSdk(): Promise<void> {
@@ -88,7 +88,6 @@
 				// 必须等下一个 tick，<span bind:this={container}> 才会真正挂载。
 				await tick();
 				insertOpenTag();
-				onReady?.();
 			});
 
 			wx.error((err: any) => {
@@ -99,9 +98,8 @@
 		}
 	}
 
-	// 插入 wx-open-subscribe 开放标签。
-	// 注意：标签保持布局尺寸（移动端原生同层渲染按布局尺寸定位），但视觉透明且移出视口，
-	// 因为本组件只作为「触发器」，真正的交互按钮由外部（如模态框的"好"按钮）提供。
+	// 插入 wx-open-subscribe 开放标签，铺满父容器作为透明点击层。
+	// 移动端原生同层渲染按布局尺寸定位与响应，因此必须占满父容器（即下方真实按钮区域）。
 	function insertOpenTag(retries = 8) {
 		// bind:this 赋值可能晚于 tick() 完成，未就绪时退避重试，消除竞态
 		if (!container || !templateId) {
@@ -116,10 +114,10 @@
 		const wrapper = document.createElement('wx-open-subscribe');
 		wrapper.setAttribute('template', templateId);
 		wrapper.id = 'wx-open-subscribe-btn';
-		// 保持非零布局尺寸（同层渲染需要），但仅作触发载体。
-		wrapper.style.display = 'inline-block';
-		wrapper.style.width = '10px';
-		wrapper.style.height = '10px';
+		// 占满父容器，让用户的真实点击落在开放标签上。
+		wrapper.style.display = 'block';
+		wrapper.style.width = '100%';
+		wrapper.style.height = '100%';
 
 		// 样式插槽（官方示例要求内容用 <style> 标签包裹）
 		const styleScript = document.createElement('script');
@@ -134,12 +132,14 @@
 				opacity: 0;
 				border: none;
 				padding: 0;
+				margin: 0;
 				cursor: pointer;
+				background: transparent;
 			}
 			</style>
 		`;
 
-		// 按钮插槽（透明，仅作触发载体）
+		// 按钮插槽（透明且占满，仅作真实点击的承接层）
 		const btnScript = document.createElement('script');
 		btnScript.type = 'text/wxtag-template';
 		btnScript.textContent = '<button class="subscribe-btn" aria-label="订阅报修进度通知"></button>';
@@ -159,18 +159,7 @@
 
 		container.innerHTML = '';
 		container.appendChild(wrapper);
-		openTagEl = wrapper;
-	}
-
-	// 由外部在真实用户点击事件的调用栈中调用，程序化触发微信授权弹窗。
-	// 返回 true 表示已触发（授权结果通过 onSuccess/onError 回调异步返回）；
-	// 返回 false 表示当前不可触发（未就绪/已问过/非微信环境）。
-	export function trigger(): boolean {
-		if (!ready || !openTagEl) return false;
-		const btn = openTagEl.querySelector('button');
-		if (!btn) return false;
-		btn.click();
-		return true;
+		onReady?.();
 	}
 
 	onMount(() => {
@@ -187,12 +176,15 @@
 </script>
 
 <!--
-	容器始终渲染以承接 trigger() 的插入；移出视口且 aria-hidden，
-	对页面布局与可读性无影响。开放标签本身保持非零尺寸以满足同层渲染定位。
+	透明开放标签覆盖层：绝对定位铺满父容器（父容器需 position:relative 并覆盖在真实按钮上）。
+	仅在就绪（ready）后才接管点击（pointer-events:auto），此时用户真实点击落在透明标签上
+	触发微信原生授权；未就绪时 pointer-events:none，点击穿透到下方真实按钮走兜底逻辑。
 -->
 <span
 	bind:this={container}
-	style="position: absolute; left: -9999px; top: -9999px; overflow: hidden;"
+	style="position: absolute; inset: 0; display: block; z-index: 10; pointer-events: {ready
+		? 'auto'
+		: 'none'};"
 	aria-hidden="true"
 ></span>
 

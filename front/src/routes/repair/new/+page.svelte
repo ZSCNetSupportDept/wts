@@ -41,8 +41,7 @@
 
 	// 订阅提示模态框状态
 	let subscribeModalOpen = $state(false);
-	// WxOpenSubscribe 触发器引用与就绪状态
-	let subscribeTrigger: WxOpenSubscribe | undefined = $state(undefined);
+	// WxOpenSubscribe 覆盖层就绪状态
 	let subscribeReady = $state(false);
 
 	// 是否处于微信内且可发起订阅授权
@@ -70,41 +69,36 @@
 			jumpInvalid();
 			return;
 		}
-		// 微信内且可订阅时：未弹过提示框则先弹；用户点过「好」（已记住选择）则直接无感授权后提交。
+		// 微信内且可订阅、且用户尚未点过「好」（未记住选择）时：先弹提示模态框。
+		// 模态框「好」按钮上叠有透明开放标签，用户的真实点击会直接触发微信授权。
 		if (canAskSubscribe && !hasKeepSubscribeChoice()) {
 			subscribeModalOpen = true;
 			return;
 		}
-		if (canAskSubscribe && hasKeepSubscribeChoice()) {
-			// 已记住选择：在用户点击「提交」的真实手势调用栈中直接触发授权，结果回来后再提交。
-			if (subscribeReady && subscribeTrigger?.trigger()) {
-				return; // 等待 onSubscribeSettled 回调里继续提交
-			}
-			// 触发器未就绪等异常：不阻塞，直接提交
-			proceedSubmit();
-			return;
-		}
-		// 非微信 / 无模板：直接提交
+		// 已记住选择 / 非微信 / 无模板：直接提交。
+		// （已记住选择意味着用户之前在微信授权界面勾选了「总是保持上述选择」，
+		//  后续由微信侧记住授权，这里无需也无法再次无感触发——合成点击会被微信拦截。）
 		proceedSubmit();
 	}
 
-	// 模态框「好」：用户已做出选择 → 记录「已弹出/已选择」并触发微信授权，结果回来后提交。
-	// 之后不再弹此模态框。
-	function onModalConfirm() {
-		markKeepSubscribeChoice();
-		// 必须在按钮真实点击的调用栈中触发，移动端微信才认这个用户手势
-		if (subscribeReady && subscribeTrigger?.trigger()) {
-			return; // 等待 onSubscribeSettled 回调里继续提交
-		}
-		// 触发失败（未就绪等）：不阻塞，关模态框直接提交
-		subscribeModalOpen = false;
-		proceedSubmit();
-	}
-
-	// 微信授权已出结果（成功/拒绝/失败都算）：关闭模态框并继续提交报修。
+	// 微信授权已出结果（成功/拒绝/失败都算）：记录「已做出选择」、关闭模态框并继续提交报修。
+	// 该回调由叠在「好」按钮上的透明开放标签被真实点击后触发。
 	function onSubscribeSettled() {
+		markKeepSubscribeChoice();
 		subscribeModalOpen = false;
 		proceedSubmit();
+	}
+
+	// 模态框「好」按钮自身的点击（与透明开放标签的授权触发并发）：仅作兜底。
+	// 正常情况下授权结果回调 onSubscribeSettled 会负责后续；若开放标签未就绪/非微信
+	// 环境导致授权未触发（无 success/error 回调），这里保证模态框能关闭并继续提交。
+	function onModalConfirm() {
+		if (!canAskSubscribe || !subscribeReady) {
+			markKeepSubscribeChoice();
+			subscribeModalOpen = false;
+			proceedSubmit();
+		}
+		// 已就绪时：授权由真实点击开放标签触发，等待 onSubscribeSettled 回调，这里不重复提交。
 	}
 
 	let occurAt = new invalidState();
@@ -294,15 +288,14 @@
 	class="mobile-floating-modal"
 	preventCloseOnClickOutside
 >
-	<ModalHeader title="订阅报修进度通知" />
+	<ModalHeader title="微信提醒报修进度授权" />
 	<ModalBody hasForm>
 		<p>
-			报修提交后，工单状态更新（已解决/已取消/已上报）时，我们可以通过微信通知您最新进展。
+			当您的报修提交后，工单状态更新时，我们可以通过微信通知您最新进展。
 		</p>
 		<br />
 		<p>
-			点击「好」后会弹出微信授权界面，请在其中<strong>勾选「总是保持上述选择」</strong
-			>并同意我们的推送，之后提交报修时便不再询问、自动为您订阅。
+			如果您需要，点击“好”后会弹出微信授权界面，请在其中勾选“总是保持上述选择”并同意我们的推送。
 		</p>
 	</ModalBody>
 	<ModalFooter>
@@ -312,21 +305,25 @@
 				subscribeModalOpen = false;
 			}}>返回</Button
 		>
-		<Button kind="primary" on:click={onModalConfirm}>好</Button>
+		<!--
+			「好」按钮区域：相对定位容器内，可见的 Carbon 按钮在下，
+			透明 wx-open-subscribe 开放标签绝对定位铺满叠在上。用户的真实点击
+			落在透明标签上 → 微信原生授权被真实手势触发；按钮自身 on:click 作兜底。
+		-->
+		<span style="position: relative; display: inline-block;">
+			<Button kind="primary" on:click={onModalConfirm}>好</Button>
+			{#if canAskSubscribe}
+				<WxOpenSubscribe
+					templateId={subscribeTemplateId}
+					scene={0}
+					onReady={() => (subscribeReady = true)}
+					onSuccess={onSubscribeSettled}
+					onError={onSubscribeSettled}
+				/>
+			{/if}
+		</span>
 	</ModalFooter>
 </ComposedModal>
-
-<!-- 微信授权触发器（无可见 UI，仅承接模态框「好」/无感授权的触发） -->
-{#if canAskSubscribe}
-	<WxOpenSubscribe
-		bind:this={subscribeTrigger}
-		templateId={subscribeTemplateId}
-		scene={0}
-		onReady={() => (subscribeReady = true)}
-		onSuccess={onSubscribeSettled}
-		onError={onSubscribeSettled}
-	/>
-{/if}
 
 <NotificationQueue bind:this={q} />
 
