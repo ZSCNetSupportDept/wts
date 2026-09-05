@@ -4,11 +4,10 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!--
-			关键：在 SvelteKit 一切 JS 加载之前，最先捕获本次页面加载的真实入口 URL。
-			SPA 前端路由（history pushState）会改写 location.href，但微信 JSSDK 签名校验用的
-			是「页面初次加载时的 URL」（realAuthUrl）。此处脚本执行时路由尚未初始化，
-			location.href 即为真实入口，缓存到 window.__ENTRY_URL__ 供 wx.config 签名使用。
-		-->
+			在 SvelteKit 一切 JS 加载之前，最先捕获本次页面加载的真实入口 URL。
+			SPA 前端路由（history pushState）会改写 location.href，但微信 JSSDK 签名校验用的是「页面初次加载时的 URL」（realAuthUrl）。
+			此处脚本执行时路由尚未初始化，location.href 即为真实入口，缓存到 window.__ENTRY_URL__ 供 wx.config 签名使用。 
+		--> 
 		<script>
 			window.__ENTRY_URL__ = window.location.href.split('#')[0];
 		</script>

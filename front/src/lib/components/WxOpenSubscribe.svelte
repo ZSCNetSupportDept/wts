@@ -10,14 +10,19 @@
 	const SIGN_URL =
 		(window as any).__ENTRY_URL__ || window.location.href.split('#')[0];
 
+	// 本组件是「纯授权触发器」：不渲染可见按钮，只负责初始化 wx.config 并插入一个
+	// 视觉透明的 wx-open-subscribe 开放标签。外部通过 trigger() 在真实用户点击事件的
+	// 调用栈中触发授权（微信要求移动端原生授权必须由用户手势触发）。
 	let {
 		templateId = '',
 		scene = 2,
+		onReady,
 		onSuccess,
 		onError
 	}: {
 		templateId?: string;
 		scene?: number;
+		onReady?: () => void;
 		onSuccess?: (detail: { errMsg: string; subscribeDetails: string }) => void;
 		onError?: (detail: { errMsg: string; errCode: string }) => void;
 	} = $props();
@@ -25,6 +30,7 @@
 	let ready = $state(false);
 	let errorMsg = $state('');
 	let container: HTMLSpanElement | undefined = $state(undefined);
+	let openTagEl: HTMLElement | null = null;
 
 	// 加载微信 JS-SDK 脚本
 	function loadWxSdk(): Promise<void> {
@@ -60,7 +66,7 @@
 
 			// 用 app.html 捕获的真实入口 URL 签名，与微信 realAuthUrl 严格一致。
 			const url = SIGN_URL;
-			//console.log('[WxOpenSubscribe] 签名 URL:', url, '| 当前 href:', window.location.href);
+			// console.log('[WxOpenSubscribe] 签名 URL:', url, '| 当前 href:', window.location.href);
 			const res = await GetJsApiConfig(url);
 			if (!res.success) {
 				throw new Error(res.msg || '获取 JS-SDK 配置失败');
@@ -82,6 +88,7 @@
 				// 必须等下一个 tick，<span bind:this={container}> 才会真正挂载。
 				await tick();
 				insertOpenTag();
+				onReady?.();
 			});
 
 			wx.error((err: any) => {
@@ -92,8 +99,10 @@
 		}
 	}
 
-	// 使用 DOM 操作插入 wx-open-subscribe 标签，避免 Svelte 解析 script 标签
-	function insertOpenTag(retries = 5) {
+	// 插入 wx-open-subscribe 开放标签。
+	// 注意：标签保持布局尺寸（移动端原生同层渲染按布局尺寸定位），但视觉透明且移出视口，
+	// 因为本组件只作为「触发器」，真正的交互按钮由外部（如模态框的"好"按钮）提供。
+	function insertOpenTag(retries = 8) {
 		// bind:this 赋值可能晚于 tick() 完成，未就绪时退避重试，消除竞态
 		if (!container || !templateId) {
 			if (retries > 0) {
@@ -107,12 +116,10 @@
 		const wrapper = document.createElement('wx-open-subscribe');
 		wrapper.setAttribute('template', templateId);
 		wrapper.id = 'wx-open-subscribe-btn';
-		// 关键：必须给开放标签本身设置明确宽高。
-		// 手机微信的开放标签是原生组件同层渲染，按标签的布局尺寸绘制，
-		// 若标签本身尺寸为 0（默认 inline 无内容），移动端会渲染为空白。
+		// 保持非零布局尺寸（同层渲染需要），但仅作触发载体。
 		wrapper.style.display = 'inline-block';
-		wrapper.style.width = '180px';
-		wrapper.style.height = '40px';
+		wrapper.style.width = '10px';
+		wrapper.style.height = '10px';
 
 		// 样式插槽（官方示例要求内容用 <style> 标签包裹）
 		const styleScript = document.createElement('script');
@@ -124,25 +131,23 @@
 				display: block;
 				width: 100%;
 				height: 100%;
-				background-color: #07c160;
-				color: #fff;
+				opacity: 0;
 				border: none;
-				border-radius: 4px;
-				font-size: 14px;
+				padding: 0;
 				cursor: pointer;
 			}
 			</style>
 		`;
 
-		// 按钮插槽
+		// 按钮插槽（透明，仅作触发载体）
 		const btnScript = document.createElement('script');
 		btnScript.type = 'text/wxtag-template';
-		btnScript.textContent = '<button class="subscribe-btn">订阅报修进度通知</button>';
+		btnScript.textContent = '<button class="subscribe-btn" aria-label="订阅报修进度通知"></button>';
 
 		wrapper.appendChild(styleScript);
 		wrapper.appendChild(btnScript);
 
-		// 绑定事件
+		// 绑定事件：拿到结果后回调给外部，由外部决定后续流程（如关闭模态框并提交）。
 		wrapper.addEventListener('success', (e: Event) => {
 			markSubscribeAsked();
 			onSuccess?.((e as CustomEvent).detail);
@@ -154,6 +159,18 @@
 
 		container.innerHTML = '';
 		container.appendChild(wrapper);
+		openTagEl = wrapper;
+	}
+
+	// 由外部在真实用户点击事件的调用栈中调用，程序化触发微信授权弹窗。
+	// 返回 true 表示已触发（授权结果通过 onSuccess/onError 回调异步返回）；
+	// 返回 false 表示当前不可触发（未就绪/已问过/非微信环境）。
+	export function trigger(): boolean {
+		if (!ready || !openTagEl) return false;
+		const btn = openTagEl.querySelector('button');
+		if (!btn) return false;
+		btn.click();
+		return true;
 	}
 
 	onMount(() => {
@@ -169,10 +186,16 @@
 	});
 </script>
 
-{#if ready && templateId}
-	<span bind:this={container}></span>
-{:else if errorMsg}
+<!--
+	容器始终渲染以承接 trigger() 的插入；移出视口且 aria-hidden，
+	对页面布局与可读性无影响。开放标签本身保持非零尺寸以满足同层渲染定位。
+-->
+<span
+	bind:this={container}
+	style="position: absolute; left: -9999px; top: -9999px; overflow: hidden;"
+	aria-hidden="true"
+></span>
+
+{#if errorMsg}
 	<span style="color: #999; font-size: 12px;">{errorMsg}</span>
-{:else}
-	<span style="color: #999; font-size: 12px;">加载中...</span>
 {/if}

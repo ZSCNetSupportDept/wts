@@ -9,38 +9,16 @@
 	import { onMount } from 'svelte';
 	import { IsUser } from '$lib/types/enum';
 	import { CheckAndGetJWT, Guard } from '$lib/jwt';
-	import type { Ticket, SubscribeConfigRes } from '$lib/types/apiResponse';
-	import { GetTicket, GetSubscribeConfig } from '$lib/api';
+	import type { Ticket } from '$lib/types/apiResponse';
+	import { GetTicket } from '$lib/api';
 	import { NotificationQueue } from 'carbon-components-svelte';
 	import { SUPPORT_QQ } from '$lib/env/businesses';
-	import WxOpenSubscribe from '$lib/components/WxOpenSubscribe.svelte';
 
 	let q: NotificationQueue;
 
 	let tickets = $state([] as Ticket[]);
-	let subscribeTemplateId = $state('');
 
-	onMount(() => (Guard(IsUser), fetchTickets(), fetchSubscribeConfig()));
-
-	async function fetchSubscribeConfig() {
-		//确认用户是否在微信中打开网页
-		const ua = navigator.userAgent.toLowerCase();
-		if (!ua.includes('micromessenger')) return;
-
-		try {
-			const cfg = await GetSubscribeConfig();
-			if (cfg.success && cfg.template_id) {
-				subscribeTemplateId = cfg.template_id;
-			}
-		} catch (e: any) {
-			q.add({
-				kind: 'warning',
-				title: '获取订阅配置失败',
-				subtitle: e.response?.data?.msg || e.message || '未知错误',
-				timeout: 3000
-			});
-		}
-	}
+	onMount(() => (Guard(IsUser), fetchTickets()));
 
 	async function fetchTickets() {
 		try {
@@ -82,9 +60,6 @@
 <div
 	style="display: flex; justify-content: flex-end; margin-right: 17px; margin-bottom: 15px; gap: 10px; align-items: center;"
 >
-	{#if subscribeTemplateId}
-		<WxOpenSubscribe templateId={subscribeTemplateId} scene={1} />
-	{/if}
 	<Button href="/repair/new">提交新报修</Button>
 </div>
 

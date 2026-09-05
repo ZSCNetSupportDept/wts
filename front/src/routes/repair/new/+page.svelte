@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { CheckAndGetJWT, Guard } from '$lib/jwt';
 	import type { NewTicketReq } from '$lib/types/apiRequest';
-	import type { SubscribeConfigRes } from '$lib/types/apiResponse';
 	import type { PageProps } from './$types';
 	let { data }: PageProps = $props();
 	import { RFC3339 } from '$lib/types/RFC3339';
@@ -16,6 +15,10 @@
 		RadioButton,
 		TextArea,
 		Button,
+		ComposedModal,
+		ModalBody,
+		ModalFooter,
+		ModalHeader,
 		NotificationQueue,
 		Loading
 	} from 'carbon-components-svelte';
@@ -24,6 +27,10 @@
 	import { NewTicket, GetSubscribeConfig } from '$lib/api';
 	import { goto } from '$app/navigation';
 	import WxOpenSubscribe from '$lib/components/WxOpenSubscribe.svelte';
+	import {
+		hasKeepSubscribeChoice,
+		markKeepSubscribeChoice
+	} from '$lib/states/wechatSubscribeStatus';
 
 	let notLoading: boolean = $state(true);
 
@@ -31,6 +38,15 @@
 
 	let r = $state({} as NewTicketReq);
 	let subscribeTemplateId = $state('');
+
+	// 订阅提示模态框状态
+	let subscribeModalOpen = $state(false);
+	// WxOpenSubscribe 触发器引用与就绪状态
+	let subscribeTrigger: WxOpenSubscribe | undefined = $state(undefined);
+	let subscribeReady = $state(false);
+
+	// 是否处于微信内且可发起订阅授权
+	const canAskSubscribe = $derived(subscribeTemplateId !== '');
 
 	function onOccurDateChange(event: CustomEvent) {
 		const { dateStr } = event.detail;
@@ -50,7 +66,45 @@
 
 	function handleSubmit() {
 		console.log('提交的表单数据:', r);
-		check() ? submit() : jumpInvalid();
+		if (!check()) {
+			jumpInvalid();
+			return;
+		}
+		// 微信内且可订阅时：未弹过提示框则先弹；用户点过「好」（已记住选择）则直接无感授权后提交。
+		if (canAskSubscribe && !hasKeepSubscribeChoice()) {
+			subscribeModalOpen = true;
+			return;
+		}
+		if (canAskSubscribe && hasKeepSubscribeChoice()) {
+			// 已记住选择：在用户点击「提交」的真实手势调用栈中直接触发授权，结果回来后再提交。
+			if (subscribeReady && subscribeTrigger?.trigger()) {
+				return; // 等待 onSubscribeSettled 回调里继续提交
+			}
+			// 触发器未就绪等异常：不阻塞，直接提交
+			proceedSubmit();
+			return;
+		}
+		// 非微信 / 无模板：直接提交
+		proceedSubmit();
+	}
+
+	// 模态框「好」：用户已做出选择 → 记录「已弹出/已选择」并触发微信授权，结果回来后提交。
+	// 之后不再弹此模态框。
+	function onModalConfirm() {
+		markKeepSubscribeChoice();
+		// 必须在按钮真实点击的调用栈中触发，移动端微信才认这个用户手势
+		if (subscribeReady && subscribeTrigger?.trigger()) {
+			return; // 等待 onSubscribeSettled 回调里继续提交
+		}
+		// 触发失败（未就绪等）：不阻塞，关模态框直接提交
+		subscribeModalOpen = false;
+		proceedSubmit();
+	}
+
+	// 微信授权已出结果（成功/拒绝/失败都算）：关闭模态框并继续提交报修。
+	function onSubscribeSettled() {
+		subscribeModalOpen = false;
+		proceedSubmit();
 	}
 
 	let occurAt = new invalidState();
@@ -92,7 +146,7 @@
 		return ok;
 	}
 
-	async function submit() {
+	async function proceedSubmit() {
 		let issuerSID = CheckAndGetJWT('parsed')?.sid;
 		r.issuer_sid = issuerSID;
 		try {
@@ -231,12 +285,83 @@
 <br />
 <Button on:click={handleSubmit}>提交</Button>
 
-{#if subscribeTemplateId}
-	<div style="margin-top: 16px;">
-		<WxOpenSubscribe templateId={subscribeTemplateId} scene={0} />
-	</div>
+<!-- 订阅提示模态框：交互按钮（好/返回）与微信授权触发器分离 -->
+<ComposedModal
+	bind:open={subscribeModalOpen}
+	on:close={() => {
+		subscribeModalOpen = false;
+	}}
+	class="mobile-floating-modal"
+	preventCloseOnClickOutside
+>
+	<ModalHeader title="订阅报修进度通知" />
+	<ModalBody hasForm>
+		<p>
+			报修提交后，工单状态更新（已解决/已取消/已上报）时，我们可以通过微信通知您最新进展。
+		</p>
+		<br />
+		<p>
+			点击「好」后会弹出微信授权界面，请在其中<strong>勾选「总是保持上述选择」</strong
+			>并同意我们的推送，之后提交报修时便不再询问、自动为您订阅。
+		</p>
+	</ModalBody>
+	<ModalFooter>
+		<Button
+			kind="secondary"
+			on:click={() => {
+				subscribeModalOpen = false;
+			}}>返回</Button
+		>
+		<Button kind="primary" on:click={onModalConfirm}>好</Button>
+	</ModalFooter>
+</ComposedModal>
+
+<!-- 微信授权触发器（无可见 UI，仅承接模态框「好」/无感授权的触发） -->
+{#if canAskSubscribe}
+	<WxOpenSubscribe
+		bind:this={subscribeTrigger}
+		templateId={subscribeTemplateId}
+		scene={0}
+		onReady={() => (subscribeReady = true)}
+		onSuccess={onSubscribeSettled}
+		onError={onSubscribeSettled}
+	/>
 {/if}
 
 <NotificationQueue bind:this={q} />
 
 <Loading active={!notLoading} />
+
+<style>
+	:global(.mobile-floating-modal.bx--modal) {
+		@media (max-width: 672px) {
+			display: flex !important;
+			align-items: center !important;
+			justify-content: center !important;
+			background-color: rgba(22, 22, 22, 0.5) !important;
+		}
+	}
+
+	:global(.mobile-floating-modal .bx--modal-container) {
+		@media (max-width: 672px) {
+			width: 90% !important;
+			max-width: 400px !important;
+			height: auto !important;
+			max-height: 85vh !important;
+			position: relative !important;
+			margin: 0 !important;
+			top: auto !important;
+			left: auto !important;
+			transform: none !important;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+		}
+	}
+
+	:global(.mobile-floating-modal .bx--modal-content) {
+		@media (max-width: 672px) {
+			max-height: 60vh !important;
+			overflow-y: auto !important;
+			margin-bottom: 0 !important;
+		}
+	}
+</style>
