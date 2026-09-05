@@ -10,19 +10,21 @@
 	const SIGN_URL =
 		(window as any).__ENTRY_URL__ || window.location.href.split('#')[0];
 
-	// 本组件渲染一个「透明的 wx-open-subscribe 开放标签覆盖层」，铺满其父容器。
-	// 用法：将本组件叠放在真实交互按钮（如模态框的「好」）之上——用户的真实点击落在
-	// 透明开放标签上，从而以真实用户手势触发微信原生授权（合成 click() 会被微信拦截）。
-	// 父容器需 position:relative 并提供尺寸；授权结果通过 onSuccess/onError 回调抛出。
+	// 本组件渲染一个「可见的 wx-open-subscribe 开放标签按钮」，样式仿 Carbon primary。
+	// 用户的真实点击直接落在开放标签上（微信官方标准用法），必然触发原生授权；
+	// 不要用「透明标签叠在别的按钮上」的做法——同层渲染与 DOM 层叠冲突会导致点击被吞。
+	// 授权结果通过 onSuccess/onError 回调抛出；未就绪/非微信时渲染一个普通禁用按钮。
 	let {
 		templateId = '',
 		scene = 2,
+		label = '好',
 		onReady,
 		onSuccess,
 		onError
 	}: {
 		templateId?: string;
 		scene?: number;
+		label?: string;
 		onReady?: () => void;
 		onSuccess?: (detail: { errMsg: string; subscribeDetails: string }) => void;
 		onError?: (detail: { errMsg: string; errCode: string }) => void;
@@ -98,8 +100,8 @@
 		}
 	}
 
-	// 插入 wx-open-subscribe 开放标签，铺满父容器作为透明点击层。
-	// 移动端原生同层渲染按布局尺寸定位与响应，因此必须占满父容器（即下方真实按钮区域）。
+	// 插入 wx-open-subscribe 开放标签，插槽渲染一个可见的仿 Carbon primary 样式按钮。
+	// 用户真实点击直接落在开放标签上 → 微信原生授权被真实手势触发。
 	function insertOpenTag(retries = 8) {
 		// bind:this 赋值可能晚于 tick() 完成，未就绪时退避重试，消除竞态
 		if (!container || !templateId) {
@@ -114,35 +116,38 @@
 		const wrapper = document.createElement('wx-open-subscribe');
 		wrapper.setAttribute('template', templateId);
 		wrapper.id = 'wx-open-subscribe-btn';
-		// 占满父容器，让用户的真实点击落在开放标签上。
-		wrapper.style.display = 'block';
-		wrapper.style.width = '100%';
-		wrapper.style.height = '100%';
+		wrapper.style.display = 'inline-block';
 
-		// 样式插槽（官方示例要求内容用 <style> 标签包裹）
+		// 样式插槽：仿 Carbon primary 按钮外观（官方示例要求内容用 <style> 标签包裹）
 		const styleScript = document.createElement('script');
 		styleScript.type = 'text/wxtag-template';
 		styleScript.slot = 'style';
 		styleScript.textContent = `
 			<style>
 			.subscribe-btn {
-				display: block;
-				width: 100%;
-				height: 100%;
-				opacity: 0;
+				display: inline-block;
+				box-sizing: border-box;
+				padding: 12px 32px;
+				background-color: #0f62fe;
+				color: #ffffff;
 				border: none;
-				padding: 0;
-				margin: 0;
+				border-radius: 0;
+				font-size: 14px;
+				font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
 				cursor: pointer;
-				background: transparent;
+				min-width: 64px;
+				text-align: center;
+			}
+			.subscribe-btn:active {
+				background-color: #002d9c;
 			}
 			</style>
 		`;
 
-		// 按钮插槽（透明且占满，仅作真实点击的承接层）
+		// 按钮插槽：可见的「好」按钮
 		const btnScript = document.createElement('script');
 		btnScript.type = 'text/wxtag-template';
-		btnScript.textContent = '<button class="subscribe-btn" aria-label="订阅报修进度通知"></button>';
+		btnScript.textContent = `<button class="subscribe-btn">${label}</button>`;
 
 		wrapper.appendChild(styleScript);
 		wrapper.appendChild(btnScript);
@@ -176,17 +181,19 @@
 </script>
 
 <!--
-	透明开放标签覆盖层：绝对定位铺满父容器（父容器需 position:relative 并覆盖在真实按钮上）。
-	仅在就绪（ready）后才接管点击（pointer-events:auto），此时用户真实点击落在透明标签上
-	触发微信原生授权；未就绪时 pointer-events:none，点击穿透到下方真实按钮走兜底逻辑。
+	可见的开放标签按钮。就绪后由 insertOpenTag 插入真实可点的 wx-open-subscribe；
+	未就绪/非微信时渲染一个普通禁用按钮占位，保证模态框布局一致。
 -->
-<span
-	bind:this={container}
-	style="position: absolute; inset: 0; display: block; z-index: 10; pointer-events: {ready
-		? 'auto'
-		: 'none'};"
-	aria-hidden="true"
-></span>
+<span bind:this={container} style="display: inline-block;">
+	{#if !ready}
+		<button
+			type="button"
+			disabled
+			style="padding: 12px 32px; background-color: #0f62fe; color: #fff; border: none; font-size: 14px; opacity: 0.5; cursor: not-allowed; min-width: 64px;"
+			>{label}</button
+		>
+	{/if}
+</span>
 
 {#if errorMsg}
 	<span style="color: #999; font-size: 12px;">{errorMsg}</span>

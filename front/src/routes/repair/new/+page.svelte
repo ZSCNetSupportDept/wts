@@ -82,23 +82,18 @@
 	}
 
 	// 微信授权已出结果（成功/拒绝/失败都算）：记录「已做出选择」、关闭模态框并继续提交报修。
-	// 该回调由叠在「好」按钮上的透明开放标签被真实点击后触发。
+	// 该回调由「好」按钮（即可见的 wx-open-subscribe 开放标签）被真实点击后触发。
 	function onSubscribeSettled() {
 		markKeepSubscribeChoice();
 		subscribeModalOpen = false;
 		proceedSubmit();
 	}
 
-	// 模态框「好」按钮自身的点击（与透明开放标签的授权触发并发）：仅作兜底。
-	// 正常情况下授权结果回调 onSubscribeSettled 会负责后续；若开放标签未就绪/非微信
-	// 环境导致授权未触发（无 success/error 回调），这里保证模态框能关闭并继续提交。
+	// 非微信/无模板时模态框「好」按钮（普通 Carbon 按钮）的点击：直接写记忆并提交。
 	function onModalConfirm() {
-		if (!canAskSubscribe || !subscribeReady) {
-			markKeepSubscribeChoice();
-			subscribeModalOpen = false;
-			proceedSubmit();
-		}
-		// 已就绪时：授权由真实点击开放标签触发，等待 onSubscribeSettled 回调，这里不重复提交。
+		markKeepSubscribeChoice();
+		subscribeModalOpen = false;
+		proceedSubmit();
 	}
 
 	let occurAt = new invalidState();
@@ -306,23 +301,24 @@
 				subscribeModalOpen = false;
 			}}>返回</Button
 		>
-		<!--
-			「好」按钮区域：相对定位容器内，可见的 Carbon 按钮在下，
-			透明 wx-open-subscribe 开放标签绝对定位铺满叠在上。用户的真实点击
-			落在透明标签上 → 微信原生授权被真实手势触发；按钮自身 on:click 作兜底。
-		-->
-		<span style="position: relative; display: inline-block;">
+		{#if canAskSubscribe}
+			<!--
+				「好」按钮就是一个可见的 wx-open-subscribe 开放标签按钮：
+				用户真实点击直接落在开放标签上 → 必然触发微信原生授权；
+				授权结果由 onSubscribeSettled 回调驱动后续（写记忆+关框+提交）。
+			-->
+			<WxOpenSubscribe
+				templateId={subscribeTemplateId}
+				scene={0}
+				label="好"
+				onReady={() => (subscribeReady = true)}
+				onSuccess={onSubscribeSettled}
+				onError={onSubscribeSettled}
+			/>
+		{:else}
+			<!-- 非微信/无模板：普通按钮兜底，直接提交 -->
 			<Button kind="primary" on:click={onModalConfirm}>好</Button>
-			{#if canAskSubscribe}
-				<WxOpenSubscribe
-					templateId={subscribeTemplateId}
-					scene={0}
-					onReady={() => (subscribeReady = true)}
-					onSuccess={onSubscribeSettled}
-					onError={onSubscribeSettled}
-				/>
-			{/if}
-		</span>
+		{/if}
 	</ModalFooter>
 </ComposedModal>
 
