@@ -59,7 +59,7 @@
 			}
 
 			wx.config({
-				debug: false,
+				debug: true,
 				appId: res.appid,
 				timestamp: res.timestamp,
 				nonceStr: res.nonce_str,
