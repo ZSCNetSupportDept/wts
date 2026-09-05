@@ -92,6 +92,12 @@
 		const wrapper = document.createElement('wx-open-subscribe');
 		wrapper.setAttribute('template', templateId);
 		wrapper.id = 'wx-open-subscribe-btn';
+		// 关键：必须给开放标签本身设置明确宽高。
+		// 手机微信的开放标签是原生组件同层渲染，按标签的布局尺寸绘制，
+		// 若标签本身尺寸为 0（默认 inline 无内容），移动端会渲染为空白。
+		wrapper.style.display = 'inline-block';
+		wrapper.style.width = '180px';
+		wrapper.style.height = '40px';
 
 		// 样式插槽（官方示例要求内容用 <style> 标签包裹）
 		const styleScript = document.createElement('script');
@@ -100,8 +106,9 @@
 		styleScript.textContent = `
 			<style>
 			.subscribe-btn {
-				display: inline-block;
-				padding: 8px 16px;
+				display: block;
+				width: 100%;
+				height: 100%;
 				background-color: #07c160;
 				color: #fff;
 				border: none;

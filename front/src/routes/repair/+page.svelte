@@ -80,7 +80,7 @@
 </p>
 <br />
 <div
-	style="display: flex; justify-content: flex-end; transform: translate(-17px,0px); margin-bottom: 15px; gap: 10px; align-items: center;"
+	style="display: flex; justify-content: flex-end; margin-right: 17px; margin-bottom: 15px; gap: 10px; align-items: center;"
 >
 	{#if subscribeTemplateId}
 		<WxOpenSubscribe templateId={subscribeTemplateId} scene={1} />
