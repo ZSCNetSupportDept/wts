@@ -51,10 +51,9 @@
 			await loadWxSdk();
 			const wx = (window as any).wx;
 
-			// 微信签名校验的是「通过 location.href 加载页面时的原始 URL」（忽略 hash）。
-			// SvelteKit 前端路由用 history API 改写过 URL，window.location.href 与微信记录不符，
-			// 因此必须用 origin + pathname（不含 query/hash），否则移动端报 config: invalid signature。
-			const url = window.location.origin + window.location.pathname;
+			// 微信签名校验的 URL = 当前 location.href 去掉 hash 后的部分（含 query）。
+			// 不要用 origin+pathname：若入口 URL 带 ?op=xxx 等参数，会丢参数导致签名不符。
+			const url = window.location.href.split('#')[0];
 			const res = await GetJsApiConfig(url);
 			if (!res.success) {
 				throw new Error(res.msg || '获取 JS-SDK 配置失败');
