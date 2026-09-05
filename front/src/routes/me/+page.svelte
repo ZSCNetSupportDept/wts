@@ -57,8 +57,24 @@
 		}
 	}
 
-	function clearCache(){
-		clearKeepSubscribeChoice();
+	function clearCache() {
+		try {
+			clearKeepSubscribeChoice();
+		} catch (e: any) {
+			console.error('清除缓存失败', e);
+			q.add({
+				kind: 'error',
+				title: '清除缓存失败',
+				subtitle: e.message || '未知错误',
+				timeout: 4500
+			});
+			return;
+		}
+		q.add({
+			kind: 'success',
+			title: '清除缓存成功',
+			timeout: 3000
+		});
 	}
 </script>
 
@@ -147,7 +163,8 @@
 			</div>
 			<br />
 			<br />
-			<Button on:click={clearCache}>清除缓存 </Button>
+			<br />
+			<Button size="field" on:click={clearCache}>清除缓存</Button>
 		</AccordionItem>
 		<AccordionItem title="联系我们">
 			<p>如果您对网维的服务或本系统有任何意见或建议，请尽管联系我们！我们非常重视您的建议。</p>
