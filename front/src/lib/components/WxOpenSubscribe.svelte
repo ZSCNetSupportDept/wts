@@ -51,8 +51,10 @@
 			await loadWxSdk();
 			const wx = (window as any).wx;
 
-			// 获取当前页面 URL（去除 hash 部分，微信签名要求）
-			const url = window.location.href.split('#')[0];
+			// 微信签名校验的是「通过 location.href 加载页面时的原始 URL」（忽略 hash）。
+			// SvelteKit 前端路由用 history API 改写过 URL，window.location.href 与微信记录不符，
+			// 因此必须用 origin + pathname（不含 query/hash），否则移动端报 config: invalid signature。
+			const url = window.location.origin + window.location.pathname;
 			const res = await GetJsApiConfig(url);
 			if (!res.success) {
 				throw new Error(res.msg || '获取 JS-SDK 配置失败');
@@ -71,8 +73,7 @@
 			wx.ready(async () => {
 				ready = true;
 				// ready 置位后 Svelte 的 DOM 更新在微任务中批量刷新，
-				// 必须等下一个 tick，<span bind:this={container}> 才会真正挂载，
-				// 否则 insertOpenTag 会因 container 为 undefined 而静默返回。
+				// 必须等下一个 tick，<span bind:this={container}> 才会真正挂载。
 				await tick();
 				insertOpenTag();
 			});
@@ -86,8 +87,16 @@
 	}
 
 	// 使用 DOM 操作插入 wx-open-subscribe 标签，避免 Svelte 解析 script 标签
-	function insertOpenTag() {
-		if (!container || !templateId) return;
+	function insertOpenTag(retries = 5) {
+		// bind:this 赋值可能晚于 tick() 完成，未就绪时退避重试，消除竞态
+		if (!container || !templateId) {
+			if (retries > 0) {
+				setTimeout(() => insertOpenTag(retries - 1), 60);
+			} else {
+				errorMsg = '容器挂载超时';
+			}
+			return;
+		}
 
 		const wrapper = document.createElement('wx-open-subscribe');
 		wrapper.setAttribute('template', templateId);

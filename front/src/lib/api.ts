@@ -106,6 +106,9 @@ export async function GetSubscribeConfig(): Promise<SubscribeConfigRes> {
 }
 
 export async function GetJsApiConfig(url: string): Promise<JsApiConfigRes> {
-	const res = await api.get('/api/v3p/wx/get_jsapi_config', { params: { url } });
+	const res = await api.get('/api/v3p/wx/get_jsapi_config', {
+		// URLSearchParams 会对 url 中的 ? & = 等做百分号编码，避免被当成额外 query 参数截断
+		params: new URLSearchParams({ url })
+	});
 	return res.data;
 }
