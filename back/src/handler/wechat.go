@@ -8,7 +8,6 @@ import (
 	"log/slog"
 	"math/big"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -249,22 +248,22 @@ func GetJsApiConfig(i echo.Context) error {
 
 	var res hutil.JsApiConfigResponse
 
-	rawURL := i.QueryParam("url")
-	if rawURL == "" {
+	url := i.QueryParam("url")
+	if url == "" {
 		res.Success = false
 		res.ErrType = hutil.ErrReq
 		res.Msg = "缺少 url 参数"
 		return i.JSON(400, res)
 	}
-	// Echo 的 QueryParam 已做 URL 解码；此处再防御性解码一次，防止前端双重编码。
-	signedURL := rawURL
-	if decoded, derr := url.QueryUnescape(rawURL); derr == nil {
-		signedURL = decoded
-	}
+	// // Echo 的 QueryParam 已做 URL 解码；此处再防御性解码一次，防止前端双重编码。
+	// signedURL := url
+	// if decoded, derr := url.QueryUnescape(url); derr == nil {
+	// 	signedURL = decoded
+	// }
 
-	cfg, err := c.WX.GetJs().GetConfig(signedURL)
+	cfg, err := c.WX.GetJs().GetConfig(url)
 	if err != nil {
-		slog.Warn("GetJsApiConfig::GetConfig()生成签名失败", "url", signedURL, "error", err)
+		slog.Warn("GetJsApiConfig::GetConfig()生成签名失败", "url", url, "error", err)
 		res.Success = false
 		res.ErrType = hutil.ErrInternal
 		res.Msg = "生成 JS-SDK 签名失败"
@@ -274,8 +273,8 @@ func GetJsApiConfig(i echo.Context) error {
 		return i.JSON(500, res)
 	}
 
-	// 记录实际参与签名的 URL，便于与手机端 realAuthUrl 对比排查 invalid signature
-	slog.Info("GetJsApiConfig 生成签名", "signed_url", signedURL, "signature", cfg.Signature)
+	// // 记录实际参与签名的 URL，便于与手机端 realAuthUrl 对比排查 invalid signature
+	// slog.Info("GetJsApiConfig 生成签名", "signed_url", signedURL, "signature", cfg.Signature)
 
 	res.Success = true
 	res.AppID = cfg.AppID

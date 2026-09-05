@@ -60,14 +60,14 @@
 
 			// 用 app.html 捕获的真实入口 URL 签名，与微信 realAuthUrl 严格一致。
 			const url = SIGN_URL;
-			console.log('[WxOpenSubscribe] 签名 URL:', url, '| 当前 href:', window.location.href);
+			//console.log('[WxOpenSubscribe] 签名 URL:', url, '| 当前 href:', window.location.href);
 			const res = await GetJsApiConfig(url);
 			if (!res.success) {
 				throw new Error(res.msg || '获取 JS-SDK 配置失败');
 			}
 
 			wx.config({
-				debug: true,
+				debug: false,
 				appId: res.appid,
 				timestamp: res.timestamp,
 				nonceStr: res.nonce_str,
