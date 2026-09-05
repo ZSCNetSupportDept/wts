@@ -3,10 +3,12 @@
 	import { GetJsApiConfig } from '$lib/api';
 	import { markSubscribeAsked, hasAskedSubscribe } from '$lib/states/wechatSubscribeStatus';
 
-	// SPA 场景下，微信签名校验用的是微信内置浏览器记录的「入口 URL」（realAuthUrl），
-	// 从前端路由进入子页面时该值仍是首页（如 https://site/），JS 运行时无法可靠获取。
-	// 因此统一使用站点根 origin 签名，与微信记录的入口 URL 保持一致。
-	const SIGN_URL = window.location.origin + '/';
+	// 微信 JSSDK 签名校验用的是「页面初次加载时的入口 URL」（realAuthUrl），
+	// SPA 前端路由后 location.href 会变，无法从运行时可靠获取。
+	// app.html 在 <head> 最顶部、一切 SPA 逻辑执行前，已把真实入口 URL 缓存到 window.__ENTRY_URL__。
+	// 此处直接读取；若异常缺失（理论上不会），回退到当前 location.href。
+	const SIGN_URL =
+		(window as any).__ENTRY_URL__ || window.location.href.split('#')[0];
 
 	let {
 		templateId = '',
@@ -56,7 +58,7 @@
 			await loadWxSdk();
 			const wx = (window as any).wx;
 
-			// 统一用站点根 URL 签名（SPA 入口 URL，与微信 realAuthUrl 一致）。
+			// 用 app.html 捕获的真实入口 URL 签名，与微信 realAuthUrl 严格一致。
 			const url = SIGN_URL;
 			console.log('[WxOpenSubscribe] 签名 URL:', url, '| 当前 href:', window.location.href);
 			const res = await GetJsApiConfig(url);
