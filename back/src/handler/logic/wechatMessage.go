@@ -68,6 +68,11 @@ func (i *Ctx) handleWXEvent(m *message.MixMessage) string {
 		return ""
 	}
 
+	if m.Event == message.EventType("subscribe_msg_sent_event") {
+		// 订阅通知成功发送时会送达该事件，不需要回复，否则会在通知后发送额外报错信息
+		return ""
+	}
+
 	return "错误：事件" + string(m.Event) + "::" + m.EventKey + "没有被定义处理逻辑"
 
 }
