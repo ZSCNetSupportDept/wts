@@ -13,6 +13,11 @@ import (
 	"zsxyww.com/wts/model/sqlc"
 )
 
+// 预约上门时间固定为北京时间 16:30。数据库中预约日期是 date 类型，
+// pgx 扫描出来是 UTC 零点，输出时必须显式使用 +08:00 时区，
+// 不能依赖服务器本地时区，否则前端按本地时区渲染后会差一天。
+var dutyTimeZone = time.FixedZone("Asia/Shanghai", 8*60*60)
+
 func wtsTextOpt(s string) pgtype.Text {
 	if s == "" {
 		return pgtype.Text{Valid: false}
@@ -217,7 +222,7 @@ func appointDatePtrOptOut(t pgtype.Date) *time.Time {
 	if !t.Valid {
 		return nil
 	}
-	t1 := time.Date(t.Time.Year(), t.Time.Month(), t.Time.Day(), 16, 30, 0, 0, t.Time.Location())
+	t1 := time.Date(t.Time.Year(), t.Time.Month(), t.Time.Day(), 16, 30, 0, 0, dutyTimeZone)
 	return &t1
 }
 

@@ -23,3 +23,4 @@ class TicketDetailState {
 }
 
 export const TicketModal = new TicketDetailState();
+

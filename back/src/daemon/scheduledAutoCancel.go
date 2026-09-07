@@ -17,6 +17,8 @@ import (
 	"math/rand"
 )
 
+var dutyTimeZone = time.FixedZone("Asia/Shanghai", 8*60*60)
+
 // 在每天值班结束的时候，自动取消预约在今天但是状态今天没有更新的工单
 func scheduledAutoCancel() {
 	go func() {
@@ -77,7 +79,7 @@ func doCancelJob(jobID int) error {
 
 			var date time.Time
 			if a.AppointedAt.Valid {
-				date = a.AppointedAt.Time
+				date = a.AppointedAt.Time.In(dutyTimeZone).Add(16*time.Hour + 30*time.Minute)
 			} else {
 				continue
 			}
