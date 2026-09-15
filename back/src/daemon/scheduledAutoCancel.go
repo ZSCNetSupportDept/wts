@@ -19,6 +19,14 @@ import (
 
 var dutyTimeZone = time.FixedZone("Asia/Shanghai", 8*60*60)
 
+func appointTime(d pgtype.Date) (time.Time, bool) {
+	if !d.Valid {
+		return time.Time{}, false
+	}
+	t := d.Time
+	return time.Date(t.Year(), t.Month(), t.Day(), 16, 30, 0, 0, dutyTimeZone), true
+}
+
 // 在每天值班结束的时候，自动取消预约在今天但是状态今天没有更新的工单
 func scheduledAutoCancel() {
 	go func() {
@@ -28,8 +36,9 @@ func scheduledAutoCancel() {
 		for {
 			jobID = rand.Int()
 			//暂时在每晚的9点执行逻辑
-			now := time.Now()
-			next := time.Date(now.Year(), now.Month(), now.Day(), 21, 0, 0, 0, now.Location())
+
+			now := time.Now().In(dutyTimeZone)
+			next := time.Date(now.Year(), now.Month(), now.Day(), 21, 0, 0, 0, dutyTimeZone)
 
 			// 如果程序启动时已经过了9点，那么就立即执行
 			if (!now.Before(next)) && (first == true) {
@@ -77,14 +86,14 @@ func doCancelJob(jobID int) error {
 		for _, a := range t {
 			now := time.Now()
 
-			var date time.Time
-			if a.AppointedAt.Valid {
-				date = a.AppointedAt.Time.In(dutyTimeZone).Add(16*time.Hour + 30*time.Minute)
-			} else {
+			// 预约时刻（当日 16:30）已经过去但仍为 scheduled 的工单视为爽约
+			time, ok := appointTime(a.AppointedAt)
+			if !ok {
+				slog.Warn("工单获取预约时间失败", "tid", a.Tid, "appointedAt", a.AppointedAt)
 				continue
 			}
 
-			if date.Before(now) {
+			if time.Before(now) {
 				beforeScheduledTickets = append(beforeScheduledTickets, a)
 			}
 		}
