@@ -1,9 +1,24 @@
 {
   "button": [
     {
-      "type": "view",
       "name": "报修系统",
-      "url": "https://wwbx.davisye.cn"
+      "sub_button": [
+        {
+          "type": "view",
+          "name": "首页",
+          "url": "https://wwbx.davisye.cn"
+        },
+        {
+          "type": "view",
+          "name": "网维后台",
+          "url": "https://wwbx.davisye.cn/op"
+        },
+        {
+          "type": "view",
+          "name": "管理层后台",
+          "url": "https://wwbx.davisye.cn/admin"
+        }
+      ]
     },
     {
       "type": "view",
@@ -11,24 +26,9 @@
       "url": "https://www.zsxyww.com/wiki"
     },
     {
-      "name": "管理入口",
-      "sub_button": [
-        {
-          "type": "view",
-          "name": "管理界面",
-          "url": "https://wwbx.davisye.cn/admin"
-        },
-        {
-          "type": "view",
-          "name": "录入运营商工单",
-          "url": "https://wwbx.davisye.cn/admin/new_assignment"
-        },
-        {
-          "type": "view",
-          "name": "维修后台",
-          "url": "https://wwbx.davisye.cn/op"
-        }
-      ]
+      "type": "view",
+      "name": "网盘",
+      "url": "https://disk.zsxyww.com"
     }
   ],
   "matchrule": {

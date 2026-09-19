@@ -1,9 +1,24 @@
 {
   "button": [
     {
-      "type": "view",
       "name": "报修系统",
-      "url": "https://wwbx.davisye.cn"
+      "sub_button": [
+        {
+          "type": "view",
+          "name": "首页",
+          "url": "https://wwbx.davisye.cn"
+        },
+        {
+          "type": "view",
+          "name": "网维后台",
+          "url": "https://wwbx.davisye.cn/op"
+        },
+        {
+          "type": "view",
+          "name": "管理层后台",
+          "url": "https://wwbx.davisye.cn/admin"
+        }
+      ]
     },
     {
       "type": "view",
@@ -11,19 +26,9 @@
       "url": "https://www.zsxyww.com/wiki"
     },
     {
-      "name": "快捷入口",
-      "sub_button": [
-        {
-          "type": "view",
-          "name": "修理后台",
-          "url": "https://wwbx.davisye.cn/op"
-        },
-        {
-          "type": "view",
-          "name": "我的排班",
-          "url": "https://wwbx.davisye.cn/op/scheduler"
-        }
-      ]
+      "type": "view",
+      "name": "网盘",
+      "url": "https://disk.zsxyww.com"
     }
   ],
   "matchrule": {
