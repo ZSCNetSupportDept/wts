@@ -131,7 +131,7 @@ func notifyNewStatus(c *hutil.WtsCtx, tid int32, newStatus sqlc.WtsStatus, remar
 		"phrase2":           statusText(newStatus),
 		"thing3":            truncateRunes(remark, 20),
 	}
-	page := "https://wwbx.daivsye.cn/repair/"
+	page := "https://wwbx.davisye.cn/repair/"
 
 	if err := wechat.SendNotify(c.WX, openid, templateID, data, page, true); err != nil {
 		slog.Warn("新状态通知：发送失败（用户可能未订阅或额度已用完）", "tid", tid, "openid", openid, "error", err)

@@ -191,7 +191,7 @@ func notifyTicketCanceled(tid int32) {
 		"thing3":            truncateRunes(message, 20),
 	}
 	// TODO: 硬编码
-	page := "https://wwbx.daivsye.cn/repair/"
+	page := "https://wwbx.davisye.cn/repair/"
 
 	if err := wechat.SendNotify(server.WX, openid, templateID, data, page, true); err != nil {
 		slog.Warn("scheduledAutoCancel::SendNotify()发送失败", "tid", tid, "openid", openid, "error", err)
