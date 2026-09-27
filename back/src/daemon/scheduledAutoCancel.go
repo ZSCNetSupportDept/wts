@@ -190,8 +190,17 @@ func notifyTicketCanceled(tid int32) {
 		"phrase2":           "已取消",
 		"thing3":            truncateRunes(message, 20),
 	}
-	// TODO: 硬编码
-	page := "https://wwbx.davisye.cn/repair/"
+	page, err := wechat.BuildNotifyLanderURL(
+		server.Cfg.FrontEnd.PublicURL,
+		tid,
+		"canceled",
+		data["thing3"],
+	)
+	if err != nil {
+		page = "https://wwbx.davisye.cn/repair?open=" + fmt.Sprintf("%d", tid)
+		slog.Warn("scheduledAutoCancel::生成通知跳转链接失败", "tid", tid, "error", err)
+		return
+	}
 
 	if err := wechat.SendNotify(server.WX, openid, templateID, data, page, true); err != nil {
 		slog.Warn("scheduledAutoCancel::SendNotify()发送失败", "tid", tid, "openid", openid, "error", err)

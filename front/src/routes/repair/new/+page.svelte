@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { CheckAndGetJWT, Guard } from '$lib/jwt';
+	import { CheckAndGetJWT, GuardAndContinue } from '$lib/jwt';
 	import type { NewTicketReq } from '$lib/types/apiRequest';
-	import type { SubscribeConfigRes } from '$lib/types/apiResponse';
 	import type { PageProps } from './$types';
 	let { data }: PageProps = $props();
 	import { RFC3339 } from '$lib/types/RFC3339';
@@ -31,26 +30,47 @@
 
 	let r = $state({} as NewTicketReq);
 	let subscribeTemplateId = $state('');
+	let showValidation = $state(false);
+	let submitting = $state(false);
+	let subscribeUnavailable = $state(false);
+	let subscribeConfigLoading = $state(true);
+
+	type TicketValidation = {
+		occurAt?: string;
+		appointedAt?: string;
+		description?: string;
+		notes?: string;
+	};
 
 	function onOccurDateChange(event: CustomEvent) {
+		showValidation = true;
 		const { dateStr } = event.detail;
 		if (dateStr) {
 			r.occur_at = RFC3339(dateStr);
+		} else {
+			r.occur_at = undefined;
 		}
 	}
 
 	function onAppointDateChange(event: CustomEvent) {
+		showValidation = true;
 		const { dateStr } = event.detail;
 		if (dateStr) {
 			const date = new Date(dateStr);
 			date.setHours(16, 30, 0, 0); // Set time to 16:30:00
 			r.appointed_at = RFC3339(date);
+		} else {
+			r.appointed_at = undefined;
 		}
 	}
 
 	function handleSubmit() {
-		console.log('提交的表单数据:', r);
-		check() ? submit() : jumpInvalid();
+		showValidation = true;
+		if (!isValid) {
+			jumpInvalid();
+			return;
+		}
+		void submit();
 	}
 
 	let occurAt = new invalidState();
@@ -58,50 +78,64 @@
 	let description = new invalidState();
 	let notes = new invalidState();
 
-	function check(): boolean {
-		notLoading = false;
-		let ok = false;
+	function validateTicketDraft(): TicketValidation {
+		const errors: TicketValidation = {};
+		if (r.occur_at && !IsRFC3339(r.occur_at)) {
+			errors.occurAt = '请输入正确的故障发生时间';
+		}
+		if (r.appointed_at && !IsRFC3339(r.appointed_at)) {
+			errors.appointedAt = '请输入正确的预约时间';
+		}
+		if (!r.description?.trim()) {
+			errors.description = '请填写故障描述';
+		} else if (r.description.length > 200) {
+			errors.description = '字数太多了，请控制在200字以内';
+		}
+		if (r.notes && r.notes.length > 200) {
+			errors.notes = '字数太多了...请控制在200字以内';
+		}
+		return errors;
+	}
+
+	let validation = $derived(validateTicketDraft());
+	let isValid = $derived(Object.keys(validation).length === 0);
+
+	$effect(() => {
+		const errors = validation;
+		const shouldShow = showValidation;
 		occurAt.reset();
 		appointedAt.reset();
 		description.reset();
 		notes.reset();
-
-		occurAt.assert(!r.occur_at || IsRFC3339(r.occur_at), '请输入正确的故障发生时间');
-		appointedAt.assert(!r.appointed_at || IsRFC3339(r.appointed_at), '请输入正确的预约时间');
-		description.assert(r.description && r.description.length > 0, '请填写故障描述');
-		description.assert(r.description.length <= 200, '字数太多了，请控制在200字以内');
-		notes.assert(!r.notes || r.notes.length <= 200, '字数太多了...请控制在200字以内');
-		if (r.category == undefined) {
-			r.category = 'others';
-		}
-
-		if (!r.occur_at) {
-			r.occur_at = undefined;
-		}
-
-		if (!r.appointed_at) {
-			r.appointed_at = undefined; //防止序列化问题
-		}
-
-		notLoading = true;
-		if (occurAt.notOK || appointedAt.notOK || description.notOK || notes.notOK) {
-			ok = false;
-		} else {
-			ok = true;
-		}
-		return ok;
-	}
+		if (!shouldShow) return;
+		occurAt.assert(!errors.occurAt, errors.occurAt || '');
+		appointedAt.assert(!errors.appointedAt, errors.appointedAt || '');
+		description.assert(!errors.description, errors.description || '');
+		notes.assert(!errors.notes, errors.notes || '');
+	});
 
 	async function submit() {
-		let issuerSID = CheckAndGetJWT('parsed')?.sid;
-		r.issuer_sid = issuerSID;
+		if (submitting || !isValid) return;
+		submitting = true;
+		let created = false;
+		const issuerSID = CheckAndGetJWT('parsed')?.sid;
+		const request: NewTicketReq = {
+			...r,
+			issuer_sid: issuerSID || '',
+			category: r.category || 'others',
+			occur_at: r.occur_at || undefined,
+			appointed_at: r.appointed_at || undefined,
+			description: r.description.trim(),
+			notes: r.notes || undefined
+		};
 		try {
 			notLoading = false;
-			let res = await NewTicket(r);
+			const res = await NewTicket(request);
 			notLoading = true;
 			if (!res.success) {
 				throw new Error(res.msg || '提交失败.........');
 			}
+			created = true;
 			q.add({
 				kind: 'success',
 				title: '提交成功',
@@ -117,21 +151,25 @@
 				subtitle: errMsg,
 				timeout: 5000
 			});
+		} finally {
+			if (!created) {
+				submitting = false;
+			}
 		}
 	}
 
 	function jumpInvalid() {
-		if (occurAt.notOK) {
+		if (validation.occurAt) {
 			document.getElementById('occur_at')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		} else if (appointedAt.notOK) {
-			document
-				.getElementById('appointed_at')
-				?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		} else if (description.notOK) {
+		} else if (validation.description) {
 			document
 				.getElementById('description')
 				?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		} else if (notes.notOK) {
+		} else if (validation.appointedAt) {
+			document
+				.getElementById('appointed_at')
+				?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		} else if (validation.notes) {
 			document.getElementById('notes')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 		}
 	}
@@ -139,24 +177,41 @@
 	async function fetchSubscribeConfig() {
 		//确认用户是否在微信中打开网页
 		const ua = navigator.userAgent.toLowerCase();
-		if (!ua.includes('micromessenger')) return;
+		if (!ua.includes('micromessenger')) {
+			subscribeUnavailable = true;
+			subscribeConfigLoading = false;
+			return;
+		}
 
 		try {
 			const cfg = await GetSubscribeConfig();
 			if (cfg.success && cfg.template_id) {
 				subscribeTemplateId = cfg.template_id;
+			} else {
+				subscribeUnavailable = true;
 			}
 		} catch (e: any) {
+			subscribeUnavailable = true;
 			q.add({
 				kind: 'warning',
 				title: '获取订阅配置失败',
 				subtitle: e.response?.data?.msg || e.message || '未知错误',
 				timeout: 3000
 			});
+		} finally {
+			subscribeConfigLoading = false;
 		}
 	}
 
-	onMount(() => (Guard(IsUser), fetchSubscribeConfig()));
+	onMount(() => {
+		if (GuardAndContinue(IsUser)) {
+			void fetchSubscribeConfig();
+		}
+	});
+
+	function onOpenSubscribeUnavailable() {
+		subscribeUnavailable = true;
+	}
 </script>
 
 <h1>提交新报修</h1>
@@ -172,6 +227,7 @@
 
 <DatePicker datePickerType="single" on:change={onOccurDateChange}>
 	<DatePickerInput
+		id="occur_at"
 		labelText="故障是在什么时候发生的？"
 		placeholder="记不清楚可不填"
 		invalid={occurAt.notOK}
@@ -185,6 +241,7 @@
 	orientation="vertical"
 	bind:selected={r.category}
 	required={true}
+	on:change={() => (showValidation = true)}
 >
 	<RadioButton labelText="需要新安装宽带" value="first-install" />
 	<RadioButton labelText="IP地址或者网络设备问题" value="ip-or-device" />
@@ -195,9 +252,11 @@
 <br />
 <br />
 <TextArea
+	id="description"
 	labelText="故障描述"
 	placeholder="请告诉我们你遇到了什么网络问题，越详细越好~"
 	bind:value={r.description}
+	on:input={() => (showValidation = true)}
 	invalid={description.notOK}
 	invalidText={description.txt}
 />
@@ -205,6 +264,7 @@
 <br />
 <DatePicker datePickerType="single" on:change={onAppointDateChange}>
 	<DatePickerInput
+		id="appointed_at"
 		labelText="预约我们上门维修的日期"
 		placeholder="当天下午4:30~6:00您需要在宿舍"
 		invalid={appointedAt.notOK}
@@ -217,9 +277,11 @@
 <br />
 <br />
 <TextArea
+	id="notes"
 	labelText="备注"
 	placeholder="其它您需要告诉我们的事情，没有可不填"
 	bind:value={r.notes}
+	on:input={() => (showValidation = true)}
 	invalid={notes.notOK}
 	invalidText={notes.txt}
 />
@@ -229,12 +291,19 @@
 	如果报修时有任何疑问，请加入QQ群：{SUPPORT_QQ} 询问与反馈，我们会热情地解答您的问题。
 </p>
 <br />
-<Button on:click={handleSubmit}>提交</Button>
-
-{#if subscribeTemplateId}
-	<div style="margin-top: 16px;">
-		<WxOpenSubscribe templateId={subscribeTemplateId} scene={0} />
-	</div>
+{#if !isValid || subscribeUnavailable}
+	<Button disabled={submitting} on:click={handleSubmit}>提交</Button>
+{:else if submitting || subscribeConfigLoading || !subscribeTemplateId}
+	<Button disabled>提交</Button>
+{:else}
+	<WxOpenSubscribe
+		templateId={subscribeTemplateId}
+		label="提交"
+		width="64px"
+		onSuccess={submit}
+		onError={submit}
+		onUnavailable={onOpenSubscribeUnavailable}
+	/>
 {/if}
 
 <NotificationQueue bind:this={q} />

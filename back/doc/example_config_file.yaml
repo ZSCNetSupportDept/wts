@@ -20,6 +20,7 @@ WX:
   CallBackURL: "wwbx.zsc.edu.cn"
 FrontEnd:
   OnAuthSuccess: "/auth_success.html"
+  PublicURL: "https://wwbx.davisye.cn"
 Debug:
   APIVerbose: True # API will return original error messages
   ProgramVerbose: True # print additional info to console/log,may contain sensitive data

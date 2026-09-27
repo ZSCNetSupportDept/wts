@@ -1,46 +1,28 @@
 <script lang="ts">
-	import OperatorTicket from '$lib/components/Ticket/OperatorTicket.svelte';
 	import TicketDetail from '$lib/components/TraceDetail/TicketDetail.svelte';
 	import UserTicket from '$lib/components/Ticket/UserTicket.svelte';
-	import { sample1, sample2 } from '$lib/testData/ticket';
 	import { Button } from 'carbon-components-svelte';
 	import { TicketModal } from '$lib/states/ticketDetails.svelte';
 	import Contract from 'carbon-pictograms-svelte/lib/Contract.svelte';
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 	import { IsUser } from '$lib/types/enum';
-	import { CheckAndGetJWT, Guard } from '$lib/jwt';
-	import type { Ticket, SubscribeConfigRes } from '$lib/types/apiResponse';
-	import { GetTicket, GetSubscribeConfig } from '$lib/api';
+	import { CheckAndGetJWT, GuardAndContinue } from '$lib/jwt';
+	import type { Ticket } from '$lib/types/apiResponse';
+	import { GetTicket } from '$lib/api';
 	import { NotificationQueue } from 'carbon-components-svelte';
 	import { SUPPORT_QQ } from '$lib/env/businesses';
-	import WxOpenSubscribe from '$lib/components/WxOpenSubscribe.svelte';
 
 	let q: NotificationQueue;
 
 	let tickets = $state([] as Ticket[]);
-	let subscribeTemplateId = $state('');
+	let handledOpenTid = $state<string | undefined>(undefined);
 
-	onMount(() => (Guard(IsUser), fetchTickets(), fetchSubscribeConfig()));
-
-	async function fetchSubscribeConfig() {
-		//确认用户是否在微信中打开网页
-		const ua = navigator.userAgent.toLowerCase();
-		if (!ua.includes('micromessenger')) return;
-
-		try {
-			const cfg = await GetSubscribeConfig();
-			if (cfg.success && cfg.template_id) {
-				subscribeTemplateId = cfg.template_id;
-			}
-		} catch (e: any) {
-			q.add({
-				kind: 'warning',
-				title: '获取订阅配置失败',
-				subtitle: e.response?.data?.msg || e.message || '未知错误',
-				timeout: 3000
-			});
+	onMount(() => {
+		if (GuardAndContinue(IsUser)) {
+			void fetchTickets();
 		}
-	}
+	});
 
 	async function fetchTickets() {
 		try {
@@ -49,6 +31,7 @@
 				throw new Error(res.msg || '获取报修记录失败');
 			}
 			tickets = res.tickets;
+			openTicketFromQuery();
 		} catch (e: any) {
 			const errMsg = e.response?.data?.msg || e.message || '未知错误';
 			q.add({
@@ -63,6 +46,45 @@
 
 	async function refreshTickets1() {
 		await fetchTickets();
+	}
+
+	function openTicketFromQuery() {
+		const rawTid = page.url.searchParams.get('open');
+		if (!rawTid || handledOpenTid === rawTid) return;
+		handledOpenTid = rawTid;
+
+		if (!/^\d+$/.test(rawTid)) {
+			q.add({
+				kind: 'error',
+				title: '无法打开工单',
+				subtitle: '工单编号无效',
+				timeout: 3000
+			});
+			return;
+		}
+
+		const tid = Number(rawTid);
+		if (!Number.isSafeInteger(tid) || tid <= 0) {
+			q.add({
+				kind: 'error',
+				title: '无法打开工单',
+				subtitle: '工单编号无效',
+				timeout: 3000
+			});
+			return;
+		}
+		const ticket = tickets.find((item) => item.tid === tid);
+		if (!ticket) {
+			q.add({
+				kind: 'error',
+				title: '无法打开工单',
+				subtitle: '未找到指定工单',
+				timeout: 3000
+			});
+			return;
+		}
+
+		TicketModal.open(ticket, 'user');
 	}
 </script>
 
@@ -82,9 +104,6 @@
 <div
 	style="display: flex; justify-content: flex-end; margin-right: 17px; margin-bottom: 15px; gap: 10px; align-items: center;"
 >
-	{#if subscribeTemplateId}
-		<WxOpenSubscribe templateId={subscribeTemplateId} scene={1} />
-	{/if}
 	<Button href="/repair/new">提交新报修</Button>
 </div>
 

@@ -31,6 +31,7 @@ func Load() *Config {
 	pflag.String("JWTKey", "", "JWT signing key")
 	pflag.String("FrontEndDir", "", "Where to found FrontEnd Files")
 	pflag.String("FrontEnd.OnAuthSuccess", "/auth_success.html", "FrontEnd URL to redirect to on auth success")
+	pflag.String("FrontEnd.PublicURL", "https://wwbx.davisye.cn", "Public HTTPS frontend URL used in WeChat notification links")
 	pflag.String("LogLevel", "info", "Log level: debug, info, warn, error, panic, fatal")
 	pflag.Bool("Debug.APIVerbose", false, "Enable verbose API logging")
 	pflag.Bool("Debug.ProgramVerbose", false, "Enable verbose program logging")

@@ -86,20 +86,29 @@ export function GetJWTFromCookie(): boolean {
 	}
 }
 
-export function Guard(a: (subject: WtsAccess) => boolean) {
-	let jwt = CheckAndGetJWT('parsed');
+function checkGuard(a: (subject: WtsAccess) => boolean): boolean {
+	const jwt = CheckAndGetJWT('parsed');
 	if (!jwt || jwt.name === '请重新登录') {
-		TheLastPage.Write(window.location.pathname);
+		TheLastPage.Write(window.location.pathname + window.location.search);
 		goto('/login');
-		return;
+		return false;
 	}
 	if (!a(jwt.access)) {
 		if (jwt.access === 'unregistered') {
 			goto('/register');
-			return;
+			return false;
 		}
 		console.log('Guard():权限不足，跳转到首页');
 		goto('/forbidden');
-		return;
+		return false;
 	}
+	return true;
+}
+
+export function Guard(a: (subject: WtsAccess) => boolean): void {
+	checkGuard(a);
+}
+
+export function GuardAndContinue(a: (subject: WtsAccess) => boolean): boolean {
+	return checkGuard(a);
 }

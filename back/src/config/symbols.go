@@ -41,6 +41,7 @@ type WXConfig struct {
 
 type FrontEndConfig struct {
 	OnAuthSuccess string `mapstructure:"OnAuthSuccess"`
+	PublicURL     string `mapstructure:"PublicURL"`
 }
 
 type DebugConfig struct {
@@ -77,6 +78,7 @@ func (c *Config) String() string {
 	a.WriteString("  EncodingAESKey: ***REDACTED***\n")
 	a.WriteString("FrontEnd:\n")
 	a.WriteString(fmt.Sprintf("  OnAuthSuccess: %s\n", c.FrontEnd.OnAuthSuccess))
+	a.WriteString(fmt.Sprintf("  PublicURL: %s\n", c.FrontEnd.PublicURL))
 	a.WriteString("Debug:\n")
 	a.WriteString(fmt.Sprintf("  APIVerbose: %t\n", c.Debug.APIVerbose))
 	a.WriteString(fmt.Sprintf("  ProgramVerbose: %t\n", c.Debug.ProgramVerbose))
