@@ -27,7 +27,7 @@ func BuildNotifyLanderURL(frontEndURL string, tid int32, status string, message 
 		return "", fmt.Errorf("frontend URL must not contain a query or fragment")
 	}
 
-	base.Path = strings.TrimRight(base.Path, "/") + "/wx_notify_lander"
+	base.Path = strings.TrimRight(base.Path, "/") + "/wx_notify_lander/"
 	base.RawPath = ""
 	base.RawQuery = url.Values{
 		"tid":     {strconv.FormatInt(int64(tid), 10)},

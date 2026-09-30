@@ -147,7 +147,7 @@ func notifyNewStatus(c *hutil.WtsCtx, tid int32, newStatus sqlc.WtsStatus, remar
 		slog.Warn("新状态通知：发送失败（用户可能未订阅或额度已用完）", "tid", tid, "openid", openid, "error", err)
 		return
 	}
-	slog.Info("新状态通知：发送成功", "tid", tid, "openid", openid, "status", newStatus)
+	slog.Info("新状态通知：发送成功", "tid", tid, "openid", openid, "status", newStatus, "URL", page)
 }
 
 // statusText 将工单状态转为通知里展示的中文
