@@ -95,7 +95,7 @@
 {:else if validLink}
 	<RetroCard style="padding: 10px;">
 		<div class="ticket-summary">
-			<p class="ticket-id">工单 No.{tid}</p>
+			<p class="ticket-id">📃No.{tid}</p>
 			<div class="summary-row">
 				<strong>状态</strong>
 				<span>{StatusMap[status]}</span>
@@ -135,7 +135,7 @@
 
 	.ticket-id {
 		font-size: 19px;
-		font-weight: 700;
+		font-weight: bold;
 	}
 
 	.summary-row {
