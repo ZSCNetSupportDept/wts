@@ -64,6 +64,14 @@
 		}
 	}
 
+	function onCategoryChange(event: CustomEvent<unknown>) {
+		// Carbon RadioButtonGroup 会在订阅初始 selected 值时派发一次 change(undefined)。
+		// 这不是用户输入，不能因此显示其它字段的校验错误。
+		if (event.detail !== undefined) {
+			showValidation = true;
+		}
+	}
+
 	function handleSubmit() {
 		showValidation = true;
 		if (!isValid) {
@@ -241,7 +249,7 @@
 	orientation="vertical"
 	bind:selected={r.category}
 	required={true}
-	on:change={() => (showValidation = true)}
+	on:change={onCategoryChange}
 >
 	<RadioButton labelText="需要新安装宽带" value="first-install" />
 	<RadioButton labelText="IP地址或者网络设备问题" value="ip-or-device" />
@@ -299,7 +307,6 @@
 	<WxOpenSubscribe
 		templateId={subscribeTemplateId}
 		label="提交"
-		width="64px"
 		onSuccess={submit}
 		onError={submit}
 		onUnavailable={onOpenSubscribeUnavailable}

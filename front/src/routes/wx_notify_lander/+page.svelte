@@ -111,7 +111,6 @@
 		<WxOpenSubscribe
 			templateId={subscribeTemplateId}
 			label="查看工单详情"
-			width="160px"
 			onSuccess={openTicket}
 			onError={openTicket}
 			onUnavailable={onOpenSubscribeUnavailable}
