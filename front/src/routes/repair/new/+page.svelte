@@ -67,11 +67,14 @@
 	}
 
 	function onCategoryChange(event: CustomEvent<unknown>) {
-		// Carbon RadioButtonGroup 会在订阅初始 selected 值时派发一次 change(undefined)。
-		// 这不是用户输入，不能因此显示其它字段的校验错误。
-		if (event.detail !== undefined) {
-			showValidation = true;
+		// Carbon RadioButtonGroup 初始化订阅 store 时会立即用初始值派发一次 change，
+		// 实测该值是 null（而不是 undefined），所以原先 `!== undefined` 的判断拦不住它，
+		// 会把 showValidation 提前置为 true、一进页面就显示“请填写故障描述”。
+		// 这不是用户输入，直接忽略。
+		if (event.detail === undefined || event.detail === null) {
+			return;
 		}
+		showValidation = true;
 	}
 
 	function handleSubmit() {
@@ -110,18 +113,26 @@
 	let validation = $derived(validateTicketDraft());
 	let isValid = $derived(Object.keys(validation).length === 0);
 
+	// 只写不读：不要在 $effect 里调用 assert() 来更新这些展示状态，
+	// 因为 assert() 内部会读取 notOK，而 effect 又在写 notOK，
+	// 会让 effect 依赖自己写入的状态、无限更新（effect_update_depth_exceeded）。
+	function syncInvalid(state: invalidState, shouldShow: boolean, msg?: string) {
+		if (shouldShow && msg) {
+			state.notOK = true;
+			state.txt = msg;
+		} else {
+			state.notOK = false;
+			state.txt = '';
+		}
+	}
+
 	$effect(() => {
 		const errors = validation;
 		const shouldShow = showValidation;
-		occurAt.reset();
-		appointedAt.reset();
-		description.reset();
-		notes.reset();
-		if (!shouldShow) return;
-		occurAt.assert(!errors.occurAt, errors.occurAt || '');
-		appointedAt.assert(!errors.appointedAt, errors.appointedAt || '');
-		description.assert(!errors.description, errors.description || '');
-		notes.assert(!errors.notes, errors.notes || '');
+		syncInvalid(occurAt, shouldShow, errors.occurAt);
+		syncInvalid(appointedAt, shouldShow, errors.appointedAt);
+		syncInvalid(description, shouldShow, errors.description);
+		syncInvalid(notes, shouldShow, errors.notes);
 	});
 
 	async function submit() {
