@@ -43,25 +43,27 @@
 	};
 
 	function onOccurDateChange(event: CustomEvent) {
-		showValidation = true;
 		const { dateStr } = event.detail;
-		if (dateStr) {
-			r.occur_at = RFC3339(dateStr);
-		} else {
+		// Carbon DatePicker 初始化日历时会对空值派发一次 change。
+		// 这不是用户输入，不能因此显示其它字段的校验错误。
+		if (!dateStr) {
 			r.occur_at = undefined;
+			return;
 		}
+		showValidation = true;
+		r.occur_at = RFC3339(dateStr);
 	}
 
 	function onAppointDateChange(event: CustomEvent) {
-		showValidation = true;
 		const { dateStr } = event.detail;
-		if (dateStr) {
-			const date = new Date(dateStr);
-			date.setHours(16, 30, 0, 0); // Set time to 16:30:00
-			r.appointed_at = RFC3339(date);
-		} else {
+		if (!dateStr) {
 			r.appointed_at = undefined;
+			return;
 		}
+		showValidation = true;
+		const date = new Date(dateStr);
+		date.setHours(16, 30, 0, 0); // Set time to 16:30:00
+		r.appointed_at = RFC3339(date);
 	}
 
 	function onCategoryChange(event: CustomEvent<unknown>) {
