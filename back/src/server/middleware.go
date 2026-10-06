@@ -32,7 +32,7 @@ func middlewareRegister(app *echo.Echo, cfg *config.Config) {
 		ContentSecurityPolicy: "",
 		ReferrerPolicy:        "strict-origin-when-cross-origin",
 	}))
-	app.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20.0)))
+	app.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(50.0)))
 
 	app.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Level: 5,
