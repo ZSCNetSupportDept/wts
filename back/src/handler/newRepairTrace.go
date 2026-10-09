@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log/slog"
+	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
@@ -62,6 +63,13 @@ func NewRepairTrace(i echo.Context) error {
 		res.Success = false
 		res.ErrType = hutil.ErrReq
 		res.Msg = "only appointed status can set appointment time"
+		return i.JSON(400, res)
+	}
+
+	if !r.NewAppointment.IsZero() && r.NewAppointment.Before(time.Now()) { //TODO:预约可以在今天！！！重要！！！
+		res.Success = false
+		res.ErrType = hutil.ErrReq
+		res.Msg = "appointment time cannot be in the past"
 		return i.JSON(400, res)
 	}
 
