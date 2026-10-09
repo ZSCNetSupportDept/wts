@@ -46,6 +46,7 @@ func routeRegister(app *echo.Echo, cfg *config.Config) { // Routes
 		v3.POST("/filter_tickets", handler.FilterTickets)
 		v3.GET("/get_traces", handler.GetTraces)
 		v3.GET("/ticket_overview", handler.TicketOverview)
+		v3.POST("/change_appointment", handler.ChangeAppointment)
 
 	}
 

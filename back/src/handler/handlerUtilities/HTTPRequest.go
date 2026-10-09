@@ -72,3 +72,9 @@ type FilterTicketsRequest struct {
 	NewerThanUp time.Time          `json:"newer_than_up" validate:"omitempty"`
 	OlderThanUp time.Time          `json:"older_than_up" validate:"omitempty"`
 }
+
+// Used By: /api/v3/change_appointment
+type ChangeAppointmentRequest struct {
+	Tid            int32     `json:"tid" validate:"required"`
+	NewAppointment time.Time `json:"new_appointment" validate:"required"`
+}

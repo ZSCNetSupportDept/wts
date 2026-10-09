@@ -295,3 +295,30 @@ func getWXBySID(c *hutil.WtsCtx, ctx context.Context, sid string) (string, error
 	})
 	return openid, err
 }
+
+func GetTicketByTID(c *hutil.WtsCtx, tid int32) (sqlc.WtsVTicket, error) {
+	ctx := c.Request().Context()
+	var result sqlc.WtsVTicket
+	id := c.Response().Header().Get(echo.HeaderXRequestID)
+	err := c.DB.DoQuery(ctx, "system", func(q *sqlc.Queries) error {
+		a, err := q.GetTicket(ctx, tid)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				result = sqlc.WtsVTicket{}
+				return hutil.NewWtsErr(ErrNoSuchTicket, err)
+			}
+			return err
+		}
+		result = a
+		return nil
+	})
+	if hutil.IsKnownErr(err) {
+		return result, err
+	} else {
+		slog.Warn("GetTicket数据库操作失败", "id", id, "error", err)
+		if c.Cfg.Debug.APIVerbose {
+			return result, err
+		}
+		return result, errors.New("database operation failed,please view logs")
+	}
+}

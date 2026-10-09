@@ -24,6 +24,9 @@ func AppendTrace(c *hutil.WtsCtx, op string, r AppendTraceParam) error {
 
 	var opwid string
 
+	var dutyStart, dutyEnd string
+	var dutyStartTime, dutyEndTime time.Time
+
 	err := c.DB.DoQuery(ctx, op, func(q *sqlc.Queries) error {
 
 		//确认工单存在
@@ -60,6 +63,53 @@ func AppendTrace(c *hutil.WtsCtx, op string, r AppendTraceParam) error {
 			}
 		}
 
+		if r.NewAppointment.IsZero() {
+			goto dutyCheckFinish
+		}
+		// 检查报修提交的时间是否在值班时间内
+		dutyStart, err = q.KVGet(ctx, "WTS_DUTY_START")
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				slog.Warn("检测到未设置WTS_DUTY_START，跳过值班时间检查")
+				goto dutyCheckFinish
+			} else {
+				return hutil.NewUnknownErr(fmt.Errorf("NewTicket::KVGet数据库操作失败: %w", err))
+			}
+		}
+
+		dutyEnd, err = q.KVGet(ctx, "WTS_DUTY_END")
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				slog.Warn("检测到未设置WTS_DUTY_END，跳过值班时间检查")
+				goto dutyCheckFinish
+			} else {
+				return hutil.NewUnknownErr(fmt.Errorf("NewTicket::KVGet数据库操作失败: %w", err))
+			}
+		}
+
+		dutyStartTime, err = time.Parse(time.RFC3339, dutyStart)
+		if err != nil {
+			slog.Warn("WTS_DUTY_START不符合RFC3339格式，跳过值班时间检查，")
+			goto dutyCheckFinish
+		}
+		dutyEndTime, err = time.Parse(time.RFC3339, dutyEnd)
+		if err != nil {
+			slog.Warn("WTS_DUTY_END不符合RFC3339格式，跳过值班时间检查")
+			goto dutyCheckFinish
+		}
+		if dutyStartTime.After(dutyEndTime) {
+			slog.Warn("WTS_DUTY_START晚于WTS_DUTY_END，跳过值班时间检查")
+			goto dutyCheckFinish
+		}
+		if r.NewAppointment.Before(dutyStartTime) {
+			return hutil.NewWtsErr(errors.Join(ErrBeforeDutyStart, errors.New("我们开始值班的时间为"+dutyStartTime.Format(time.DateOnly))), nil)
+		}
+		if r.NewAppointment.After(dutyEndTime) {
+			return hutil.NewWtsErr(errors.Join(ErrAfterDutyEnd, errors.New("我们结束值班的时间为"+dutyEndTime.Format(time.DateOnly))), nil)
+		}
+
+	dutyCheckFinish:
+
 		tr, err := q.CreateTicketTrace(ctx, sqlc.CreateTicketTraceParams{
 			Tid:            r.Tid,
 			UpdatedAt:      timestamptzOpt(time.Now()),
@@ -91,7 +141,9 @@ func AppendTrace(c *hutil.WtsCtx, op string, r AppendTraceParam) error {
 	if err == nil &&
 		(r.NewStatus == sqlc.WtsStatusSolved ||
 			r.NewStatus == sqlc.WtsStatusCanceled ||
-			r.NewStatus == sqlc.WtsStatusEscalated) {
+			r.NewStatus == sqlc.WtsStatusEscalated ||
+			r.NewStatus == sqlc.WtsStatusFresh ||
+			r.NewStatus == sqlc.WtsStatusDelay) {
 		go notifyNewStatus(c, r.Tid, r.NewStatus, r.Remark)
 	}
 

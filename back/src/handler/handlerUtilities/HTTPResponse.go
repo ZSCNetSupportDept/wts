@@ -136,6 +136,13 @@ type JsApiConfigResponse struct {
 	Signature string `json:"signature"`
 }
 
+// Used by: /api/v3/change_appointment
+type ChangeAppointmentResponse struct {
+	commonMember
+	Tid            int32     `json:"tid"`
+	NewAppointment time.Time `json:"new_appointment"`
+}
+
 // Used by various APIs......
 type GenericResponse struct {
 	commonMember

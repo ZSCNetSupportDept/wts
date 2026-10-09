@@ -114,14 +114,14 @@ func doCancelJob(jobID int) error {
 				},
 				Op: "-1",
 				NewStatus: sqlc.NullWtsStatus{
-					WtsStatus: "canceled",
+					WtsStatus: "fresh",
 					Valid:     true,
 				},
 				NewPriority: sqlc.NullWtsPriority{
 					WtsPriority: "mainline",
 					Valid:       true,
 				},
-				Remark: "系统检测到预约已过期,故自动取消。似乎是我们爽约了，我们非常抱歉为您造成的不便。您可以再次提交报修预约，我们会努力做得更好。",
+				Remark: "系统检测到您的预约报修在今天未被我们处理，已自动为您重置预约。对于这次爽约，我们真的很抱歉！您可以尝试点击下方的”更改预约“重新预约一个时间上门维修。",
 			})
 			if err != nil {
 				noErr = false
@@ -184,10 +184,10 @@ func notifyTicketCanceled(tid int32) {
 	}
 
 	//这段消息最大不能超过20个汉字，如果要修改的话请注意......
-	message := "您的预约报修单过期未处理，已自动取消。"
+	message := "预约过期未处理已自动重置，对此我们很抱歉"
 	data := map[string]string{
 		"character_string1": fmt.Sprintf("%d", tid),
-		"phrase2":           "已取消",
+		"phrase2":           "请重新预约",
 		"thing3":            truncateRunes(message, 20),
 	}
 	page, err := wechat.BuildNotifyLanderURL(
