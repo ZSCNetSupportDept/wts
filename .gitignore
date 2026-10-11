@@ -1,3 +1,10 @@
 artifacts
 .vscode
 .github
+# Local secrets, runtime data and test output
+.env
+.env.*
+!.env.example
+*.log
+playwright-report/
+coverage/
