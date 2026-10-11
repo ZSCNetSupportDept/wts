@@ -22,7 +22,7 @@
 
 	let {
 		t,
-		view = $bindable<'trace' | 'cancel' | 'update'>(),
+		view = $bindable<'trace' | 'cancel' | 'update' | 'appoint'>(),
 		open = $bindable<boolean>(),
 		isUpReady = $bindable<boolean>(),
 		q,
@@ -30,7 +30,7 @@
 		onUpdated
 	}: {
 		t: Ticket | null;
-		view: 'trace' | 'cancel' | 'update';
+		view: 'trace' | 'cancel' | 'update' | 'appoint';
 		open: boolean;
 		isUpReady: boolean;
 		q: NotificationQueue; //页面的
@@ -117,6 +117,19 @@
 			throw new Error(`无效的输入: ${expression}`);
 		}
 	}
+
+	function onAppointDateChange(event: CustomEvent) :RFC3339 | undefined {
+		const { dateStr } = event.detail;
+		let t: RFC3339 | undefined;
+		if (!dateStr) {
+			t = undefined;
+			return t;
+		}
+		const date = new Date(dateStr);
+		date.setHours(16, 30, 0, 0); // Set time to 16:30:00
+		t = RFC3339(date);
+		return t;
+	}
 </script>
 
 <Select labelText="工单新状态" bind:selected={r.new_status} required={true}>
@@ -135,7 +148,7 @@
 	<br />
 	<DatePicker
 		datePickerType="single"
-		on:change={(e) => (r.new_appointment = RFC3339((e.detail as { dateStr: string }).dateStr))}
+		on:change={(e) => (r.new_appointment = onAppointDateChange(e))}
 	>
 		<DatePickerInput labelText="预约的时间" placeholder="x年y月z日" required={true} />
 	</DatePicker>

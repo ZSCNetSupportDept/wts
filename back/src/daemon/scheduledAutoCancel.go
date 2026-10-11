@@ -193,7 +193,7 @@ func notifyTicketCanceled(tid int32) {
 	page, err := wechat.BuildNotifyLanderURL(
 		server.Cfg.FrontEnd.PublicURL,
 		tid,
-		"canceled",
+		"fresh",
 		data["thing3"],
 	)
 	if err != nil {

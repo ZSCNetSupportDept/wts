@@ -61,3 +61,8 @@ export type FilterTicketsReq = {
 	newer_than_up?: RFC3339;
 	older_than_up?: RFC3339;
 };
+
+export type ChangeAppointmentReq = {
+	tid: number;
+	new_appointment: RFC3339;
+};

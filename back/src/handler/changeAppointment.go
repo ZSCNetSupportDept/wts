@@ -72,7 +72,7 @@ func ChangeAppointment(i echo.Context) error {
 	if !r.NewAppointment.IsZero() && r.NewAppointment.Before(time.Now()) { //TODO:预约可以在今天！！！重要！！！
 		res.Success = false
 		res.ErrType = hutil.ErrReq
-		res.Msg = "appointment time cannot be in the past"
+		res.Msg = "请预约一个未来的时间"
 		return i.JSON(400, res)
 	}
 

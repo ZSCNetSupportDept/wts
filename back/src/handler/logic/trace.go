@@ -211,6 +211,12 @@ func statusText(s sqlc.WtsStatus) string {
 		return "已取消"
 	case sqlc.WtsStatusEscalated:
 		return "已上报"
+	case sqlc.WtsStatusFresh:
+		return "待处理"
+	case sqlc.WtsStatusDelay:
+		return "改日修"
+	case sqlc.WtsStatusScheduled:
+		return "已预约"
 	}
 	return string(s)
 }

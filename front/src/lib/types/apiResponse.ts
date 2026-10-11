@@ -107,3 +107,8 @@ export type JsApiConfigRes = CommonResponse & {
 	nonce_str: string;
 	signature: string;
 };
+
+export type ChangeAppointmentRes = CommonResponse & {
+	tid: number;
+	new_appointment: RFC3339;
+};

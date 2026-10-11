@@ -3,10 +3,10 @@
 	import { ModalFooter, Button } from 'carbon-components-svelte';
 
 	let {
-		view = $bindable<'trace' | 'cancel' | 'update'>(),
+		view = $bindable<'trace' | 'cancel' | 'update' | 'appoint'>(),
 		isUpReady = $bindable<boolean>()
 	}: {
-		view: 'trace' | 'cancel' | 'update';
+		view: 'trace' | 'cancel' | 'update' | 'appoint';
 		isUpReady: boolean;
 	} = $props();
 </script>

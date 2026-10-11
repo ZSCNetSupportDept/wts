@@ -14,7 +14,8 @@ import type {
 	TicketOverviewRes,
 	FilterTicketsRes,
 	SubscribeConfigRes,
-	JsApiConfigRes
+	JsApiConfigRes,
+	ChangeAppointmentRes
 } from './types/apiResponse';
 import type {
 	ChangeProfileReq,
@@ -22,7 +23,8 @@ import type {
 	FilterUsersReq,
 	NewRepairTraceReq,
 	NewTicketReq,
-	RegisterReq
+	RegisterReq,
+	ChangeAppointmentReq
 } from './types/apiRequest';
 
 const br = BACKEND;
@@ -110,5 +112,10 @@ export async function GetJsApiConfig(url: string): Promise<JsApiConfigRes> {
 		// URLSearchParams 会对 url 中的 ? & = 等做百分号编码，避免被当成额外 query 参数截断
 		params: new URLSearchParams({ url })
 	});
+	return res.data;
+}
+
+export async function ChangeAppointment(r: ChangeAppointmentReq): Promise<ChangeAppointmentRes> {
+	const res = await api.post('/api/v3/change_appointment', r);
 	return res.data;
 }

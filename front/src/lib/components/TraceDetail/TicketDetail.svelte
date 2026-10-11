@@ -6,7 +6,8 @@
 		Portal,
 		Button,
 		NotificationQueue,
-		Modal
+		Modal,
+		ModalFooter
 	} from 'carbon-components-svelte';
 	import type { Ticket, Trace } from '$lib/types/apiResponse';
 	import { GetTraces, CancelTicket } from '$lib/api';
@@ -16,8 +17,14 @@
 	import UpViewButton from './UpViewButton.svelte';
 	import TraceUpdateView from './TraceUpdateView.svelte';
 	import { TicketModal } from '$lib/states/ticketDetails.svelte';
+	import { DatePicker, DatePickerInput } from 'carbon-components-svelte';
+	import { RFC3339 } from '$lib/types/RFC3339';
+	import type { ChangeAppointmentRes } from '$lib/types/apiResponse';
+	import type { ChangeAppointmentReq } from '$lib/types/apiRequest';
+	import { ChangeAppointment } from '$lib/api';
+	import { Loading } from 'carbon-components-svelte';
 
-	let view: 'trace' | 'cancel' | 'update' = $state('trace');
+	let view: 'trace' | 'cancel' | 'update' | 'appoint' = $state('trace');
 
 	// TODO：现在不能不传递参数，为了简化使用考虑默认从全局状态获取参数；
 	let {
@@ -98,6 +105,65 @@
 	}
 
 	let isUpReady = $state(false);
+
+	let appointment = $state<RFC3339>('' as RFC3339);
+
+	function onAppointDateChange(event: CustomEvent) {
+		const { dateStr } = event.detail;
+		if (!dateStr) {
+			appointment = undefined;
+			return;
+		}
+		const date = new Date(dateStr);
+		date.setHours(16, 30, 0, 0); // Set time to 16:30:00
+		appointment = RFC3339(date);
+	}
+
+	let reappointLock = $state(false);
+
+	async function reappoint() {
+		if (reappointLock) return;
+		reappointLock = true;
+		if (appointment === undefined && appointment === '') {
+			q1.add({
+				kind: 'error',
+				title: '请选择新的预约时间',
+				timeout: 5000
+			});
+			reappointLock = false;
+			return;
+		}
+		try {
+			const r: ChangeAppointmentReq = {
+				tid: t!.tid,
+				new_appointment: appointment
+			};
+			const res: ChangeAppointmentRes = await ChangeAppointment(r);
+			if (!res.success) {
+				throw new Error(res.msg || '更改预约失败');
+			}
+			q.add({
+				kind: 'success',
+				title: '预约已更改',
+				timeout: 3000
+			});
+		} catch (e: any) {
+			console.error('Failed to change appointment', e);
+			const errMsg = e.response?.data?.msg || e.message || '未知错误';
+			q1.add({
+				kind: 'error',
+				title: '更改预约失败',
+				subtitle: errMsg,
+				timeout: 5000
+			});
+			return;
+		} finally {
+			reappointLock = false;
+		}
+		open = false;
+		view = 'trace';
+		await onTicketChanged?.();
+	}
 </script>
 
 <Portal>
@@ -107,7 +173,7 @@
 			<ModalBody>
 				<TraceTimeline t={traces} {loading} {src} />
 			</ModalBody>
-			<ModalButton {src} {t} {loading} bind:view bind:open />
+			<ModalButton {src} {t} {loading} bind:appointment bind:view bind:open />
 		</ComposedModal>
 	{/if}
 	{#if view === 'cancel'}
@@ -147,9 +213,36 @@
 			<UpViewButton bind:view bind:isUpReady />
 		</ComposedModal>
 	{/if}
+	{#if view === 'appoint'}
+		<ComposedModal on:close={() => (view = 'trace')} bind:open>
+			<NotificationQueue bind:this={q1} />
+			<ModalHeader title="  🖋️更改No.{getTid(t)}的预约上门时间" />
+			<ModalBody>
+				<p>
+					您可以在此更改本报修的预约时间，我们会努力在您指定日期下午的4：30~6：00上门为您维修网络。
+				</p>
+				<br />
+				<DatePicker datePickerType="single" on:change={onAppointDateChange}>
+					<DatePickerInput
+						id="appointed_at"
+						labelText="预约我们上门维修的日期"
+						placeholder="当天下午4:30~6:00您需要在宿舍"
+					/>
+				</DatePicker>
+			</ModalBody>
+			<ModalFooter>
+				<Button kind="secondary" on:click={() => (view = 'trace')}>返回</Button>
+				<Button kind="primary" on:click={() => reappoint()} bind:disabled={reappointLock}
+					>提交</Button
+				>
+			</ModalFooter>
+		</ComposedModal>
+	{/if}
 </Portal>
 
 <NotificationQueue bind:this={q} />
+
+<Loading bind:active={reappointLock} />
 
 <style>
 	:global(.mobile-floating-modal.bx--modal) {
