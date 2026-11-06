@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -9,38 +10,37 @@ import (
 	"github.com/spf13/viper"
 )
 
+func registerFlags(flags *pflag.FlagSet) {
+	flags.StringP("config", "c", "", "Path to config file")
+	flags.String("Brand", "Zhongshan College Network HelpDesk Backend", "Brand")
+	flags.Int("ListenPort", 25005, "Port to listen on")
+	flags.String("DB.Type", "PostgreSQL", "Database type")
+	flags.String("DB.Path", "127.0.0.1", "Database path")
+	flags.String("DB.Port", "5432", "Database port")
+	flags.String("DB.User", "", "Database user")
+	flags.String("DB.Password", "", "Database password")
+	flags.String("DB.Name", "", "Database name")
+	flags.Bool("DB.SSL", false, "Enable SSL for database connection")
+	flags.String("WX.AppID", "", "WeChat AppID")
+	flags.String("WX.AppSecret", "", "WeChat AppSecret")
+	flags.String("WX.Token", "", "WeChat Token")
+	flags.String("WX.EncodingAESKey", "", "WeChat EncodingAESKey")
+	flags.String("WX.CallBackURL", "", "WeChat CallBackURL")
+	flags.String("JWTKey", "", "JWT signing key")
+	flags.String("FrontEndDir", "", "Where to found FrontEnd Files")
+	flags.String("FrontEnd.OnAuthSuccess", "/auth_success.html", "FrontEnd URL to redirect to on auth success")
+	flags.String("FrontEnd.PublicURL", "https://wwbx.davisye.cn", "Public HTTPS frontend URL used in WeChat notification links")
+	flags.String("LogLevel", "info", "Log level: debug, info, warn, error, panic, fatal")
+	flags.Bool("Debug.APIVerbose", false, "Enable verbose API logging")
+	flags.Bool("Debug.ProgramVerbose", false, "Enable verbose program logging")
+	flags.Bool("Debug.SkipJWTAuth", false, "Skip JWT authentication (for debugging only)")
+	flags.Bool("JSONLogOutput", false, "Output logs in JSON format")
+	flags.StringP("Actions", "a", "", "wtstool only,actions")
+}
+
 func Load() *Config {
-	v := viper.New()
-
-	// Bind command line flags
-	pflag.StringP("config", "c", "", "Path to config file")
-	pflag.String("Brand", "Zhongshan College Network HelpDesk Backend", "Brand")
-	pflag.Int("ListenPort", 25005, "Port to listen on")
-	pflag.String("DB.Type", "PostgreSQL", "Database type")
-	pflag.String("DB.Path", "127.0.0.1", "Database path")
-	pflag.String("DB.Port", "5432", "Database port")
-	pflag.String("DB.User", "", "Database user")
-	pflag.String("DB.Password", "", "Database password")
-	pflag.String("DB.Name", "", "Database name")
-	pflag.Bool("DB.SSL", false, "Enable SSL for database connection")
-	pflag.String("WX.AppID", "", "WeChat AppID")
-	pflag.String("WX.AppSecret", "", "WeChat AppSecret")
-	pflag.String("WX.Token", "", "WeChat Token")
-	pflag.String("WX.EncodingAESKey", "", "WeChat EncodingAESKey")
-	pflag.String("WX.CallBackURL", "", "WeChat CallBackURL")
-	pflag.String("JWTKey", "", "JWT signing key")
-	pflag.String("FrontEndDir", "", "Where to found FrontEnd Files")
-	pflag.String("FrontEnd.OnAuthSuccess", "/auth_success.html", "FrontEnd URL to redirect to on auth success")
-	pflag.String("FrontEnd.PublicURL", "https://wwbx.davisye.cn", "Public HTTPS frontend URL used in WeChat notification links")
-	pflag.String("LogLevel", "info", "Log level: debug, info, warn, error, panic, fatal")
-	pflag.Bool("Debug.APIVerbose", false, "Enable verbose API logging")
-	pflag.Bool("Debug.ProgramVerbose", false, "Enable verbose program logging")
-	pflag.Bool("Debug.SkipJWTAuth", false, "Skip JWT authentication (for debugging only)")
-	pflag.Bool("JSONLogOutput", false, "Output logs in JSON format")
-	pflag.StringP("Actions", "a", "", "wtstool only,actions")
+	registerFlags(pflag.CommandLine)
 	pflag.Parse()
-
-	// Check for config file path
 	configPath, _ := pflag.CommandLine.GetString("config")
 
 	if configPath == "" {
@@ -48,32 +48,43 @@ func Load() *Config {
 		os.Exit(1)
 	}
 
-	v.BindPFlags(pflag.CommandLine)
+	c, err := load(configPath, pflag.CommandLine)
+	if err != nil {
+		panic(err)
+	}
+	if c.Debug.ProgramVerbose {
+		fmt.Println(c)
+	}
+	return c
+}
 
-	// Load from config file
+func LoadFile(configPath string) (*Config, error) {
+	if configPath == "" {
+		return nil, errors.New("config file path must be provided")
+	}
+	flags := pflag.NewFlagSet("config", pflag.ContinueOnError)
+	registerFlags(flags)
+	return load(configPath, flags)
+}
+
+func load(configPath string, flags *pflag.FlagSet) (*Config, error) {
+	v := viper.New()
+	if err := v.BindPFlags(flags); err != nil {
+		return nil, err
+	}
 	v.SetConfigFile(configPath)
 	v.SetConfigType("yaml")
 	if err := v.ReadInConfig(); err != nil {
-		// Handle errors reading the config file
-		// We can ignore "not found" error, as we have other config sources
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			panic(err)
-		}
+		return nil, fmt.Errorf("read config file %q: %w", configPath, err)
 	}
 
-	// Load from environment variables
 	v.SetEnvPrefix("WTS")
 	v.AutomaticEnv()
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	var c Config
 	if err := v.Unmarshal(&c); err != nil {
-		panic(err)
+		return nil, fmt.Errorf("decode config: %w", err)
 	}
-
-	if c.Debug.ProgramVerbose {
-		fmt.Println(&c)
-	}
-
-	return &c
+	return &c, nil
 }
