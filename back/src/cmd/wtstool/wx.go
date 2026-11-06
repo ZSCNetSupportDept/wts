@@ -31,7 +31,7 @@ func newWXCommand() *cli.Command {
 				Commands: []*cli.Command{
 					{
 						Name:  "set",
-						Usage: "从JSON设置默认菜单或添加条件菜单",
+						Usage: "从JSON文件更新某个标签组的菜单",
 						Arguments: []cli.Argument{
 							&cli.StringArg{Name: "group", Required: true},
 							&cli.StringArg{Name: "file", Required: true},
@@ -52,18 +52,18 @@ func newWXCommand() *cli.Command {
 			},
 			{
 				Name:   "tag",
-				Usage:  "管理微信标签",
+				Usage:  "微信标签相关的功能",
 				Action: groupAction,
 				Commands: []*cli.Command{
 					{
 						Name:      "create",
-						Usage:     "创建微信标签",
+						Usage:     "创建新微信标签",
 						Arguments: []cli.Argument{&cli.StringArg{Name: "name", Required: true}},
 						Action:    createWXTag,
 					},
 					{
 						Name:  "list",
-						Usage: "列出微信标签",
+						Usage: "列出现有的微信标签",
 						Flags: []cli.Flag{
 							&cli.StringFlag{Name: "output", Aliases: []string{"o"}, Value: "text", Usage: "Output format: text or json"},
 						},
@@ -78,7 +78,7 @@ func newWXCommand() *cli.Command {
 				Commands: []*cli.Command{
 					{
 						Name:  "tag",
-						Usage: "设置用户的默认、操作员或管理员标签",
+						Usage: "设置用户的标签",
 						Arguments: []cli.Argument{
 							&cli.StringArg{Name: "openid", Required: true},
 							&cli.StringArg{Name: "tag", Required: true},

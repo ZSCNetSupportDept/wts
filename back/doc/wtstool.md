@@ -31,9 +31,14 @@ wtstool wx tag list --output json
 wtstool wx user tag OPENID operator
 wtstool jwt issue --openid OPENID --access user --expire-minutes 30 \
  --sid STUDENT_ID --username USERNAME --avatar AVATAR_URL --name NAME
+wtstool jwt parse TOKEN
 ```
 
 `jwt issue` 的 `openid`、`access` 和 `expire-minutes` 必须显式指定；其他字段默认为空。有效期单位是分钟，可以使用零或负数生成过期令牌。JWT 以单行输出到 stdout，请妥善保管。
+
+`jwt parse TOKEN` 将 JWT 头部和载荷解码为 JSON，并使用配置中的 `JWTKey` 验证 HS256 签名。输出的 JSON 包含 `header`、`payload` 和布尔值 `verified`。签名不匹配、算法不受支持或签名格式错误时，仍会输出解码结果和 `verified: false`，并返回非零退出码；配置错误或头部、载荷无法解码时不输出 JSON。
+
+该验证只检查签名，不检查有效期或其他声明；已过期或尚未生效的令牌也可能显示 `verified: true`。这只表明签名与配置密钥匹配，不能证明密钥由谁持有。未验证的内容不可信。令牌可能包含敏感信息，命令行参数可能出现在 shell 历史或进程列表中，应注意保护。
 
 `wx tag list -o json` 输出 JSON 数组，每个元素包含数值 `id`、字符串 `name` 和数值 `count`；没有标签时输出 `[]`。错误和提示不混入 JSON。
 
