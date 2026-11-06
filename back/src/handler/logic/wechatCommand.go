@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/silenceper/wechat/v2/officialaccount/message"
@@ -122,28 +123,34 @@ func (i *Ctx) ChangeUserTag(oid string, tag string) error {
 }
 
 // 检查用户是否已经在operators或admin表中，若是则修改菜单栏为对应权限的。
-func (i *Ctx) auth(u string) string {
+func (i *Ctx) auth(openid string) string {
 	ctx := context.Background()
-	err := i.DB.DoQuery(ctx, u, func(q *sqlc.Queries) error {
-		u, err := q.GetUserByWX(ctx, u)
+	var wx, tag string
+	err := i.DB.DoQuery(ctx, openid, func(q *sqlc.Queries) error {
+		user, err := q.GetUserByWX(ctx, openid)
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return errors.New("您还未绑定，无法进行此操作~")
 			}
 			return errors.New("数据库错误：" + err.Error())
 		}
-		if !u.Op {
+		if !user.Op {
 			return errors.New("您还不是网维的成员，无法进行此操作~")
 		}
-		if hutil.IsAdmin(u.Access.WtsAccess) {
-			i.ChangeUserTag(u.Wx, "admin")
+		wx = user.Wx
+		if hutil.IsAdmin(user.Access.WtsAccess) {
+			tag = "admin"
 			return nil
 		}
-		i.ChangeUserTag(u.Wx, "operator")
+		tag = "operator"
 		return nil
 	})
 	if err != nil {
 		return "操作失败：" + err.Error()
 	}
-	return "认证成功，您的微信菜单已更新，请取关重关注公众号以刷新菜单~"
+	if err = i.ChangeUserTag(wx, tag); err != nil {
+		slog.Warn("微信打标签失败", "openid", wx, "tag", tag, "error", err)
+		return "操作失败：" + err.Error()
+	}
+	return "认证成功，您的微信菜单已更新，请耐心等待微信新菜单推送更新~"
 }
