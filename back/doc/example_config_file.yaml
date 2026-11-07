@@ -18,6 +18,10 @@ WX:
   Token: ""
   EncodingAESKey: ""
   CallBackURL: "wwbx.zsc.edu.cn"
+QQBot:
+  AppID: ""
+  AppSecret: ""
+  Enabled: False
 FrontEnd:
   OnAuthSuccess: "/auth_success.html"
   PublicURL: "https://wwbx.davisye.cn"

@@ -13,6 +13,7 @@ type Config struct {
 	WX            WXConfig       `mapstructure:"WX"`
 	FrontEnd      FrontEndConfig `mapstructure:"FrontEnd"`
 	Debug         DebugConfig    `mapstructure:"Debug"`
+	QQBot         QQBotConfig    `mapstructure:"QQBot"`
 	JWTKey        string         `mapstructure:"JWTKey"`
 	FrontEndDir   string         `mapstructure:"FrontEndDir"`
 	LogLevel      string         `mapstructure:"LogLevel"`
@@ -48,6 +49,12 @@ type DebugConfig struct {
 	APIVerbose     bool `mapstructure:"APIVerbose"`
 	ProgramVerbose bool `mapstructure:"ProgramVerbose"`
 	SkipJWTAuth    bool `mapstructure:"SkipJWTAuth"`
+}
+
+type QQBotConfig struct {
+	AppID     string `mapstructure:"AppID"`
+	AppSecret string `mapstructure:"AppSecret"`
+	Enabled   bool   `mapstructure:"Enabled"`
 }
 
 // String returns a string representation of the Config struct for debugging.
