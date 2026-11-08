@@ -54,6 +54,21 @@ func routeRegister(app *echo.Echo, cfg *config.Config) { // Routes
 		v3rest.GET("/test", handler.Hello)
 	}
 
+	// Date-scoped scheduling; current database roles are checked inside each handler.
+	v3.GET("/scheduler", handler.Scheduler("overview"))
+	v3.GET("/scheduler/staff", handler.Scheduler("staff"))
+	v3.GET("/scheduler/audit", handler.Scheduler("audit"))
+	v3.PUT("/scheduler/availability", handler.Scheduler("availability"))
+	v3.PUT("/scheduler/group", handler.Scheduler("group"))
+	v3.PUT("/scheduler/assignments", handler.Scheduler("assignments"))
+	v3.POST("/scheduler/publish", handler.Scheduler("publish"))
+	v3.POST("/scheduler/suggest", handler.Scheduler("suggest"))
+	v3.POST("/scheduler/extra", handler.Scheduler("extra"))
+	v3.DELETE("/scheduler/extra", handler.Scheduler("remove_extra"))
+	v3.GET("/scheduler/swaps", handler.Scheduler("swaps"))
+	v3.POST("/scheduler/swaps", handler.Scheduler("swap_request"))
+	v3.POST("/scheduler/swaps/review", handler.Scheduler("swap_review"))
+
 	{ //WeChat Server Communication API
 		v3p.GET("/wx", handler.WXEntry)
 		v3p.POST("/wx", handler.WXEntry)
