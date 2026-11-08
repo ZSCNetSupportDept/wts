@@ -38,6 +38,7 @@ type WXConfig struct {
 	Token          string `mapstructure:"Token"`
 	EncodingAESKey string `mapstructure:"EncodingAESKey"`
 	CallBackURL    string `mapstructure:"CallBackURL"`
+	AIReply        bool   `mapstructure:"AIReply"`
 }
 
 type FrontEndConfig struct {
@@ -83,6 +84,7 @@ func (c *Config) String() string {
 	a.WriteString("  AppSecret: ***REDACTED***\n")
 	a.WriteString(fmt.Sprintf("  Token: %s\n", c.WX.Token))
 	a.WriteString("  EncodingAESKey: ***REDACTED***\n")
+	a.WriteString(fmt.Sprintf("  AIReply: %t\n", c.WX.AIReply))
 	a.WriteString("FrontEnd:\n")
 	a.WriteString(fmt.Sprintf("  OnAuthSuccess: %s\n", c.FrontEnd.OnAuthSuccess))
 	a.WriteString(fmt.Sprintf("  PublicURL: %s\n", c.FrontEnd.PublicURL))

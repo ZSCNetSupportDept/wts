@@ -18,6 +18,7 @@ WX:
   Token: ""
   EncodingAESKey: ""
   CallBackURL: "wwbx.zsc.edu.cn"
+  AIReply: False
 QQBot:
   AppID: ""
   AppSecret: ""

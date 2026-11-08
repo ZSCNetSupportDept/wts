@@ -26,6 +26,7 @@ func registerFlags(flags *pflag.FlagSet) {
 	flags.String("WX.Token", "", "WeChat Token")
 	flags.String("WX.EncodingAESKey", "", "WeChat EncodingAESKey")
 	flags.String("WX.CallBackURL", "", "WeChat CallBackURL")
+	flags.Bool("WX.AIReply", false, "Transfer WeChat messages to AI replies")
 	flags.String("QQBot.AppID", "", "QQBot AppID")
 	flags.String("QQBot.AppSecret", "", "QQBot AppSecret")
 	flags.Bool("QQBot.Enabled", false, "Enable QQBot integration")

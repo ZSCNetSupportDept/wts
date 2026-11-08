@@ -21,6 +21,13 @@ func WXMsgHandler(c *WtsCtx) func(msg *message.MixMessage) *message.Reply {
 
 		i := Ctx(*c)
 
+		if c.Cfg.WX.AIReply {
+			reply, ok := i.handleAIReply(msg)
+			if ok {
+				return reply
+			}
+		}
+
 		//处理事件
 		if msg.MsgType == message.MsgTypeEvent {
 			reply := message.NewText(i.handleWXEvent(msg))
@@ -96,4 +103,32 @@ func (i *Ctx) handleNormalMsg(m *message.MixMessage) string {
 func (i *Ctx) superEasyNLPProgram(m *message.MixMessage) string {
 	verb := string([]rune(m.Content)[0])
 	return verb + verb + verb + "，一天到晚就™知道" + m.Content + "，是不是军姿没站够？"
+}
+
+func isTextACommand(text string) bool {
+	return len(text) > 0 && text[0] == '/'
+}
+
+// SDK暂时没有跟进微信最新的AI回复，这里提供一个变通方法。
+// https://developers.weixin.qq.com/doc/service/guide/product/message/Passive_user_reply_message.html#%E8%BD%AC%E6%8E%A5AI%E5%9B%9E%E5%A4%8D
+type aiReply struct {
+	message.CommonToken
+}
+
+func (reply *aiReply) SetMsgType(_ message.MsgType) {
+	reply.MsgType = "transfer_biz_ai_ivr"
+}
+
+func (i *Ctx) handleAIReply(m *message.MixMessage) (*message.Reply, bool) {
+	switch m.MsgType {
+	case message.MsgTypeEvent:
+		return nil, false
+	case message.MsgTypeText:
+		if isTextACommand(m.Content) {
+			return nil, false
+		}
+		return &message.Reply{MsgType: message.MsgTypeTransfer, MsgData: &aiReply{}}, true
+	default:
+		return &message.Reply{MsgType: message.MsgTypeTransfer, MsgData: &aiReply{}}, true
+	}
 }
